@@ -38,6 +38,7 @@ function AuthPage() {
   const [requestedRole, setRequestedRole] = useState<"customer" | "employee">("customer");
   const [stored, setStored] = useState<StoredStatus | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [authError, setAuthError] = useState("");
 
   useEffect(() => {
     try {
@@ -46,7 +47,7 @@ function AuthPage() {
     } catch {}
   }, []);
 
-  if (!loading && user) return <Navigate to="/dashboard" replace />;
+  if (!loading && user) return <Navigate to="/management/dashboard" replace />;
 
   function persistStatus(next: StoredStatus | null) {
     setStored(next);
@@ -57,34 +58,41 @@ function AuthPage() {
   async function signIn(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
+    setAuthError("");
     try {
-      await loginFn({ data: { email, password } });
+      const res = await loginFn({ data: { email, password } });
+      if (res && "error" in res) {
+        setBusy(false);
+        setAuthError(res.error);
+        return;
+      }
       setBusy(false);
       toast.success("Welcome back");
-      window.location.href = "/dashboard";
+      window.location.href = "/management/dashboard";
     } catch (error: any) {
       setBusy(false);
-      return toast.error(error.message || "Invalid credentials");
+      setAuthError(error.message || "Invalid credentials");
     }
   }
 
   async function signUp(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
+    setAuthError("");
     try {
       const res = await registerFn({ data: { email, password, fullName, requestedRole } });
       setBusy(false);
       if (res.status === "approved") {
         persistStatus(null);
         toast.success("Shop admin account created");
-        window.location.href = "/dashboard";
+        window.location.href = "/management/dashboard";
         return;
       }
       persistStatus({ email, status: "pending", at: new Date().toISOString() });
       toast.success("Account created — waiting for admin approval");
     } catch (error: any) {
       setBusy(false);
-      return toast.error(error.message || "Failed to create account");
+      setAuthError(error.message || "Failed to create account");
     }
   }
 
@@ -153,6 +161,12 @@ function AuthPage() {
 
             <TabsContent value="signin">
               <form onSubmit={signIn} className="space-y-4 pt-4">
+                {authError && (
+                  <div className="flex items-center gap-2 rounded-xl border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
+                    <XCircle className="h-4 w-4 shrink-0" />
+                    <p>{authError}</p>
+                  </div>
+                )}
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
                   <Input
@@ -172,16 +186,17 @@ function AuthPage() {
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className=""
+                      className="pr-10"
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                    >
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="mt-2 w-full rounded border border-red-500 bg-red-500/20 py-1 text-sm font-bold text-red-200 hover:bg-red-500/40"
-                  >
-                    {showPassword ? "Hide Password" : "Show Password (Click Me)"}
-                  </button>
                 </div>
                 <Button
                   type="submit"
@@ -201,6 +216,12 @@ function AuthPage() {
 
             <TabsContent value="signup">
               <form onSubmit={signUp} className="space-y-4 pt-4">
+                {authError && (
+                  <div className="flex items-center gap-2 rounded-xl border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
+                    <XCircle className="h-4 w-4 shrink-0" />
+                    <p>{authError}</p>
+                  </div>
+                )}
                 <div className="space-y-2">
                   <Label htmlFor="name">Full name</Label>
                   <Input
@@ -249,16 +270,17 @@ function AuthPage() {
                       minLength={8}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className=""
+                      className="pr-10"
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                    >
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="mt-2 w-full rounded border border-red-500 bg-red-500/20 py-1 text-sm font-bold text-red-200 hover:bg-red-500/40"
-                  >
-                    {showPassword ? "Hide Password" : "Show Password (Click Me)"}
-                  </button>
                 </div>
                 <Button
                   type="submit"

@@ -17,6 +17,7 @@ import {
   XCircle,
   Sun,
   Moon,
+  Search,
 } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -29,18 +30,19 @@ import { WaSenderProvider } from "@/components/wa-sender";
 import { useTheme } from "@/hooks/use-theme";
 import { meFn, logoutFn } from "@/lib/api/auth";
 import { getNotificationsFn, markNotificationsReadFn } from "@/lib/api/notifications";
+import { GlobalSearch, openGlobalSearch } from "@/components/global-search";
 
 const NAV = [
   { to: "/management/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/staff/customers", label: "Customers", icon: Users },
   { to: "/staff/repairs", label: "Repairs", icon: Wrench },
-  { to: "/inventory", label: "Inventory", icon: Boxes },
-  { to: "/suppliers", label: "Suppliers", icon: Truck },
-  { to: "/billing", label: "Billing", icon: Receipt },
-  { to: "/reports", label: "Reports", icon: BarChart3 },
-  { to: "/pnl", label: "Profit & Loss", icon: Calculator },
-  { to: "/approvals", label: "Approvals", icon: UserCheck, adminOnly: true },
-  { to: "/settings", label: "Settings", icon: Settings },
+  { to: "/inventory/dashboard", label: "Inventory", icon: Boxes },
+  { to: "/inventory/suppliers", label: "Suppliers", icon: Truck },
+  { to: "/finance/billing", label: "Billing", icon: Receipt },
+  { to: "/manager/reports", label: "Reports", icon: BarChart3 },
+  { to: "/finance/pnl", label: "Profit & Loss", icon: Calculator },
+  { to: "/manager/approvals", label: "Approvals", icon: UserCheck, adminOnly: true },
+  { to: "/admin/settings", label: "Settings", icon: Settings },
 ] as const;
 
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
@@ -218,7 +220,22 @@ export function AppLayout({ children }: { children: ReactNode }) {
               )}
             </Button>
 
+            <div className="flex-1 px-4 max-w-xl">
+              <Button
+                variant="outline"
+                className="w-full justify-start text-sm text-muted-foreground bg-white/5 border-white/10 hover:bg-white/10 hover:text-slate-200"
+                onClick={openGlobalSearch}
+              >
+                <Search className="mr-2 h-4 w-4" />
+                Search tickets, customers...
+                <kbd className="pointer-events-none ml-auto inline-flex h-5 select-none items-center gap-1 rounded border border-white/20 bg-white/5 px-1.5 font-mono text-[10px] font-medium text-slate-400">
+                  <span className="text-xs">⌘</span>K
+                </kbd>
+              </Button>
+            </div>
+            
             <div className="flex-1" />
+            
             <ThemeToggle />
             <NotificationsBell />
             <Button
@@ -236,6 +253,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           </main>
         </div>
       </div>
+      <GlobalSearch />
     </WaSenderProvider>
   );
 }

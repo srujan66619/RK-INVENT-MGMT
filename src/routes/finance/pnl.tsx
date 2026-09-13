@@ -54,6 +54,7 @@ import {
 } from "recharts";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { PDF_COLORS, drawPdfHeader, drawPdfFooter, getStandardTableStyles } from "@/lib/pdf-template";
 import { getPnlDataFn, createExpenseFn, deleteExpenseFn } from "@/lib/api/reports";
 
 export const Route = createFileRoute("/finance/pnl")({
@@ -211,15 +212,16 @@ function PnLPage() {
     },
   });
 
-  function exportPDF() {
-    const doc = new jsPDF();
-    doc.setFontSize(16);
-    doc.text(`Profit & Loss — ${month}`, 14, 18);
-    doc.setFontSize(10);
-    doc.text(`Generated: ${fmtDate(new Date())}`, 14, 25);
+  async function exportPDF() {
+    const doc = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
+
+    await drawPdfHeader(doc, "PROFIT & LOSS REPORT", month, "PERIOD");
+
+    let currentY = 175;
 
     autoTable(doc, {
-      startY: 32,
+      startY: currentY,
+      ...getStandardTableStyles(),
       head: [["Income", "Amount (INR)"]],
       body: [
         ["Total Revenue (Invoiced)", inrPdf(totalRevenue)],
@@ -228,8 +230,10 @@ function PnLPage() {
         ["GST Collected", inrPdf(gstCollected)],
         ["Discounts Given", inrPdf(discountsGiven)],
       ],
+      columnStyles: { 1: { halign: "right" } },
     });
     autoTable(doc, {
+      ...getStandardTableStyles(),
       head: [["Cost of Goods Sold", "Amount (INR)"]],
       body: [
         ["COGS (parts used in invoices)", inrPdf(cogs)],
@@ -237,22 +241,28 @@ function PnLPage() {
         ["Gross Profit", inrPdf(grossProfit)],
         ["Gross Margin %", grossMargin.toFixed(2) + " %"],
       ],
+      columnStyles: { 1: { halign: "right" } },
     });
     autoTable(doc, {
+      ...getStandardTableStyles(),
       head: [["Operating Expenses", "Amount (INR)"]],
       body: [
         ...Object.entries(expensesByCat).map(([k, v]) => [k, inrPdf(v)]),
         ["Total Operating Expenses", inrPdf(totalExpenses)],
       ],
+      columnStyles: { 1: { halign: "right" } },
     });
     autoTable(doc, {
+      ...getStandardTableStyles(),
       head: [["Summary", "Amount"]],
       body: [
         ["Net Profit / Loss", inrPdf(netProfit)],
         ["Net Margin %", netMargin.toFixed(2) + " %"],
       ],
-      headStyles: { fillColor: netProfit >= 0 ? [34, 197, 94] : [239, 68, 68] },
+      columnStyles: { 1: { halign: "right" } },
+      headStyles: { ...getStandardTableStyles().headStyles, fillColor: netProfit >= 0 ? [34, 197, 94] : [239, 68, 68] },
     });
+    await drawPdfFooter(doc, 750);
     doc.save(`pnl-${month}.pdf`);
   }
 

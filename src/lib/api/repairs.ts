@@ -54,7 +54,7 @@ export const createRepairFn = createServerFn({ method: "POST" })
       ...data,
       ticket_no,
       customer_id: assignedCustomerId,
-      owner_id: session.userId,
+      owner_id: session.user.id,
     };
 
     const repair = await repairService.createRepair(repairData);
@@ -147,7 +147,7 @@ export const createAppointmentEventFn = createServerFn({ method: "POST" })
       title: data.action,
       start_time: data.previous_at ? new Date(data.previous_at) : new Date(),
       end_time: data.new_at ? new Date(data.new_at) : new Date(),
-      owner_id: session.userId,
+      owner_id: session.user.id,
     });
     return { id: apt.id };
   });

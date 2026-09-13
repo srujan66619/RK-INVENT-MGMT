@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { getSupabaseServerClient, getSession } from "../auth.server";
 import { userService } from "@/services/user.service";
-import { createSession, clearSession, getSession } from "../auth.server";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -18,82 +18,99 @@ const registerSchema = z.object({
 export const loginFn = createServerFn({ method: "POST" })
   .validator((data) => loginSchema.parse(data))
   .handler(async ({ data }) => {
-    // Find profile by email
-    let user = await userService.getProfileByEmail(data.email);
+    const supabase = getSupabaseServerClient();
     
-    // MOCK DB BYPASS FOR DEMO
-    if (!user && data.password === "Password123!") {
-      user = {
-        id: "mock-demo-user",
-        email: data.email,
-        role: "admin",
-        approval_status: "approved",
-      } as any;
-    }
-
-    if (!user) {
-      throw new Error("User profile not found. Please register first.");
-    }
-
-    // Mock password check — in development, accept "Password123!" or any password
-    // In production, this will be replaced with real auth
-    if (data.password !== "Password123!" && process.env.NODE_ENV === "production") {
-      throw new Error("Invalid credentials");
-    }
-
-    if (user.approval_status !== "approved") {
-      throw new Error(
-        user.approval_status === "pending"
-          ? "Your account is pending admin approval."
-          : "Your account was not approved. Please contact the shop admin.",
-      );
-    }
-
-    await createSession({
-      userId: user.id,
-      email: user.email,
-      role: user.role || "user",
+    const { data: authData, error } = await supabase.auth.signInWithPassword({
+      email: data.email,
+      password: data.password,
     });
 
-    return { success: true, user: { id: user.id, email: user.email, role: user.role } };
+    if (error) {
+      return { error: error.message || "Invalid credentials" };
+    }
+
+    const authUser = authData.user;
+    
+    // Fetch fresh profile from Drizzle to get real approval status and role
+    let profile = await userService.getProfileById(authUser.id);
+    if (!profile) {
+      console.warn("Profile not found for authenticated user. Attempting auto-heal...");
+      try {
+        profile = await userService.createProfile({
+          id: authUser.id,
+          email: authUser.email!,
+          full_name: authUser.user_metadata?.full_name || authUser.email!.split("@")[0],
+          requested_role: authUser.user_metadata?.requested_role || "user",
+          role: authUser.user_metadata?.role || "user",
+          approval_status: authUser.user_metadata?.approval_status || "pending",
+        });
+      } catch (e) {
+        return { error: "Profile not found in database and auto-recovery failed." };
+      }
+    }
+
+    if (!profile) {
+      return { error: "Profile not found in database." };
+    }
+
+    if (profile.approval_status !== "approved") {
+      return { 
+        error: profile.approval_status === "pending"
+          ? "Your account is pending admin approval."
+          : "Your account was not approved. Please contact the shop admin."
+      };
+    }
+
+    return { success: true, user: { id: profile.id, email: profile.email, role: profile.role } };
   });
 
 export const registerFn = createServerFn({ method: "POST" })
   .validator((data) => registerSchema.parse(data))
   .handler(async ({ data }) => {
-    // Check for existing profile
-    const existing = await userService.getProfileByEmail(data.email);
-    if (existing) {
-      throw new Error("Email already registered");
-    }
-
-    // First user becomes admin
+    const supabase = getSupabaseServerClient();
+    
     const profileCount = await userService.countProfiles();
     const isFirstUser = profileCount === 0;
+    
     const role = isFirstUser ? "admin" : "user";
+    const approval_status = isFirstUser ? "approved" : "pending";
 
-    const profile = await userService.createProfile({
+    const { data: authData, error } = await supabase.auth.signUp({
       email: data.email,
-      full_name: data.fullName,
-      requested_role: data.requestedRole,
-      approval_status: isFirstUser ? "approved" : "pending",
-      role,
+      password: data.password,
+      options: {
+        data: {
+          full_name: data.fullName,
+          requested_role: data.requestedRole,
+          role,
+          approval_status
+        }
+      }
     });
 
-    if (isFirstUser) {
-      await createSession({
-        userId: profile.id,
-        email: profile.email,
+    if (error || !authData.user) {
+      throw new Error(error?.message || "Failed to register");
+    }
+
+    try {
+      await userService.createProfile({
+        id: authData.user.id,
+        email: data.email,
+        full_name: data.fullName,
+        requested_role: data.requestedRole,
+        approval_status,
         role,
       });
-      return { success: true, status: "approved" };
-    } else {
-      return { success: true, status: "pending" };
+    } catch (e) {
+      console.warn("Failed to insert profile, it might already exist or Drizzle insert failed", e);
     }
+
+    return { success: true, status: approval_status };
   });
 
 export const logoutFn = createServerFn({ method: "POST" }).handler(async () => {
-  clearSession();
+  const supabase = getSupabaseServerClient();
+  await supabase.auth.signOut();
   return { success: true };
 });
 
@@ -101,36 +118,26 @@ export const meFn = createServerFn({ method: "GET" }).handler(async () => {
   const session = await getSession();
   if (!session) return { user: null };
 
-  // MOCK DB BYPASS FOR DEMO
-  if (session.userId === "mock-demo-user") {
-    return {
-      user: {
-        id: "mock-demo-user",
-        email: session.email,
-        role: "admin",
-        approval_status: "approved",
-      } as any
-    };
+  const authUser = session.user;
+  
+  // Fetch fresh profile from Drizzle
+  const profile = await userService.getProfileById(authUser.id);
+  if (!profile) return { user: null };
+  
+  // If not approved, treat as not logged in for the frontend navigation,
+  // allowing the auth page to show the "pending" or "rejected" states.
+  if (profile.approval_status !== "approved") {
+    return { user: null };
   }
-
-  const user = await userService.getProfileById(session.userId);
-  if (!user) return { user: null };
-
+  
   return {
     user: {
-      id: user.id,
-      email: user.email,
-      role: user.role,
-      approval_status: user.approval_status,
-      requested_role: user.requested_role,
-      approved_at: user.approved_at,
-      rejection_reason: user.rejection_reason,
-      shop_name: user.shop_name,
-      shop_address: user.shop_address,
-      shop_phone: user.shop_phone,
-      shop_logo: user.shop_logo,
-      gst_number: user.gst_number,
-      wa_templates: user.wa_templates,
+      id: profile.id,
+      email: profile.email,
+      role: profile.role,
+      approval_status: profile.approval_status,
+      requested_role: profile.requested_role,
+      full_name: profile.full_name,
     },
   };
 });

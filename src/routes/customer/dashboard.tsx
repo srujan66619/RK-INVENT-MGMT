@@ -109,13 +109,12 @@ function CustomerDashboard() {
                       {new Date(repair.estimated_completion).toLocaleDateString()}
                     </div>
                   )}
-                  <Link
-                    to="/track"
-                    search={{ ticket: repair.ticket_no }}
+                  <a
+                    href={`/track?id=${repair.ticket_no}`}
                     className="flex h-9 w-9 items-center justify-center rounded-md hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
                   >
                     <ChevronRight className="h-5 w-5" />
-                  </Link>
+                  </a>
                 </div>
               </div>
             ))}

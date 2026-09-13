@@ -16,6 +16,7 @@ import { fmtDate, inr, inrPdf } from "@/lib/format";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { PDF_COLORS, drawPdfHeader, drawPdfFooter, getStandardTableStyles } from "@/lib/pdf-template";
 
 export const Route = createFileRoute("/manager/reports")({
   head: () => ({ meta: [{ title: "Reports — RK Labs" }] }),
@@ -121,23 +122,25 @@ function ReportsPage() {
     XLSX.writeFile(wb, filename);
   }
 
-  function exportPdf(title: string, head: string[], body: any[][], filename: string) {
-    const doc = new jsPDF();
-    doc.setFontSize(16);
-    doc.setFont("helvetica", "bold");
-    doc.text(title, 14, 18);
-    doc.setFontSize(9);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(120);
-    doc.text(`Range: ${range.toUpperCase()} · Generated: ${fmtDate(new Date())}`, 14, 24);
+  async function exportPdf(title: string, head: string[], body: any[][], filename: string) {
+    const doc = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
+
+    await drawPdfHeader(doc, "REPAIRS REPORT", `Total: ${body.length}`, "RECORDS");
+
+    let currentY = 175;
+
     autoTable(doc, {
-      startY: 30,
+      startY: currentY,
+      ...getStandardTableStyles(),
       head: [head],
       body,
-      theme: "striped",
-      headStyles: { fillColor: [30, 41, 59] },
-      styles: { fontSize: 9 },
+      columnStyles: { 
+        3: { halign: "right" },
+        4: { halign: "right" },
+        5: { halign: "center" }
+      },
     });
+    await drawPdfFooter(doc, 750);
     doc.save(filename);
   }
 

@@ -73,13 +73,12 @@ function CustomerRepairs() {
                     <div className="text-sm text-slate-300">Requested</div>
                     <div className="text-xs text-slate-500">{new Date(repair.created_at).toLocaleDateString()}</div>
                   </div>
-                  <Link
-                    to="/track"
-                    search={{ ticket: repair.ticket_no }}
+                  <a
+                    href={`/track?id=${repair.ticket_no}`}
                     className="inline-flex items-center justify-center rounded-md text-sm font-medium border border-white/10 bg-white/5 hover:bg-white/10 h-9 px-4 py-2 transition-colors"
                   >
                     Track Status
-                  </Link>
+                  </a>
                 </div>
               </div>
             ))}

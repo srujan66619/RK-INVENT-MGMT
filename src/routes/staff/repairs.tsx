@@ -346,10 +346,10 @@ function RepairsPage() {
       setOpen(false);
 
       // Advance receipt flow — only for new tickets with an advance and a customer with WhatsApp
-      if (isNew && form.advance_amount > 0) {
+          if (isNew && form.advance_amount > 0) {
         const cust = form.customer_id ? custMap.get(form.customer_id) : null;
         try {
-          const doc = buildAdvanceReceiptPdf({
+          const doc = await buildAdvanceReceiptPdf({
             shop: profile ?? null,
             ticket_no: row.ticket_no,
             created_at: row.created_at,
@@ -983,7 +983,7 @@ function RepairsPage() {
                               })
                             }
                           >
-                            <WhatsAppIcon className="h-4 w-4" />
+                            <MessageCircle className="h-4 w-4" />
                           </Button>
                         )}
                         <Button
@@ -1193,8 +1193,8 @@ function RepairDetailDialog({
         customer: customer ?? undefined,
         repair,
       });
-      doc.save(`receipt-${repair.ticket_no}.pdf`);
-      toast.success("Receipt downloaded", { id: tId });
+      window.open(doc.output("bloburl"), "_blank");
+      toast.success("Receipt opened for printing", { id: tId });
     } catch (e: any) {
       console.error(e);
       toast.error(e.message || "Failed to generate receipt", { id: tId });
@@ -1242,16 +1242,25 @@ function RepairDetailDialog({
             Workflow timeline
           </div>
           <ol className="space-y-2 text-sm">
-            <TimelineItem label="Received" at={repair.created_at} />
+            <TimelineItem label="Received" at={repair.created_at} implicitDone={true} />
             {repair.appointment_at && (
-              <TimelineItem label="Appointment scheduled" at={repair.appointment_at} accent />
+              <TimelineItem label="Appointment scheduled" at={repair.appointment_at} accent implicitDone={!!repair.assigned_at || !!repair.completed_at || !!repair.delivered_at || repair.status === "delivered" || repair.status === "completed" || repair.status === "in_progress"} />
             )}
             <TimelineItem
               label={`Assigned to ${repair.technician_name ?? "technician"}`}
               at={repair.assigned_at}
+              implicitDone={!!repair.completed_at || !!repair.delivered_at || repair.status === "delivered" || repair.status === "completed"}
             />
-            <TimelineItem label="Completed" at={repair.completed_at} />
-            <TimelineItem label="Delivered" at={repair.delivered_at} />
+            <TimelineItem 
+              label="Completed" 
+              at={repair.completed_at} 
+              implicitDone={!!repair.delivered_at || repair.status === "delivered"}
+            />
+            <TimelineItem 
+              label="Delivered" 
+              at={repair.delivered_at} 
+              implicitDone={repair.status === "delivered"}
+            />
           </ol>
         </div>
 
@@ -1324,27 +1333,30 @@ function TimelineItem({
   label,
   at,
   accent,
+  implicitDone,
 }: {
   label: string;
   at: string | null;
   accent?: boolean;
+  implicitDone?: boolean;
 }) {
+  const isDone = at || implicitDone;
   const dotColor =
-    accent && at
+    accent && isDone
       ? "bg-[var(--neon)] shadow-[0_0_8px_var(--neon)]"
-      : at
+      : isDone
         ? "bg-[var(--neon)] shadow-[0_0_8px_var(--neon)]"
         : "bg-white/15";
   return (
     <li className="flex items-center gap-3">
       <div className={"h-2.5 w-2.5 rounded-full " + dotColor} />
       <span
-        className={at ? (accent ? "text-[var(--neon)] font-medium" : "") : "text-muted-foreground"}
+        className={isDone ? (accent ? "text-[var(--neon)] font-medium" : "text-foreground") : "text-muted-foreground"}
       >
         {label}
       </span>
       <span className="ml-auto text-xs text-muted-foreground">
-        {at ? fmtDateTime(at) : "Pending"}
+        {at ? fmtDateTime(at) : implicitDone ? "—" : "Pending"}
       </span>
     </li>
   );

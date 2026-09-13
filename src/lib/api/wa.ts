@@ -22,7 +22,7 @@ export const logWaMessageFn = createServerFn({ method: "POST" })
     const { session } = await requireAuth();
 
     await waRepository.create({
-      owner_id: session.userId,
+      owner_id: session.user.id,
       ...data,
     });
 
@@ -41,7 +41,7 @@ export const getWaLogsFn = createServerFn({ method: "GET" })
   .handler(async ({ data }) => {
     const { session } = await requireAuth();
 
-    const logs = await waRepository.getLogs(session.userId, data.repair_id, data.invoice_id);
+    const logs = await waRepository.getLogs(session.user.id, data.repair_id, data.invoice_id);
 
     return logs;
   });

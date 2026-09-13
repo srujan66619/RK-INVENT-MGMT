@@ -23,7 +23,7 @@ export const createCustomerFn = createServerFn({ method: "POST" })
     const { session } = await requireAuth();
     const customer = await customerService.createCustomer({
       ...data,
-      owner_id: session.userId,
+      owner_id: session.user.id,
     });
     return { id: customer.id };
   });

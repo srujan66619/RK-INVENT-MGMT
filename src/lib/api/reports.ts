@@ -105,7 +105,7 @@ export const createExpenseFn = createServerFn({ method: "POST" })
       amount: data.amount,
       date: data.expense_date,
       expense_date: new Date(data.expense_date),
-      owner_id: session.userId,
+      owner_id: session.user.id,
     });
     return { id: expense.id };
   });

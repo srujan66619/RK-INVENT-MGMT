@@ -6,7 +6,7 @@ import { requireAuth } from "../auth.server";
 export const getNotificationsFn = createServerFn({ method: "GET" }).handler(async () => {
   const { session } = await requireAuth();
 
-  const notifs = await userService.getNotificationsByUserId(session.userId);
+  const notifs = await userService.getNotificationsByUserId(session.user.id);
 
   return notifs.map((n: any) => ({
     id: n.id,

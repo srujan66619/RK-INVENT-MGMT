@@ -39,7 +39,9 @@ export const Route = createFileRoute("/_public/track")({
     ],
     links: [{ rel: "canonical", href: "https://rklabs.syncailabs.in/track" }],
   }),
-  validateSearch: (s: Record<string, unknown>) => ({ id: typeof s.id === "string" ? s.id : "" }),
+  validateSearch: (s: Record<string, unknown>) => ({ 
+    id: typeof s.id === "string" ? s.id : (typeof s.ticket === "string" ? s.ticket : "") 
+  }),
   component: TrackPage,
 });
 
@@ -68,6 +70,8 @@ function TrackPage() {
   const [ticket, setTicket] = useState(id);
   const [result, setResult] = useState<TrackResult | null>(null);
 
+  const [errorMsg, setErrorMsg] = useState("");
+
   const lookup = useMutation({
     mutationFn: (t: string) => trackRepair({ data: { ticket: t } }),
     onSuccess: (r) => setResult(r),
@@ -76,8 +80,13 @@ function TrackPage() {
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     const t = ticket.trim();
-    if (!t) return;
-    navigate({ search: { id: t }, replace: true });
+    if (!t) {
+      setErrorMsg("Please enter a tracking ID.");
+      return;
+    }
+    setErrorMsg("");
+    // Explicitly navigate to /track to prevent any relative pathless layout bugs
+    navigate({ to: "/track", search: { id: t }, replace: true });
     lookup.mutate(t);
   }
 
@@ -116,21 +125,25 @@ function TrackPage() {
             disabled={lookup.isPending}
             style={{ background: "var(--gradient-primary)", color: "oklch(0.12 0.02 250)" }}
           >
-            {lookup.isPending ? "Searching…" : "Track"}
+            {lookup.isPending ? "Searching…" : "Track Repair"}
           </Button>
         </form>
 
+        {errorMsg && (
+          <div className="mt-2 text-sm text-destructive text-left px-2">
+            {errorMsg}
+          </div>
+        )}
+
         {lookup.isError && (
           <div className="glass mt-6 rounded-2xl border border-destructive/30 p-4 text-sm text-destructive">
-            Could not look up that ticket. Please try again.
+            Could not look up that ticket. Please try again later.
           </div>
         )}
 
         {result && !result.found && (
           <div className="glass mt-6 rounded-2xl border border-white/10 p-6 text-center text-muted-foreground">
-            No repair found for{" "}
-            <span className="font-mono text-foreground">{ticket.toUpperCase()}</span>. Double-check
-            your ticket ID.
+            Tracking ID not found. Please check the ID and try again.
           </div>
         )}
 

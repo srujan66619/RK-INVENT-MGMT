@@ -1,11 +1,12 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, Wrench, CheckCircle2, LogOut, Sun, Moon, Menu } from "lucide-react";
+import { LayoutDashboard, Wrench, CheckCircle2, LogOut, Sun, Moon, Menu, Search } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/hooks/use-theme";
 import { logoutFn } from "@/lib/api/auth";
+import { GlobalSearch, openGlobalSearch } from "@/components/global-search";
 
 const NAV = [
   { to: "/technician/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -100,15 +101,33 @@ export function TechnicianLayout({ children }: { children: ReactNode }) {
             </SheetContent>
           </Sheet>
 
+          <div className="flex-1 px-4 max-w-xl">
+            <Button
+              variant="outline"
+              className="w-full justify-start text-sm text-muted-foreground bg-white/5 border-white/10 hover:bg-white/10 hover:text-slate-200"
+              onClick={openGlobalSearch}
+            >
+              <Search className="mr-2 h-4 w-4" />
+              Search tickets, customers...
+              <kbd className="pointer-events-none ml-auto inline-flex h-5 select-none items-center gap-1 rounded border border-white/20 bg-white/5 px-1.5 font-mono text-[10px] font-medium text-slate-400">
+                <span className="text-xs">⌘</span>K
+              </kbd>
+            </Button>
+          </div>
+          
           <div className="flex-1" />
+          
           <Button variant="ghost" size="icon" onClick={toggle} title="Toggle theme">
             {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           </Button>
         </header>
-        <main className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6 lg:p-8 custom-scrollbar">
-          <div className="mx-auto w-full max-w-[1400px]">{children}</div>
+        <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 custom-scrollbar">
+          <div className="mx-auto w-full max-w-6xl">
+            {children}
+          </div>
         </main>
       </div>
+      <GlobalSearch />
     </div>
   );
 }

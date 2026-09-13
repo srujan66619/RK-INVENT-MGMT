@@ -7,6 +7,7 @@ import JsBarcode from "jsbarcode";
 import { inrPrecise } from "./format";
 import { getIconDataUrl } from "./pdf-icons";
 import { Calendar, Clock, CheckCircle2, MapPin, Phone, Globe, PenTool } from "lucide-react";
+import { PDF_COLORS, drawPdfHeader, drawPdfFooter, getStandardTableStyles } from "./pdf-template";
 
 export type InvoicePdfInput = {
   shop: any;
@@ -16,36 +17,10 @@ export type InvoicePdfInput = {
   items: any[];
 };
 
-function drawRibbon(
-  doc: jsPDF,
-  text: string,
-  x: number,
-  y: number,
-  w: number,
-  h: number,
-  color: [number, number, number],
-) {
-  doc.setFillColor(color[0], color[1], color[2]);
-  // The ribbon should have an angled cut on the right.
-  // Triangle 1: Main rect from x to x + w - h
-  doc.rect(x, y, w - h, h, "F");
-  // Triangle 2: Pointy bit on the right
-  doc.triangle(x + w - h, y, x + w, y, x + w - h, y + h, "F");
-
-  doc.setTextColor(255, 255, 255);
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(7);
-  doc.text(text, x + 8, y + h - 4);
-}
-
 export async function buildInvoicePdf({ shop, invoice, customer, repair, items }: InvoicePdfInput) {
   const doc = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
 
-  const teal: [number, number, number] = [0, 138, 154];
-  const orange: [number, number, number] = [244, 122, 33];
-  const darkBg: [number, number, number] = [17, 24, 39];
-  const lightGray: [number, number, number] = [241, 245, 249];
-
+  
   const invoiceNo = invoice?.invoice_no || "RKRL-INV-000001";
 
   let dateStr = "";
@@ -109,138 +84,27 @@ export async function buildInvoicePdf({ shop, invoice, customer, repair, items }
   const ph = 841.89;
   const marginX = 24;
 
-  const drawHeader = (doc: jsPDF) => {
-    // 1. Enlarge left background block
-    doc.setFillColor(darkBg[0], darkBg[1], darkBg[2]);
-    doc.rect(0, 0, 170, 170, "F");
-    doc.triangle(170, 0, 240, 0, 170, 170, "F");
-
-    // 2. Enlarge logo
-    doc.setDrawColor(teal[0], teal[1], teal[2]);
-    doc.setLineWidth(3);
-    doc.circle(85, 85, 65, "S");
-    doc.setDrawColor(orange[0], orange[1], orange[2]);
-    doc.setLineWidth(1);
-    doc.circle(85, 85, 70, "S");
-
-    doc.setFont("helvetica", "bold");
-    doc.setTextColor(teal[0], teal[1], teal[2]);
-    doc.setFontSize(54);
-    doc.text("R", 50, 98);
-    doc.setTextColor(orange[0], orange[1], orange[2]);
-    doc.text("K", 92, 98);
-
-    doc.setFillColor(255, 255, 255);
-    doc.rect(35, 125, 100, 20, "F");
-    doc.setTextColor(darkBg[0], darkBg[1], darkBg[2]);
-    doc.setFontSize(9);
-    doc.text("REPAIR LABS", 85, 139, { align: "center" });
-
-    // 3. Center Branding - Strong and Large
-    doc.setTextColor(teal[0], teal[1], teal[2]);
-    doc.setFontSize(32);
-    doc.text("RK", 230, 65);
-    doc.setTextColor(orange[0], orange[1], orange[2]);
-    doc.text("REPAIR LABS", 280, 65);
-
-    doc.setTextColor(50, 50, 50);
-    doc.setFontSize(10);
-    doc.text("Expert hands - Trusted repairs", 230, 85);
-
-    // Services
-    doc.setFontSize(8.5);
-    doc.setTextColor(30, 30, 30);
-    doc.text("LAPTOP REPAIR", 230, 110);
-    doc.setTextColor(200, 200, 200);
-    doc.text("|", 305, 110);
-    doc.setTextColor(30, 30, 30);
-    doc.text("MOBILE REPAIR", 315, 110);
-    doc.setTextColor(200, 200, 200);
-    doc.text("|", 385, 110);
-    doc.setTextColor(30, 30, 30);
-    doc.text("MACBOOK REPAIR", 230, 125);
-    doc.setTextColor(200, 200, 200);
-    doc.text("|", 315, 125);
-    doc.setTextColor(30, 30, 30);
-    doc.text("TABLET REPAIR", 325, 125);
-
-    // Right side - Invoice Title & Number
-    doc.setTextColor(10, 10, 10);
-    doc.setFontSize(22);
-    doc.setFont("helvetica", "bold");
-    doc.text("TAX INVOICE", pw - marginX, 40, { align: "right" });
-
-    // Invoice Badge (larger)
-    doc.setDrawColor(orange[0], orange[1], orange[2]);
-    doc.setLineWidth(1.5);
-    doc.rect(pw - marginX - 140, 65, 140, 45, "S");
-
-    doc.setFillColor(teal[0], teal[1], teal[2]);
-    doc.rect(pw - marginX - 110, 58, 80, 14, "F");
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(8);
-    doc.text("INVOICE NO.", pw - marginX - 70, 68, { align: "center" });
-
-    doc.setTextColor(orange[0], orange[1], orange[2]);
-    doc.setFontSize(18);
-    doc.text(invoiceNo, pw - marginX - 70, 95, { align: "center" });
-    doc.setFont("helvetica", "normal");
-
-    doc.addImage(barcodeDataUrl, "PNG", pw - marginX - 130, 115, 120, 30);
-
-    // Bottom teal border
-    doc.setDrawColor(teal[0], teal[1], teal[2]);
-    doc.setLineWidth(3);
-    doc.line(marginX, 150, pw - marginX, 150);
-  };
-
-  const drawFooter = (doc: jsPDF, y: number) => {
-    doc.setFillColor(30, 41, 59);
-    doc.rect(marginX, y, pw - marginX * 2, 55, "F");
-
-    // Column 1
-    doc.addImage(locIcon, "PNG", marginX + 15, y + 20, 14, 14);
-    doc.setTextColor(220, 220, 220);
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(7);
-    doc.text("14-13, Brindavan Gardens 1st Lane,", marginX + 35, y + 26);
-    doc.text("Guntur - 522004, AP, India.", marginX + 35, y + 36);
-
-    // Column 2
-    doc.addImage(phoneIcon, "PNG", marginX + 220, y + 20, 14, 14);
-    doc.setTextColor(255, 255, 255);
-    doc.text("+91 9666984949", marginX + 240, y + 26);
-    doc.text("+91 9505225222", marginX + 240, y + 36);
-
-    // Column 3
-    doc.addImage(webIcon, "PNG", marginX + 370, y + 20, 14, 14);
-    doc.setTextColor(255, 255, 255);
-    doc.text("rkrepairlabs.vercel.app", marginX + 390, y + 26);
-    doc.setTextColor(150, 150, 150);
-    doc.text("Facebook | Instagram | YouTube", marginX + 390, y + 36);
-  };
-
   let currentY = 175;
-  drawHeader(doc);
+  await drawPdfHeader(doc, "TAX INVOICE", invoiceNo, "INVOICE NO.");
 
   // Date and Time Row
   const dateW = (pw - marginX * 2 - 15) / 2;
   const timeX = marginX + dateW + 15;
 
-  doc.setDrawColor(teal[0], teal[1], teal[2]);
+  doc.setDrawColor(PDF_COLORS.teal[0], PDF_COLORS.teal[1], PDF_COLORS.teal[2]);
   doc.setLineWidth(0.5);
   doc.setFillColor(255, 255, 255);
   doc.rect(marginX, currentY, dateW, 36, "S");
   doc.rect(timeX, currentY, dateW, 36, "S");
 
-  doc.setFillColor(teal[0], teal[1], teal[2]);
+  doc.setFillColor(PDF_COLORS.teal[0], PDF_COLORS.teal[1], PDF_COLORS.teal[2]);
   doc.rect(marginX, currentY, 36, 36, "F");
   doc.rect(timeX, currentY, 36, 36, "F");
 
   doc.addImage(calendarIcon, "PNG", marginX + 10, currentY + 10, 16, 16);
   doc.addImage(clockIcon, "PNG", timeX + 10, currentY + 10, 16, 16);
 
-  doc.setTextColor(teal[0], teal[1], teal[2]);
+  doc.setTextColor(PDF_COLORS.teal[0], PDF_COLORS.teal[1], PDF_COLORS.teal[2]);
   doc.setFontSize(9);
   doc.setFont("helvetica", "bold");
   doc.text("DATE", marginX + 48, currentY + 16);
@@ -259,13 +123,13 @@ export async function buildInvoicePdf({ shop, invoice, customer, repair, items }
   currentY += 55;
 
   // Customer Info Box
-  doc.setDrawColor(teal[0], teal[1], teal[2]);
+  doc.setDrawColor(PDF_COLORS.teal[0], PDF_COLORS.teal[1], PDF_COLORS.teal[2]);
   doc.setLineDashPattern([2, 2], 0);
   const custW = 380;
   const boxHeight = 110;
   doc.rect(marginX, currentY + 5, custW, boxHeight, "S");
 
-  drawRibbon(doc, "BILL TO / CUSTOMER", marginX - 5, currentY, 130, 14, teal);
+  drawRibbon(doc, "BILL TO / CUSTOMER", marginX - 5, currentY, 130, 14, PDF_COLORS.teal);
 
   doc.setTextColor(100, 100, 100);
   doc.setFontSize(9);
@@ -303,12 +167,12 @@ export async function buildInvoicePdf({ shop, invoice, customer, repair, items }
   // QR Code Box
   const qrX = marginX + custW + 15;
   const qrW = pw - marginX * 2 - custW - 15;
-  doc.setDrawColor(teal[0], teal[1], teal[2]);
+  doc.setDrawColor(PDF_COLORS.teal[0], PDF_COLORS.teal[1], PDF_COLORS.teal[2]);
   doc.setLineDashPattern([2, 2], 0);
   doc.rect(qrX, currentY + 5, qrW, boxHeight, "S");
   doc.setLineDashPattern([], 0);
 
-  doc.setFillColor(teal[0], teal[1], teal[2]);
+  doc.setFillColor(PDF_COLORS.teal[0], PDF_COLORS.teal[1], PDF_COLORS.teal[2]);
   doc.rect(qrX + 10, currentY, qrW - 20, 14, "F");
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(7);
@@ -328,7 +192,7 @@ export async function buildInvoicePdf({ shop, invoice, customer, repair, items }
   currentY += 140;
 
   // Table Label Ribbon
-  drawRibbon(doc, "PARTICULARS / LINE ITEMS", marginX - 5, currentY, 150, 14, teal);
+  drawRibbon(doc, "PARTICULARS / LINE ITEMS", marginX - 5, currentY, 150, 14, PDF_COLORS.teal);
 
   const tableData =
     items.length > 0
@@ -347,7 +211,7 @@ export async function buildInvoicePdf({ shop, invoice, customer, repair, items }
     head: [["#", "DESCRIPTION", "QTY", "UNIT PRICE", "TOTAL"]],
     body: tableData,
     theme: "plain",
-    headStyles: { fillColor: teal, textColor: 255, fontSize: 8, fontStyle: "bold" },
+    headStyles: { fillColor: PDF_COLORS.teal, textColor: 255, fontSize: 8, fontStyle: "bold" },
     styles: { cellPadding: 6 },
     bodyStyles: { fontSize: 8, textColor: 30, fillColor: 255 },
     alternateRowStyles: { fillColor: [250, 250, 250] },
@@ -356,7 +220,7 @@ export async function buildInvoicePdf({ shop, invoice, customer, repair, items }
       1: { cellWidth: 274, halign: "left" },
       2: { cellWidth: 55, halign: "center" },
       3: { cellWidth: 87, halign: "right" },
-      4: { cellWidth: 93, halign: "right", textColor: teal, fontStyle: "bold" },
+      4: { cellWidth: 93, halign: "right", textColor: PDF_COLORS.teal, fontStyle: "bold" },
     },
     didParseCell: (data) => {
       if (data.section === "head") {
@@ -399,7 +263,7 @@ export async function buildInvoicePdf({ shop, invoice, customer, repair, items }
   if (remaining < gap) {
     doc.addPage();
     drawHeader(doc);
-    drawFooter(doc, ph - 70);
+    await drawPdfFooter(doc, ph - 70);
     currentY = 140;
   }
 
@@ -413,13 +277,13 @@ export async function buildInvoicePdf({ shop, invoice, customer, repair, items }
   const boxHeight2 = 105; // Visually taller
 
   // Payment Status Box
-  doc.setFillColor(lightGray[0], lightGray[1], lightGray[2]);
+  doc.setFillColor(PDF_COLORS.lightGray[0], PDF_COLORS.lightGray[1], PDF_COLORS.lightGray[2]);
   doc.rect(marginX, currentY + 5, payW, boxHeight2, "F");
   doc.setDrawColor(200, 200, 200);
   doc.setLineWidth(0.5);
   doc.rect(marginX, currentY + 5, payW, boxHeight2, "S");
 
-  drawRibbon(doc, "PAYMENT STATUS", marginX - 5, currentY, 110, 14, orange);
+  drawRibbon(doc, "PAYMENT STATUS", marginX - 5, currentY, 110, 14, PDF_COLORS.orange);
 
   doc.setTextColor(100, 100, 100);
   doc.setFontSize(10);
@@ -447,12 +311,12 @@ export async function buildInvoicePdf({ shop, invoice, customer, repair, items }
   }
 
   // Totals Box
-  doc.setDrawColor(teal[0], teal[1], teal[2]);
+  doc.setDrawColor(PDF_COLORS.teal[0], PDF_COLORS.teal[1], PDF_COLORS.teal[2]);
   doc.setLineDashPattern([2, 2], 0);
   doc.rect(totX, currentY + 5, sumW, boxHeight2, "S");
   doc.setLineDashPattern([], 0);
 
-  drawRibbon(doc, "INVOICE SUMMARY", totX - 5, currentY, 120, 14, teal);
+  drawRibbon(doc, "INVOICE SUMMARY", totX - 5, currentY, 120, 14, PDF_COLORS.teal);
 
   doc.setTextColor(80, 80, 80);
   doc.setFontSize(10);
@@ -470,7 +334,7 @@ export async function buildInvoicePdf({ shop, invoice, customer, repair, items }
   doc.setDrawColor(200, 200, 200);
   doc.line(totX + 10, currentY + 75, totX + sumW - 10, currentY + 75);
 
-  doc.setTextColor(teal[0], teal[1], teal[2]);
+  doc.setTextColor(PDF_COLORS.teal[0], PDF_COLORS.teal[1], PDF_COLORS.teal[2]);
   doc.setFontSize(17);
   doc.setFont("helvetica", "bold");
   doc.text("GRAND TOTAL", totX + 15, currentY + 93);
@@ -485,7 +349,7 @@ export async function buildInvoicePdf({ shop, invoice, customer, repair, items }
   doc.setFillColor(253, 242, 233);
   doc.rect(marginX, currentY + 5, fullW, termsH, "F");
 
-  drawRibbon(doc, "TERMS & CONDITIONS", marginX - 5, currentY, 130, 14, orange);
+  drawRibbon(doc, "TERMS & CONDITIONS", marginX - 5, currentY, 130, 14, PDF_COLORS.orange);
 
   doc.setTextColor(80, 80, 80);
   doc.setFontSize(8);
@@ -535,13 +399,13 @@ export async function buildInvoicePdf({ shop, invoice, customer, repair, items }
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(18);
-  doc.setTextColor(teal[0], teal[1], teal[2]);
+  doc.setTextColor(PDF_COLORS.teal[0], PDF_COLORS.teal[1], PDF_COLORS.teal[2]);
   doc.text("RK", marginX + 15, currentY + 65);
-  doc.setTextColor(orange[0], orange[1], orange[2]);
+  doc.setTextColor(PDF_COLORS.orange[0], PDF_COLORS.orange[1], PDF_COLORS.orange[2]);
   doc.text("REPAIR LABS", marginX + 45, currentY + 65);
 
   // Quality badge (Left Box)
-  doc.setFillColor(teal[0], teal[1], teal[2]);
+  doc.setFillColor(PDF_COLORS.teal[0], PDF_COLORS.teal[1], PDF_COLORS.teal[2]);
   doc.rect(marginX + halfW - 55, currentY + 12, 45, 45, "F");
   doc.triangle(
     marginX + halfW - 55,
@@ -571,7 +435,7 @@ export async function buildInvoicePdf({ shop, invoice, customer, repair, items }
   doc.line(row3RightX + 30, currentY + 95, row3RightX + halfW - 30, currentY + 95);
 
   doc.setFontSize(9);
-  doc.setTextColor(teal[0], teal[1], teal[2]);
+  doc.setTextColor(PDF_COLORS.teal[0], PDF_COLORS.teal[1], PDF_COLORS.teal[2]);
   doc.setFont("helvetica", "bold");
   doc.text("AUTHORIZED SIGNATORY", row3RightX + halfW / 2, currentY + 110, { align: "center" });
 
@@ -584,7 +448,7 @@ export async function buildInvoicePdf({ shop, invoice, customer, repair, items }
     currentY = 175;
   }
 
-  drawFooter(doc, currentY);
+  await drawPdfFooter(doc, currentY);
 
   return doc;
 }

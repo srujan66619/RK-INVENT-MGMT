@@ -63,11 +63,7 @@ export async function buildIntakeReceiptPdf({
 }: IntakeReceiptPdfInput) {
   const doc = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
 
-  const teal: [number, number, number] = [0, 138, 154];
-  const orange: [number, number, number] = [244, 122, 33];
-  const darkBg: [number, number, number] = [17, 24, 39];
-  const lightGray: [number, number, number] = [241, 245, 249];
-
+  
   const jobID = repair?.ticket_no || invoice?.invoice_no || "RKRL-JOB-001";
 
   let dateStr = "";
@@ -136,140 +132,27 @@ export async function buildIntakeReceiptPdf({
   const ph = 841.89;
   const marginX = 24;
 
-  const drawHeader = (doc: jsPDF) => {
-    // 1. Enlarge left background block
-    doc.setFillColor(darkBg[0], darkBg[1], darkBg[2]);
-    doc.rect(0, 0, 170, 170, "F");
-    doc.triangle(170, 0, 240, 0, 170, 170, "F");
-
-    // 2. Enlarge logo
-    doc.setDrawColor(teal[0], teal[1], teal[2]);
-    doc.setLineWidth(3);
-    doc.circle(85, 85, 65, "S");
-    doc.setDrawColor(orange[0], orange[1], orange[2]);
-    doc.setLineWidth(1);
-    doc.circle(85, 85, 70, "S");
-
-    doc.setFont("helvetica", "bold");
-    doc.setTextColor(teal[0], teal[1], teal[2]);
-    doc.setFontSize(54);
-    doc.text("R", 50, 98);
-    doc.setTextColor(orange[0], orange[1], orange[2]);
-    doc.text("K", 92, 98);
-
-    doc.setFillColor(255, 255, 255);
-    doc.rect(35, 125, 100, 20, "F");
-    doc.setTextColor(darkBg[0], darkBg[1], darkBg[2]);
-    doc.setFontSize(9);
-    doc.text("REPAIR LABS", 85, 139, { align: "center" });
-
-    // 3. Center Branding - Strong and Large
-    doc.setTextColor(teal[0], teal[1], teal[2]);
-    doc.setFontSize(32);
-    doc.text("RK", 230, 65);
-    doc.setTextColor(orange[0], orange[1], orange[2]);
-    doc.text("REPAIR LABS", 280, 65);
-
-    doc.setTextColor(50, 50, 50);
-    doc.setFontSize(10);
-    doc.text("Expert hands - Trusted repairs", 230, 85);
-
-    // Services
-    doc.setFontSize(8.5);
-    doc.setTextColor(30, 30, 30);
-    doc.text("LAPTOP REPAIR", 230, 110);
-    doc.setTextColor(200, 200, 200);
-    doc.text("|", 305, 110);
-    doc.setTextColor(30, 30, 30);
-    doc.text("MOBILE REPAIR", 315, 110);
-    doc.setTextColor(200, 200, 200);
-    doc.text("|", 385, 110);
-    doc.setTextColor(30, 30, 30);
-    doc.text("MACBOOK REPAIR", 230, 125);
-    doc.setTextColor(200, 200, 200);
-    doc.text("|", 315, 125);
-    doc.setTextColor(30, 30, 30);
-    doc.text("TABLET REPAIR", 325, 125);
-
-    // Right side - Title & Number
-    doc.setTextColor(10, 10, 10);
-    doc.setFontSize(22);
-    doc.setFont("helvetica", "bold");
-    doc.text("REPAIR INTAKE", pw - marginX, 35, { align: "right" });
-    doc.text("RECEIPT", pw - marginX, 60, { align: "right" });
-
-    // Badge (larger)
-    doc.setDrawColor(orange[0], orange[1], orange[2]);
-    doc.setLineWidth(1.5);
-    doc.rect(pw - marginX - 140, 75, 140, 45, "S");
-
-    doc.setFillColor(teal[0], teal[1], teal[2]);
-    doc.rect(pw - marginX - 110, 68, 80, 14, "F");
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(8);
-    doc.text("JOB ID", pw - marginX - 70, 78, { align: "center" });
-
-    doc.setTextColor(orange[0], orange[1], orange[2]);
-    doc.setFontSize(18);
-    doc.text(jobID, pw - marginX - 70, 105, { align: "center" });
-    doc.setFont("helvetica", "normal");
-
-    doc.addImage(barcodeDataUrl, "PNG", pw - marginX - 130, 125, 120, 30);
-
-    // Bottom teal border
-    doc.setDrawColor(teal[0], teal[1], teal[2]);
-    doc.setLineWidth(3);
-    doc.line(marginX, 150, pw - marginX, 150);
-  };
-
-  const drawFooter = (doc: jsPDF) => {
-    const fY = ph - 70;
-    doc.setFillColor(darkBg[0], darkBg[1], darkBg[2]);
-    doc.rect(marginX, fY, pw - marginX * 2, 55, "F");
-
-    // Column 1
-    doc.addImage(locIcon, "PNG", marginX + 15, fY + 20, 14, 14);
-    doc.setTextColor(220, 220, 220);
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(7);
-    doc.text("14-13, Brindavan Gardens 1st Lane,", marginX + 35, fY + 26);
-    doc.text("Guntur - 522004, AP, India.", marginX + 35, fY + 36);
-
-    // Column 2
-    doc.addImage(phoneIcon, "PNG", marginX + 220, fY + 20, 14, 14);
-    doc.setTextColor(255, 255, 255);
-    doc.text("+91 9666984949", marginX + 240, fY + 26);
-    doc.text("+91 9505225222", marginX + 240, fY + 36);
-
-    // Column 3
-    doc.addImage(webIcon, "PNG", marginX + 370, fY + 20, 14, 14);
-    doc.setTextColor(255, 255, 255);
-    doc.text("rkrepairlabs.vercel.app", marginX + 390, fY + 26);
-    doc.setTextColor(150, 150, 150);
-    doc.text("Facebook | Instagram | YouTube", marginX + 390, fY + 36);
-  };
-
   let currentY = 175;
-  drawHeader(doc);
+  await drawPdfHeader(doc, "REPAIR INTAKE", ticket_no, "TICKET NO.");
 
   // Date and Time Row
   const dateW = (pw - marginX * 2 - 15) / 2;
   const timeX = marginX + dateW + 15;
 
-  doc.setDrawColor(teal[0], teal[1], teal[2]);
+  doc.setDrawColor(PDF_COLORS.teal[0], PDF_COLORS.teal[1], PDF_COLORS.teal[2]);
   doc.setLineWidth(0.5);
   doc.setFillColor(255, 255, 255);
   doc.rect(marginX, currentY, dateW, 36, "S");
   doc.rect(timeX, currentY, dateW, 36, "S");
 
-  doc.setFillColor(teal[0], teal[1], teal[2]);
+  doc.setFillColor(PDF_COLORS.teal[0], PDF_COLORS.teal[1], PDF_COLORS.teal[2]);
   doc.rect(marginX, currentY, 36, 36, "F");
   doc.rect(timeX, currentY, 36, 36, "F");
 
   doc.addImage(calendarIcon, "PNG", marginX + 10, currentY + 10, 16, 16);
   doc.addImage(clockIcon, "PNG", timeX + 10, currentY + 10, 16, 16);
 
-  doc.setTextColor(teal[0], teal[1], teal[2]);
+  doc.setTextColor(PDF_COLORS.teal[0], PDF_COLORS.teal[1], PDF_COLORS.teal[2]);
   doc.setFontSize(9);
   doc.setFont("helvetica", "bold");
   doc.text("DATE", marginX + 48, currentY + 16);
@@ -294,10 +177,10 @@ export async function buildIntakeReceiptPdf({
   // ==== LEFT COLUMN ====
 
   // CUSTOMER DETAILS
-  doc.setDrawColor(teal[0], teal[1], teal[2]);
+  doc.setDrawColor(PDF_COLORS.teal[0], PDF_COLORS.teal[1], PDF_COLORS.teal[2]);
   doc.setLineWidth(0.5);
   doc.rect(marginX, currentY + 7, leftColW, 75, "S");
-  drawRibbon(doc, "CUSTOMER DETAILS", marginX - 5, currentY, 140, 14, teal, userWhite);
+  drawRibbon(doc, "CUSTOMER DETAILS", marginX - 5, currentY, 140, 14, PDF_COLORS.teal, userWhite);
 
   doc.setTextColor(100, 100, 100);
   doc.setFontSize(8);
@@ -320,9 +203,9 @@ export async function buildIntakeReceiptPdf({
   currentY += 100;
 
   // DEVICE DETAILS
-  doc.setDrawColor(teal[0], teal[1], teal[2]);
+  doc.setDrawColor(PDF_COLORS.teal[0], PDF_COLORS.teal[1], PDF_COLORS.teal[2]);
   doc.rect(marginX, currentY + 7, leftColW, 105, "S");
-  drawRibbon(doc, "DEVICE DETAILS", marginX - 5, currentY, 130, 14, teal, laptopWhite);
+  drawRibbon(doc, "DEVICE DETAILS", marginX - 5, currentY, 130, 14, PDF_COLORS.teal, laptopWhite);
 
   doc.setTextColor(100, 100, 100);
   doc.setFontSize(8);
@@ -352,9 +235,9 @@ export async function buildIntakeReceiptPdf({
   currentY += 130;
 
   // REPORTED PROBLEM
-  doc.setDrawColor(teal[0], teal[1], teal[2]);
+  doc.setDrawColor(PDF_COLORS.teal[0], PDF_COLORS.teal[1], PDF_COLORS.teal[2]);
   doc.rect(marginX, currentY + 7, leftColW, 75, "S");
-  drawRibbon(doc, "REPORTED PROBLEM", marginX - 5, currentY, 140, 14, teal, wrenchWhite);
+  drawRibbon(doc, "REPORTED PROBLEM", marginX - 5, currentY, 140, 14, PDF_COLORS.teal, wrenchWhite);
 
   doc.setTextColor(100, 100, 100);
   doc.setFontSize(8);
@@ -370,9 +253,9 @@ export async function buildIntakeReceiptPdf({
   currentY += 100;
 
   // ACCESSORIES RECEIVED
-  doc.setDrawColor(teal[0], teal[1], teal[2]);
+  doc.setDrawColor(PDF_COLORS.teal[0], PDF_COLORS.teal[1], PDF_COLORS.teal[2]);
   doc.rect(marginX, currentY + 7, leftColW, 70, "S");
-  drawRibbon(doc, "ACCESSORIES RECEIVED", marginX - 5, currentY, 160, 14, teal, packageWhite);
+  drawRibbon(doc, "ACCESSORIES RECEIVED", marginX - 5, currentY, 160, 14, PDF_COLORS.teal, packageWhite);
 
   doc.setTextColor(100, 100, 100);
   doc.setFontSize(8);
@@ -389,9 +272,9 @@ export async function buildIntakeReceiptPdf({
   let rightY = 175;
 
   // TRACK REPAIR STATUS (QR)
-  doc.setDrawColor(teal[0], teal[1], teal[2]);
+  doc.setDrawColor(PDF_COLORS.teal[0], PDF_COLORS.teal[1], PDF_COLORS.teal[2]);
   doc.rect(rightX, rightY + 7, rightColW, 80, "S");
-  drawRibbon(doc, "SCAN TO TRACK REPAIR STATUS", rightX - 5, rightY, 180, 14, teal);
+  drawRibbon(doc, "SCAN TO TRACK REPAIR STATUS", rightX - 5, rightY, 180, 14, PDF_COLORS.teal);
 
   doc.addImage(qrDataUrl, "PNG", rightX + 15, rightY + 22, 55, 55);
   doc.setTextColor(50, 50, 50);
@@ -401,8 +284,8 @@ export async function buildIntakeReceiptPdf({
   doc.text("repair status", rightX + 80, rightY + 58);
   doc.text("of your device.", rightX + 80, rightY + 68);
 
-  // Simulated curved orange arrow
-  doc.setDrawColor(orange[0], orange[1], orange[2]);
+  // Simulated curved PDF_COLORS.orange arrow
+  doc.setDrawColor(PDF_COLORS.orange[0], PDF_COLORS.orange[1], PDF_COLORS.orange[2]);
   doc.setLineWidth(1);
   doc.line(rightX + 130, rightY + 73, rightX + 120, rightY + 73);
   doc.line(rightX + 120, rightY + 73, rightX + 123, rightY + 70);
@@ -410,9 +293,9 @@ export async function buildIntakeReceiptPdf({
   rightY += 105;
 
   // DEVICE CONDITION AT INTAKE
-  doc.setDrawColor(teal[0], teal[1], teal[2]);
+  doc.setDrawColor(PDF_COLORS.teal[0], PDF_COLORS.teal[1], PDF_COLORS.teal[2]);
   doc.rect(rightX, rightY + 7, rightColW, 125, "S");
-  drawRibbon(doc, "DEVICE CONDITION AT INTAKE", rightX - 5, rightY, 170, 14, teal, fileTextWhite);
+  drawRibbon(doc, "DEVICE CONDITION AT INTAKE", rightX - 5, rightY, 170, 14, PDF_COLORS.teal, fileTextWhite);
 
   doc.setTextColor(100, 100, 100);
   doc.setFontSize(8);
@@ -436,9 +319,9 @@ export async function buildIntakeReceiptPdf({
   rightY += 150;
 
   // ESTIMATED & PAYMENT DETAILS
-  doc.setDrawColor(teal[0], teal[1], teal[2]);
+  doc.setDrawColor(PDF_COLORS.teal[0], PDF_COLORS.teal[1], PDF_COLORS.teal[2]);
   doc.rect(rightX, rightY + 7, rightColW, 85, "S");
-  drawRibbon(doc, "ESTIMATED & PAYMENT DETAILS", rightX - 5, rightY, 175, 14, teal, rupeeWhite);
+  drawRibbon(doc, "ESTIMATED & PAYMENT DETAILS", rightX - 5, rightY, 175, 14, PDF_COLORS.teal, rupeeWhite);
 
   doc.setTextColor(100, 100, 100);
   doc.setFontSize(8);
@@ -469,7 +352,7 @@ export async function buildIntakeReceiptPdf({
   if (remaining < 30) {
     doc.addPage();
     drawHeader(doc);
-    drawFooter(doc);
+    await drawPdfFooter(doc, 750);
     currentY = 140;
     remaining = footerY - currentY - 130;
   }
@@ -486,7 +369,7 @@ export async function buildIntakeReceiptPdf({
   doc.setFillColor(253, 242, 233);
   doc.rect(marginX, currentY + 5, sumW, 130, "F");
 
-  drawRibbon(doc, "TERMS & CONDITIONS", marginX - 5, currentY, 130, 14, orange);
+  drawRibbon(doc, "TERMS & CONDITIONS", marginX - 5, currentY, 130, 14, PDF_COLORS.orange);
 
   doc.setTextColor(80, 80, 80);
   doc.setFontSize(8);
@@ -519,9 +402,9 @@ export async function buildIntakeReceiptPdf({
   doc.text("Thank you for trusting", totX + 15, currentY + 25);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(16);
-  doc.setTextColor(teal[0], teal[1], teal[2]);
+  doc.setTextColor(PDF_COLORS.teal[0], PDF_COLORS.teal[1], PDF_COLORS.teal[2]);
   doc.text("RK", totX + 15, currentY + 45);
-  doc.setTextColor(orange[0], orange[1], orange[2]);
+  doc.setTextColor(PDF_COLORS.orange[0], PDF_COLORS.orange[1], PDF_COLORS.orange[2]);
   doc.text("REPAIR LABS", totX + 43, currentY + 45);
 
   doc.setFontSize(8);
@@ -530,7 +413,7 @@ export async function buildIntakeReceiptPdf({
   doc.text("We'll get your device back in perfect shape!", totX + 15, currentY + 62);
 
   // Quality Badge simulate (Top Right)
-  doc.setFillColor(teal[0], teal[1], teal[2]);
+  doc.setFillColor(PDF_COLORS.teal[0], PDF_COLORS.teal[1], PDF_COLORS.teal[2]);
   doc.rect(totX + sumW - 55, currentY + 12, 45, 45, "F");
   doc.triangle(
     totX + sumW - 55,
@@ -554,7 +437,7 @@ export async function buildIntakeReceiptPdf({
   doc.setLineWidth(0.5);
   doc.line(totX + 50, currentY + 115, totX + sumW - 15, currentY + 115);
   doc.setFontSize(8);
-  doc.setTextColor(teal[0], teal[1], teal[2]);
+  doc.setTextColor(PDF_COLORS.teal[0], PDF_COLORS.teal[1], PDF_COLORS.teal[2]);
   doc.setFont("helvetica", "bold");
   doc.text("TECHNICIAN SIGNATURE", totX + 50 + (sumW - 65) / 2, currentY + 125, {
     align: "center",
@@ -562,7 +445,7 @@ export async function buildIntakeReceiptPdf({
 
   const pageCount = (doc as any).internal.getNumberOfPages();
   if (pageCount === 1) {
-    drawFooter(doc);
+    await drawPdfFooter(doc, 750);
   }
 
   return doc;

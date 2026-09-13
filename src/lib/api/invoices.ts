@@ -29,7 +29,7 @@ export const createInvoiceFn = createServerFn({ method: "POST" })
     const { session } = await requireAuth();
     const invoice = await invoiceService.createInvoice({
       ...data,
-      owner_id: session.userId,
+      owner_id: session.user.id,
     });
     return { id: invoice.id, invoice_no: data.invoice_no, created_at: invoice.created_at };
   });

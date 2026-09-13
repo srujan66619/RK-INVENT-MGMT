@@ -29,7 +29,7 @@ export const createInventoryItemFn = createServerFn({ method: "POST" })
     const item = await inventoryService.createInventoryItem({
       ...data,
       quantity: data.stock_level,
-      owner_id: session.userId,
+      owner_id: session.user.id,
     });
     return { id: item.id };
   });
@@ -84,7 +84,7 @@ export const createStockMovementFn = createServerFn({ method: "POST" })
     const { session } = await requireAuth();
     await inventoryService.createStockMovement({
       ...data,
-      owner_id: session.userId,
+      owner_id: session.user.id,
     });
     
     // Update inventory quantity
@@ -123,7 +123,7 @@ export const createSupplierFn = createServerFn({ method: "POST" })
     const { session } = await requireAuth();
     const supplier = await supplierService.createSupplier({
       ...data,
-      owner_id: session.userId,
+      owner_id: session.user.id,
     });
     return { id: supplier.id };
   });
@@ -178,7 +178,7 @@ export const createPurchaseOrderFn = createServerFn({ method: "POST" })
       total_amount: data.total,
       notes: data.notes,
       status: "pending",
-      owner_id: session.userId,
+      owner_id: session.user.id,
     });
 
     if (data.lines && data.lines.length > 0) {

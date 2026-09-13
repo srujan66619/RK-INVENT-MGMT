@@ -43,7 +43,7 @@ export const decideApprovalFn = createServerFn({ method: "POST" })
 
     const updateData: Record<string, unknown> = {
       approval_status: data.decision,
-      approved_by: session.userId,
+      approved_by: session.user.id,
     };
 
     if (data.decision === "approved") {
@@ -72,7 +72,7 @@ export const decideApprovalFn = createServerFn({ method: "POST" })
     });
 
     await userService.createNotification({
-      user_id: session.userId,
+      user_id: session.user.id,
       kind: data.decision === "approved" ? "approval_approved_admin" : "approval_rejected_admin",
       title: data.decision === "approved" ? `User approved as ${data.role}` : `User was rejected`,
       body: data.decision === "rejected" && data.reason ? data.reason : null,
