@@ -146,28 +146,28 @@ function ReportsPage() {
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
-      <header className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-6">
+      <header className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-6">
         <div className="space-y-1.5">
           <h1 className="text-3xl font-bold tracking-tight">Reports & Analytics</h1>
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-muted-foreground">
             Export daily, weekly, monthly summaries with per-technician and per-customer breakdowns.
           </p>
         </div>
         <Select value={range} onValueChange={(v) => setRange(v as Range)}>
-          <SelectTrigger className="w-44 h-10 bg-black/20 border-white/10 focus:ring-cyan-500/50">
+          <SelectTrigger className="w-44 h-10 bg-muted border-border focus:ring-primary/50">
             <SelectValue />
           </SelectTrigger>
-          <SelectContent className="bg-slate-900 border-white/10 text-slate-200">
-            <SelectItem value="day" className="focus:bg-cyan-500/20 focus:text-cyan-400">
+          <SelectContent className="bg-card border-border text-foreground">
+            <SelectItem value="day" className="focus:bg-primary/20 focus:text-primary">
               Today
             </SelectItem>
-            <SelectItem value="week" className="focus:bg-cyan-500/20 focus:text-cyan-400">
+            <SelectItem value="week" className="focus:bg-primary/20 focus:text-primary">
               Last 7 days
             </SelectItem>
-            <SelectItem value="month" className="focus:bg-cyan-500/20 focus:text-cyan-400">
+            <SelectItem value="month" className="focus:bg-primary/20 focus:text-primary">
               This month
             </SelectItem>
-            <SelectItem value="year" className="focus:bg-cyan-500/20 focus:text-cyan-400">
+            <SelectItem value="year" className="focus:bg-primary/20 focus:text-primary">
               This year
             </SelectItem>
           </SelectContent>
@@ -182,23 +182,23 @@ function ReportsPage() {
       </div>
 
       <Tabs defaultValue="sales">
-        <TabsList className="bg-[#0f172a]/80 backdrop-blur-xl border border-white/10 p-1 h-auto rounded-lg">
+        <TabsList className="bg-card/80 backdrop-blur-xl border border-border p-1 h-auto rounded-lg">
           <TabsTrigger
             value="sales"
-            className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400"
+            className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
           >
             <BarChart3 className="mr-2 h-4 w-4" />
             Sales
           </TabsTrigger>
           <TabsTrigger
             value="tech"
-            className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400"
+            className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
           >
             Technicians
           </TabsTrigger>
           <TabsTrigger
             value="cust"
-            className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400"
+            className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
           >
             Customers
           </TabsTrigger>
@@ -305,7 +305,7 @@ function Toolbar({ onXlsx, onPdf }: { onXlsx: () => void; onPdf: () => void }) {
       <Button
         variant="outline"
         size="sm"
-        className="border-white/10 bg-white/5 hover:bg-white/10 text-slate-300"
+        className="border-border bg-secondary hover:bg-cardccent text-muted-foreground"
         onClick={onXlsx}
       >
         <FileSpreadsheet className="mr-2 h-4 w-4 text-emerald-400" />
@@ -314,7 +314,7 @@ function Toolbar({ onXlsx, onPdf }: { onXlsx: () => void; onPdf: () => void }) {
       <Button
         variant="outline"
         size="sm"
-        className="border-white/10 bg-white/5 hover:bg-white/10 text-slate-300"
+        className="border-border bg-secondary hover:bg-cardccent text-muted-foreground"
         onClick={onPdf}
       >
         <FileDown className="mr-2 h-4 w-4 text-red-400" />
@@ -326,10 +326,10 @@ function Toolbar({ onXlsx, onPdf }: { onXlsx: () => void; onPdf: () => void }) {
 
 function DataTable({ head, rows }: { head: string[]; rows: (string | number)[][] }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-[#0f172a]/80 backdrop-blur-xl p-4 shadow-lg">
+    <div className="rounded-2xl border border-border bg-card/80 backdrop-blur-xl p-4 shadow-lg">
       <div className="overflow-x-auto custom-scrollbar">
         <table className="w-full text-sm whitespace-nowrap">
-          <thead className="bg-slate-900/50 text-xs uppercase tracking-wider text-slate-400">
+          <thead className="bg-card/50 text-xs uppercase tracking-wider text-muted-foreground">
             <tr>
               {head.map((h, idx) => (
                 <th
@@ -344,7 +344,7 @@ function DataTable({ head, rows }: { head: string[]; rows: (string | number)[][]
           <tbody>
             {rows.length === 0 && (
               <tr>
-                <td colSpan={head.length} className="px-4 py-12 text-center text-slate-500">
+                <td colSpan={head.length} className="px-4 py-12 text-center text-muted-foreground">
                   No data in selected range.
                 </td>
               </tr>
@@ -352,12 +352,12 @@ function DataTable({ head, rows }: { head: string[]; rows: (string | number)[][]
             {rows.map((r, i) => (
               <tr
                 key={i}
-                className="border-b border-white/5 hover:bg-white/[0.02] transition-colors"
+                className="border-b border-border/50 hover:bg-white/[0.02] transition-colors"
               >
                 {r.map((c, j) => (
                   <td
                     key={j}
-                    className={`px-4 py-3 ${j === 0 ? "font-medium text-slate-200" : "text-slate-400"}`}
+                    className={`px-4 py-3 ${j === 0 ? "font-medium text-foreground" : "text-muted-foreground"}`}
                   >
                     {c}
                   </td>
@@ -383,16 +383,16 @@ function Stat({
   color?: string;
 }) {
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-white/10 bg-[#0f172a]/80 backdrop-blur-xl p-5 shadow-lg transition-all hover:bg-white/5 hover:border-white/20 hover:-translate-y-0.5 hover:shadow-xl">
+    <div className="group relative overflow-hidden rounded-2xl border border-border bg-card/80 backdrop-blur-xl p-5 shadow-lg transition-all hover:bg-secondary hover:border-white/20 hover:-translate-y-0.5 hover:shadow-xl">
       <div
         className="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full opacity-10 blur-2xl transition-opacity group-hover:opacity-20"
         style={{ background: color }}
       />
-      <div className="text-[11px] font-bold uppercase tracking-widest text-slate-400">{label}</div>
+      <div className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">{label}</div>
       <div
         className={
           "mt-2 text-3xl font-bold tracking-tight " +
-          (tone === "warn" ? "text-red-400" : "text-slate-100")
+          (tone === "warn" ? "text-red-400" : "text-foreground")
         }
       >
         {value}

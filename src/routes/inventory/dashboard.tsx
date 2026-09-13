@@ -127,10 +127,10 @@ function InventoryPage() {
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
-      <header className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-6">
+      <header className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-6">
         <div className="space-y-1.5">
           <h1 className="text-3xl font-bold tracking-tight">Inventory</h1>
-          <p className="text-sm text-slate-400">Spare parts, accessories and tools</p>
+          <p className="text-sm text-muted-foreground">Spare parts, accessories and tools</p>
         </div>
         <Dialog
           open={open}
@@ -147,13 +147,13 @@ function InventoryPage() {
               <Plus className="mr-2 h-4 w-4" /> Add custom item
             </Button>
           </DialogTrigger>
-          <DialogContent className="glass-strong max-h-[90vh] overflow-y-auto custom-scrollbar border-white/10 shadow-2xl">
-            <DialogHeader className="border-b border-white/10 pb-4 mb-4">
+          <DialogContent className="glass-strong max-h-[90vh] overflow-y-auto custom-scrollbar border-border shadow-2xl">
+            <DialogHeader className="border-b border-border pb-4 mb-4">
               <DialogTitle className="text-xl tracking-tight">
                 {editing ? "Edit" : "Add new"} inventory item
               </DialogTitle>
             </DialogHeader>
-            <p className="text-sm text-slate-400 -mt-2 mb-4">
+            <p className="text-sm text-muted-foreground -mt-2 mb-4">
               Enter any product — spare part, accessory, new device or refurbished unit — with your
               own name, SKU, price and stock quantity.
             </p>
@@ -164,22 +164,22 @@ function InventoryPage() {
                   name="name"
                   defaultValue={editing?.name}
                   required
-                  className="bg-black/20 border-white/10 focus:border-cyan-500/50"
+                  className="bg-muted border-border focus:border-primary/50"
                 />
                 <F
                   label="SKU"
                   name="sku"
                   defaultValue={editing?.sku ?? ""}
-                  className="bg-black/20 border-white/10 focus:border-cyan-500/50"
+                  className="bg-muted border-border focus:border-primary/50"
                 />
                 <div className="space-y-1.5">
-                  <Label className="text-slate-300">Category</Label>
+                  <Label className="text-muted-foreground">Category</Label>
                   <Input
                     list="category-list"
                     name="category"
                     defaultValue={editing?.category ?? ""}
                     placeholder="Refurbished Laptop / New Mobile / Spare…"
-                    className="bg-black/20 border-white/10 focus:border-cyan-500/50"
+                    className="bg-muted border-border focus:border-primary/50"
                   />
                   <datalist id="category-list">
                     <option value="Spare Part" />
@@ -209,7 +209,7 @@ function InventoryPage() {
                   label="Supplier"
                   name="supplier"
                   defaultValue={editing?.supplier ?? ""}
-                  className="bg-black/20 border-white/10 focus:border-cyan-500/50"
+                  className="bg-muted border-border focus:border-primary/50"
                 />
                 <F
                   label="Quantity"
@@ -217,14 +217,14 @@ function InventoryPage() {
                   type="number"
                   defaultValue={editing?.quantity ?? 0}
                   required
-                  className="bg-black/20 border-white/10 focus:border-cyan-500/50"
+                  className="bg-muted border-border focus:border-primary/50"
                 />
                 <F
                   label="Low stock threshold"
                   name="low_stock_threshold"
                   type="number"
                   defaultValue={editing?.low_stock_threshold ?? 5}
-                  className="bg-black/20 border-white/10 focus:border-cyan-500/50"
+                  className="bg-muted border-border focus:border-primary/50"
                 />
                 <F
                   label="Cost price (₹)"
@@ -232,7 +232,7 @@ function InventoryPage() {
                   type="number"
                   step="0.01"
                   defaultValue={editing?.cost_price ?? 0}
-                  className="bg-black/20 border-white/10 focus:border-cyan-500/50"
+                  className="bg-muted border-border focus:border-primary/50"
                 />
                 <F
                   label="Selling price (₹)"
@@ -240,17 +240,17 @@ function InventoryPage() {
                   type="number"
                   step="0.01"
                   defaultValue={editing?.selling_price ?? 0}
-                  className="bg-black/20 border-white/10 focus:border-cyan-500/50"
+                  className="bg-muted border-border focus:border-primary/50"
                 />
                 <F
                   label="Warranty (months)"
                   name="warranty_months"
                   type="number"
                   defaultValue={editing?.warranty_months ?? 0}
-                  className="bg-black/20 border-white/10 focus:border-cyan-500/50"
+                  className="bg-muted border-border focus:border-primary/50"
                 />
               </div>
-              <DialogFooter className="pt-4 border-t border-white/10">
+              <DialogFooter className="pt-4 border-t border-border">
                 <Button
                   type="submit"
                   disabled={save.isPending}
@@ -277,19 +277,19 @@ function InventoryPage() {
         <Stat icon={Boxes} label="Inventory value" value={inr(totalValue)} color="#10b981" />
       </div>
 
-      <div className="rounded-2xl border border-white/10 bg-[#0f172a]/80 backdrop-blur-xl p-4 shadow-lg">
+      <div className="rounded-2xl border border-border bg-card/80 backdrop-blur-xl p-4 shadow-lg">
         <div className="relative mb-4">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Search by name or SKU…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-9 h-10 bg-black/20 border-white/10"
+            className="pl-9 h-10 bg-muted border-border"
           />
         </div>
         <div className="overflow-x-auto custom-scrollbar">
           <table className="w-full text-sm whitespace-nowrap">
-            <thead className="bg-slate-900/50 text-xs uppercase tracking-wider text-slate-400">
+            <thead className="bg-card/50 text-xs uppercase tracking-wider text-muted-foreground">
               <tr>
                 <th className="px-4 py-3 text-left rounded-tl-lg">Name</th>
                 <th className="px-4 py-3 text-left">SKU</th>
@@ -303,14 +303,14 @@ function InventoryPage() {
             <tbody>
               {isLoading && (
                 <tr>
-                  <td colSpan={7} className="px-4 py-12 text-center text-slate-500">
+                  <td colSpan={7} className="px-4 py-12 text-center text-muted-foreground">
                     Loading…
                   </td>
                 </tr>
               )}
               {!isLoading && filtered.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="px-4 py-12 text-center text-slate-500">
+                  <td colSpan={7} className="px-4 py-12 text-center text-muted-foreground">
                     No items yet.
                   </td>
                 </tr>
@@ -318,17 +318,17 @@ function InventoryPage() {
               {filtered.map((i) => (
                 <tr
                   key={i.id}
-                  className="group border-b border-white/5 hover:bg-white/[0.02] transition-colors"
+                  className="group border-b border-border/50 hover:bg-white/[0.02] transition-colors"
                 >
-                  <td className="px-4 py-3 font-medium text-slate-200">{i.name}</td>
-                  <td className="px-4 py-3 text-slate-400">{i.sku ?? "—"}</td>
-                  <td className="px-4 py-3 text-slate-400">{i.category ?? "—"}</td>
+                  <td className="px-4 py-3 font-medium text-foreground">{i.name}</td>
+                  <td className="px-4 py-3 text-muted-foreground">{i.sku ?? "—"}</td>
+                  <td className="px-4 py-3 text-muted-foreground">{i.category ?? "—"}</td>
                   <td className="px-4 py-3 text-right">
                     <span
                       className={
                         i.quantity <= i.low_stock_threshold
                           ? "text-red-400 font-bold"
-                          : "text-slate-200"
+                          : "text-foreground"
                       }
                     >
                       {i.quantity}
@@ -342,8 +342,8 @@ function InventoryPage() {
                       </Badge>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-right text-slate-400">{inr(i.cost_price)}</td>
-                  <td className="px-4 py-3 text-right font-medium text-slate-200">
+                  <td className="px-4 py-3 text-right text-muted-foreground">{inr(i.cost_price)}</td>
+                  <td className="px-4 py-3 text-right font-medium text-foreground">
                     {inr(i.selling_price)}
                   </td>
                   <td className="px-4 py-3 text-right">
@@ -351,7 +351,7 @@ function InventoryPage() {
                       <Button
                         size="icon"
                         variant="ghost"
-                        className="h-8 w-8 text-slate-400 hover:text-cyan-400 hover:bg-cyan-400/10"
+                        className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10"
                         aria-label={`Edit ${i.name}`}
                         onClick={() => {
                           setEditing(i);
@@ -363,7 +363,7 @@ function InventoryPage() {
                       <Button
                         size="icon"
                         variant="ghost"
-                        className="h-8 w-8 text-slate-400 hover:text-red-400 hover:bg-red-400/10"
+                        className="h-8 w-8 text-muted-foreground hover:text-red-400 hover:bg-red-400/10"
                         aria-label={`Delete ${i.name}`}
                         onClick={() => {
                           if (confirm("Delete?")) del.mutate(i.id);
@@ -390,7 +390,7 @@ function F({
 }: { label: string; className?: string } & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <div className="space-y-1.5">
-      <Label className="text-slate-300">{label}</Label>
+      <Label className="text-muted-foreground">{label}</Label>
       <Input className={className} {...props} />
     </div>
   );
@@ -410,27 +410,27 @@ function Stat({
   color?: string;
 }) {
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-white/10 bg-[#0f172a]/80 backdrop-blur-xl p-5 shadow-lg transition-all hover:bg-white/5 hover:border-white/20 hover:-translate-y-0.5 hover:shadow-xl">
+    <div className="group relative overflow-hidden rounded-2xl border border-border bg-card/80 backdrop-blur-xl p-5 shadow-lg transition-all hover:bg-secondary hover:border-white/20 hover:-translate-y-0.5 hover:shadow-xl">
       <div
         className="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full opacity-10 blur-2xl transition-opacity group-hover:opacity-20"
         style={{ background: color }}
       />
       <div className="flex items-start justify-between">
         <div>
-          <div className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
+          <div className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
             {label}
           </div>
           <div
             className={
               "mt-2 text-2xl font-bold tracking-tight " +
-              (tone === "warn" ? "text-red-400" : "text-slate-100")
+              (tone === "warn" ? "text-red-400" : "text-foreground")
             }
           >
             {value}
           </div>
         </div>
         <div
-          className="grid h-9 w-9 place-items-center rounded-xl border border-white/5 bg-white/[0.02]"
+          className="grid h-9 w-9 place-items-center rounded-xl border border-border/50 bg-white/[0.02]"
           style={{ color }}
         >
           <Icon className="h-4 w-4" />

@@ -71,7 +71,7 @@ export function FileUpload({
           variant="outline"
           onClick={() => fileInputRef.current?.click()}
           disabled={isUploading}
-          className="w-full flex gap-2 items-center justify-center py-6 border-dashed border-white/20 bg-black/20 hover:bg-white/5 text-slate-300"
+          className="w-full flex gap-2 items-center justify-center py-6 border-dashed border-white/20 bg-muted hover:bg-secondary text-muted-foreground"
         >
           {isUploading ? (
             <Loader2 className="h-5 w-5 animate-spin text-[var(--neon)]" />
@@ -83,7 +83,7 @@ export function FileUpload({
       </div>
 
       {isUploading && (
-        <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+        <div className="w-full bg-secondary rounded-full h-1.5 overflow-hidden">
           <div
             className="bg-[var(--neon)] h-1.5 transition-all duration-300 ease-out"
             style={{ width: `${progress}%` }}

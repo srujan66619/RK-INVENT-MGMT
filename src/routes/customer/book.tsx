@@ -48,15 +48,15 @@ function BookRepair() {
 
   if (success) {
     return (
-      <div className="mx-auto max-w-lg rounded-xl border border-white/10 bg-[#0f172a]/50 p-8 text-center mt-12">
+      <div className="mx-auto max-w-lg rounded-xl border border-border bg-card/50 p-8 text-center mt-12">
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400 mb-4">
           <CheckCircle2 className="h-8 w-8" />
         </div>
         <h2 className="text-2xl font-bold text-white mb-2">Repair Requested!</h2>
-        <p className="text-slate-400 mb-6">
+        <p className="text-muted-foreground mb-6">
           Your repair request has been submitted successfully. Your ticket number is:
         </p>
-        <div className="text-3xl font-mono font-bold text-cyan-400 mb-8 bg-black/30 py-3 rounded-lg border border-white/5">
+        <div className="text-3xl font-mono font-bold text-primary mb-8 bg-muted py-3 rounded-lg border border-border/50">
           {ticketNo}
         </div>
         <div className="flex justify-center gap-4">
@@ -75,15 +75,15 @@ function BookRepair() {
     <div className="mx-auto max-w-2xl">
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight text-white flex items-center gap-3">
-          <Wrench className="h-8 w-8 text-cyan-500" />
+          <Wrench className="h-8 w-8 text-primary" />
           Book a Repair
         </h1>
-        <p className="mt-2 text-slate-400">
+        <p className="mt-2 text-muted-foreground">
           Tell us about your device issue and we'll get it fixed as soon as possible.
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="rounded-xl border border-white/10 bg-[#0f172a]/50 p-6 space-y-6">
+      <form onSubmit={handleSubmit} className="rounded-xl border border-border bg-card/50 p-6 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
             <Label htmlFor="device_type">Device Type *</Label>
@@ -129,7 +129,7 @@ function BookRepair() {
           />
         </div>
 
-        <div className="pt-4 flex justify-end gap-3 border-t border-white/10">
+        <div className="pt-4 flex justify-end gap-3 border-t border-border">
           <Button
             type="button"
             variant="ghost"

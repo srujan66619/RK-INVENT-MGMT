@@ -96,22 +96,22 @@ function SettingsPage() {
     });
   }
 
-  if (isLoading) return <div className="text-slate-500">Loading…</div>;
+  if (isLoading) return <div className="text-muted-foreground">Loading…</div>;
 
   return (
     <div className="mx-auto max-w-4xl space-y-6">
-      <header className="border-b border-white/10 pb-6">
+      <header className="border-b border-border pb-6">
         <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
-        <p className="mt-1.5 text-sm text-slate-400">
+        <p className="mt-1.5 text-sm text-muted-foreground">
           Shop details, WhatsApp templates, and reminder automation.
         </p>
       </header>
 
       <form
         onSubmit={onShopSubmit}
-        className="rounded-2xl border border-white/10 bg-[#0f172a]/80 backdrop-blur-xl p-6 shadow-lg space-y-6"
+        className="rounded-2xl border border-border bg-card/80 backdrop-blur-xl p-6 shadow-lg space-y-6"
       >
-        <h2 className="text-lg font-bold tracking-tight text-slate-200">Shop details</h2>
+        <h2 className="text-lg font-bold tracking-tight text-foreground">Shop details</h2>
         <div className="grid grid-cols-2 gap-5">
           <F label="Your name" name="full_name" defaultValue={profile?.full_name ?? ""} />
           <F label="Shop name" name="shop_name" defaultValue={profile?.shop_name ?? "RK Labs"} />
@@ -128,9 +128,9 @@ function SettingsPage() {
         <F label="Shop address" name="shop_address" defaultValue={profile?.shop_address ?? ""} />
 
         <div className="space-y-2">
-          <Label className="text-sm font-medium text-slate-300">Shop Logo</Label>
+          <Label className="text-sm font-medium text-muted-foreground">Shop Logo</Label>
           {profile?.shop_logo && (
-            <div className="mb-4 relative w-32 h-32 rounded-lg border border-white/10 overflow-hidden bg-white/5">
+            <div className="mb-4 relative w-32 h-32 rounded-lg border border-border overflow-hidden bg-secondary">
               <img
                 src={profile.shop_logo}
                 alt="Shop Logo"
@@ -152,7 +152,7 @@ function SettingsPage() {
               saveShop.mutate({ shop_logo: url });
             }}
           />
-          <p className="text-xs text-slate-400">Used on invoice PDFs.</p>
+          <p className="text-xs text-muted-foreground">Used on invoice PDFs.</p>
         </div>
 
         <div className="flex justify-end pt-2">
@@ -167,49 +167,49 @@ function SettingsPage() {
         </div>
       </form>
 
-      <div className="rounded-2xl border border-white/10 bg-[#0f172a]/80 backdrop-blur-xl p-6 shadow-lg space-y-6">
-        <div className="flex items-start justify-between gap-4 border-b border-white/10 pb-5">
+      <div className="rounded-2xl border border-border bg-card/80 backdrop-blur-xl p-6 shadow-lg space-y-6">
+        <div className="flex items-start justify-between gap-4 border-b border-border pb-5">
           <div>
-            <h2 className="text-lg font-bold tracking-tight text-slate-200">WhatsApp templates</h2>
-            <p className="mt-1 text-sm text-slate-400">
+            <h2 className="text-lg font-bold tracking-tight text-foreground">WhatsApp templates</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
               Use placeholders:{" "}
-              <code className="rounded bg-black/30 px-1.5 py-0.5 font-mono text-cyan-400">
+              <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-primary">
                 {"{name} {device} {ticket} {shop} {invoice_no} {amount} {link}"}
               </code>
             </p>
           </div>
-          <div className="flex items-center gap-3 bg-white/5 rounded-lg px-4 py-2 border border-white/5">
-            <Label htmlFor="auto" className="text-sm font-semibold text-slate-300">
+          <div className="flex items-center gap-3 bg-secondary rounded-lg px-4 py-2 border border-border/50">
+            <Label htmlFor="auto" className="text-sm font-semibold text-muted-foreground">
               Auto status reminders
             </Label>
             <Switch
               id="auto"
               checked={autoReminders}
               onCheckedChange={setAutoReminders}
-              className="data-[state=checked]:bg-cyan-500"
+              className="data-[state=checked]:bg-primary"
             />
           </div>
         </div>
         <div className="grid gap-5">
           {Object.keys(DEFAULT_TEMPLATES).map((key) => (
             <div key={key} className="space-y-2">
-              <Label className="text-sm font-semibold uppercase tracking-widest text-slate-400">
+              <Label className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
                 {TEMPLATE_LABELS[key]}
               </Label>
               <Textarea
                 rows={2}
                 value={templates[key] ?? ""}
                 onChange={(e) => setTemplates({ ...templates, [key]: e.target.value })}
-                className="resize-none bg-black/20 border-white/10 focus:border-cyan-500/50 text-slate-200 placeholder:text-slate-600"
+                className="resize-none bg-muted border-border focus:border-primary/50 text-foreground placeholder:text-slate-600"
               />
             </div>
           ))}
         </div>
-        <div className="flex justify-between pt-4 border-t border-white/10">
+        <div className="flex justify-between pt-4 border-t border-border">
           <Button
             type="button"
             variant="outline"
-            className="border-white/10 bg-white/5 hover:bg-white/10 text-slate-300"
+            className="border-border bg-secondary hover:bg-cardccent text-muted-foreground"
             onClick={() => setTemplates(DEFAULT_TEMPLATES)}
           >
             Reset defaults
@@ -231,10 +231,10 @@ function SettingsPage() {
 function F({ label, ...props }: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <div className="space-y-2">
-      <Label className="text-sm font-medium text-slate-300">{label}</Label>
+      <Label className="text-sm font-medium text-muted-foreground">{label}</Label>
       <Input
         {...props}
-        className="bg-black/20 border-white/10 focus:border-cyan-500/50 text-slate-200"
+        className="bg-muted border-border focus:border-primary/50 text-foreground"
       />
     </div>
   );

@@ -73,7 +73,7 @@ function StatCard({
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay }}
-      className="group relative overflow-hidden rounded-2xl border border-white/10 bg-[#0f172a]/80 backdrop-blur-xl p-5 shadow-lg transition-all hover:bg-white/5 hover:border-white/20 hover:-translate-y-0.5 hover:shadow-xl"
+      className="group relative overflow-hidden rounded-2xl border border-border bg-card/80 backdrop-blur-xl p-5 shadow-lg transition-all hover:bg-secondary hover:border-white/20 hover:-translate-y-0.5 hover:shadow-xl"
     >
       <div
         className="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full opacity-10 blur-2xl transition-opacity group-hover:opacity-20"
@@ -81,14 +81,14 @@ function StatCard({
       />
       <div className="flex items-start justify-between">
         <div>
-          <div className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
+          <div className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
             {label}
           </div>
-          <div className="mt-2 text-2xl font-bold tracking-tight text-slate-100">{value}</div>
-          {sub && <div className="mt-1 text-xs font-medium text-slate-500">{sub}</div>}
+          <div className="mt-2 text-2xl font-bold tracking-tight text-foreground">{value}</div>
+          {sub && <div className="mt-1 text-xs font-medium text-muted-foreground">{sub}</div>}
         </div>
         <div
-          className="grid h-9 w-9 place-items-center rounded-xl border border-white/5 bg-white/[0.02]"
+          className="grid h-9 w-9 place-items-center rounded-xl border border-border/50 bg-white/[0.02]"
           style={{ color: color }}
         >
           <Icon className="h-4 w-4" />
@@ -116,13 +116,13 @@ function Dashboard() {
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
-      <header className="flex flex-col gap-1.5 border-b border-white/10 pb-6">
+      <header className="flex flex-col gap-1.5 border-b border-border pb-6">
         <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-        <p className="text-sm text-slate-400">Real-time view of your repair operations.</p>
+        <p className="text-sm text-muted-foreground">Real-time view of your repair operations.</p>
       </header>
 
       {me && me.approval_status !== "approved" && (
-        <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-200 shadow-lg">
+        <div className="rounded-2xl border border-amber-500/30 bg-cardmber-500/10 p-4 text-sm text-amber-200 shadow-lg">
           <div className="font-semibold">
             {me.approval_status === "pending" ? "Pending admin approval" : "Signup not approved"}
           </div>
@@ -211,9 +211,9 @@ function Dashboard() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className="rounded-2xl border border-white/10 bg-[#0f172a]/80 backdrop-blur-xl p-6 shadow-lg"
+          className="rounded-2xl border border-border bg-card/80 backdrop-blur-xl p-6 shadow-lg"
         >
-          <h3 className="mb-6 text-sm font-semibold tracking-tight text-slate-200">
+          <h3 className="mb-6 text-sm font-semibold tracking-tight text-foreground">
             Repairs · Last 7 days
           </h3>
           <div className="h-[280px]">
@@ -266,9 +266,9 @@ function Dashboard() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="rounded-2xl border border-white/10 bg-[#0f172a]/80 backdrop-blur-xl p-6 shadow-lg"
+          className="rounded-2xl border border-border bg-card/80 backdrop-blur-xl p-6 shadow-lg"
         >
-          <h3 className="mb-6 text-sm font-semibold tracking-tight text-slate-200">
+          <h3 className="mb-6 text-sm font-semibold tracking-tight text-foreground">
             Monthly Sales · Last 6 months
           </h3>
           <div className="h-[280px]">

@@ -329,10 +329,10 @@ function BillingPage() {
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
-      <header className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-6">
+      <header className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-6">
         <div className="space-y-1.5">
           <h1 className="text-3xl font-bold tracking-tight">Billing & GST Invoices</h1>
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-muted-foreground">
             Manage invoices, payments, GST and customer billing
           </p>
         </div>
@@ -466,7 +466,7 @@ function BillingPage() {
                         )
                       }
                     />
-                    <div className="grid h-9 place-items-center rounded-md border border-white/10 bg-white/5 text-sm">
+                    <div className="grid h-9 place-items-center rounded-md border border-border bg-secondary text-sm">
                       {inr(it.quantity * it.unit_price)}
                     </div>
                     <Button
@@ -543,7 +543,7 @@ function BillingPage() {
                 <Row label="TOTAL" value={inrPrecise(total)} bold />
               </div>
 
-              <label className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs">
+              <label className="flex items-center gap-2 rounded-lg border border-border bg-secondary px-3 py-2 text-xs">
                 <input
                   type="checkbox"
                   checked={sendWa}
@@ -575,7 +575,7 @@ function BillingPage() {
 
         <Dialog open={!!previewPdfUrl} onOpenChange={(o) => !o && setPreviewPdfUrl(null)}>
           <DialogContent className="glass-strong max-h-[95vh] w-[95vw] max-w-5xl overflow-hidden p-0 flex flex-col border-white/20">
-            <DialogHeader className="p-4 border-b border-white/10 shrink-0 bg-slate-900/50">
+            <DialogHeader className="p-4 border-b border-border shrink-0 bg-card/50">
               <DialogTitle className="text-lg font-semibold tracking-tight">
                 Invoice Preview
               </DialogTitle>
@@ -589,7 +589,7 @@ function BillingPage() {
                 />
               )}
             </div>
-            <DialogFooter className="p-4 border-t border-white/10 shrink-0 bg-slate-900/50">
+            <DialogFooter className="p-4 border-t border-border shrink-0 bg-card/50">
               <Button variant="outline" className="px-6" onClick={() => setPreviewPdfUrl(null)}>
                 Close
               </Button>
@@ -614,10 +614,10 @@ function BillingPage() {
         <Stat icon={IndianRupee} label="Pending Payment" value={inr(unpaid)} type="warning" />
       </div>
 
-      <div className="rounded-2xl border border-white/10 bg-[#0f172a]/95 backdrop-blur-md overflow-hidden shadow-xl">
+      <div className="rounded-2xl border border-border bg-card/95 backdrop-blur-md overflow-hidden shadow-xl">
         <div className="overflow-x-auto">
           <table className="w-full text-sm whitespace-nowrap">
-            <thead className="bg-slate-900/50 text-[11px] uppercase tracking-widest text-slate-400">
+            <thead className="bg-card/50 text-[11px] uppercase tracking-widest text-muted-foreground">
               <tr>
                 <th className="px-4 py-4 text-left font-semibold">Invoice</th>
                 <th className="px-4 py-4 text-left font-semibold">Customer</th>
@@ -647,19 +647,19 @@ function BillingPage() {
                 const c = customers.find((x) => x.id === inv.customer_id);
                 const statusColors = {
                   paid: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-                  partial: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+                  partial: "bg-cardmber-500/10 text-amber-400 border-amber-500/20",
                   unpaid: "bg-red-500/10 text-red-400 border-red-500/20",
                 };
                 return (
                   <tr key={inv.id} className="group transition-colors hover:bg-white/[0.02]">
-                    <td className="px-4 py-3.5 font-mono text-xs font-semibold text-slate-200">
+                    <td className="px-4 py-3.5 font-mono text-xs font-semibold text-foreground">
                       {inv.invoice_no}
                     </td>
-                    <td className="px-4 py-3.5 font-medium text-slate-300">
-                      {c?.name ?? <span className="text-slate-500">Walk-in</span>}
+                    <td className="px-4 py-3.5 font-medium text-muted-foreground">
+                      {c?.name ?? <span className="text-muted-foreground">Walk-in</span>}
                     </td>
-                    <td className="px-4 py-3.5 text-slate-400">{fmtDate(inv.created_at)}</td>
-                    <td className="px-4 py-3.5 text-right font-semibold text-slate-200">
+                    <td className="px-4 py-3.5 text-muted-foreground">{fmtDate(inv.created_at)}</td>
+                    <td className="px-4 py-3.5 text-right font-semibold text-foreground">
                       {inr(inv.total)}
                     </td>
                     <td className="px-4 py-3.5">
@@ -678,7 +678,7 @@ function BillingPage() {
                         <Button
                           size="icon"
                           variant="ghost"
-                          className="h-8 w-8 hover:bg-white/10 hover:text-white"
+                          className="h-8 w-8 hover:bg-cardccent hover:text-foreground"
                           title="Preview PDF"
                           onClick={() => previewPdf(inv)}
                         >
@@ -687,7 +687,7 @@ function BillingPage() {
                         <Button
                           size="icon"
                           variant="ghost"
-                          className="h-8 w-8 hover:bg-white/10 hover:text-white"
+                          className="h-8 w-8 hover:bg-cardccent hover:text-foreground"
                           title="Download PDF"
                           onClick={() => downloadPdf(inv)}
                         >
@@ -706,7 +706,7 @@ function BillingPage() {
                           <Button
                             size="icon"
                             variant="ghost"
-                            className="h-8 w-8 hover:bg-amber-500/20 hover:text-amber-400 text-amber-300"
+                            className="h-8 w-8 hover:bg-cardmber-500/20 hover:text-amber-400 text-amber-300"
                             title="Payment reminder"
                             onClick={() => paymentReminder(inv)}
                           >
@@ -758,22 +758,22 @@ function Stat({
   type: "primary" | "success" | "warning";
 }) {
   const colors = {
-    primary: "text-cyan-400 border-cyan-400/20 bg-cyan-400/10",
+    primary: "text-primary border-primary/20 bg-primary/10",
     success: "text-emerald-400 border-emerald-400/20 bg-emerald-400/10",
-    warning: "text-amber-400 border-amber-400/20 bg-amber-400/10",
+    warning: "text-amber-400 border-amber-400/20 bg-cardmber-400/10",
   };
 
   return (
-    <div className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-[#0f172a]/80 backdrop-blur-xl p-5 shadow-lg transition-all hover:bg-white/5 hover:border-white/20">
+    <div className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border bg-card/80 backdrop-blur-xl p-5 shadow-lg transition-all hover:bg-secondary hover:border-white/20">
       <div className="flex items-center justify-between">
-        <div className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
+        <div className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
           {label}
         </div>
         <div className={cn("grid h-9 w-9 place-items-center rounded-xl border", colors[type])}>
           <Icon className="h-4 w-4" />
         </div>
       </div>
-      <div className="mt-3 text-3xl font-bold tracking-tight text-slate-100">{value}</div>
+      <div className="mt-3 text-3xl font-bold tracking-tight text-foreground">{value}</div>
     </div>
   );
 }

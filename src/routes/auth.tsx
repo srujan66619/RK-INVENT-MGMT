@@ -125,7 +125,7 @@ function AuthPage() {
             <div
               className={`mt-4 flex items-start gap-3 rounded-xl border p-3 text-sm ${
                 stored.status === "pending"
-                  ? "border-amber-500/30 bg-amber-500/10 text-amber-200"
+                  ? "border-amber-500/30 bg-cardmber-500/10 text-amber-200"
                   : "border-red-500/30 bg-red-500/10 text-red-200"
               }`}
             >
@@ -242,7 +242,7 @@ function AuthPage() {
                         className={`rounded-lg border px-3 py-2 text-sm capitalize transition ${
                           requestedRole === r
                             ? "border-[var(--neon)]/60 bg-[var(--neon)]/10 text-[var(--neon)]"
-                            : "border-white/10 bg-white/[0.02] text-muted-foreground hover:text-foreground"
+                            : "border-border bg-white/[0.02] text-muted-foreground hover:text-foreground"
                         }`}
                       >
                         {r}

@@ -27,11 +27,11 @@ function NavLinks({ onClick }: { onClick?: () => void }) {
             className={cn(
               "flex items-center gap-3 rounded-lg py-2.5 px-3 text-sm transition-all",
               active
-                ? "bg-cyan-500/10 text-cyan-400 shadow-[inset_0_0_0_1px_rgba(34,211,238,0.2)]"
-                : "text-slate-400 hover:bg-white/5 hover:text-slate-100",
+                ? "bg-primary/10 text-primary shadow-[inset_0_0_0_1px_rgba(34,211,238,0.2)]"
+                : "text-muted-foreground hover:bg-secondary hover:text-foreground",
             )}
           >
-            <item.icon className={cn("shrink-0 h-4 w-4", active && "text-cyan-400")} />
+            <item.icon className={cn("shrink-0 h-4 w-4", active && "text-primary")} />
             <span>{item.label}</span>
           </Link>
         );
@@ -42,13 +42,13 @@ function NavLinks({ onClick }: { onClick?: () => void }) {
 
 function SidebarBrand() {
   return (
-    <div className="flex items-center border-b border-white/5 py-5 gap-3 px-5">
-      <img src="/logo.png" alt="RK Repair Labs" className="rounded-lg object-contain bg-white/5 p-0.5 shrink-0 h-10 w-10" />
+    <div className="flex items-center border-b border-border/50 py-5 gap-3 px-5">
+      <img src="/logo.png" alt="RK Repair Labs" className="rounded-lg object-contain bg-secondary p-0.5 shrink-0 h-10 w-10" />
       <div className="min-w-0">
-        <div className="text-sm font-bold tracking-tight text-slate-100 truncate">
+        <div className="text-sm font-bold tracking-tight text-foreground truncate">
           RK Repair Labs
         </div>
-        <div className="text-[10px] uppercase tracking-wider text-cyan-500 font-semibold">
+        <div className="text-[10px] uppercase tracking-wider text-primary font-semibold">
           Technician Portal
         </div>
       </div>
@@ -67,34 +67,34 @@ export function TechnicianLayout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#020617] text-slate-200 selection:bg-cyan-500/30">
-      <aside className="hidden shrink-0 flex-col border-r border-white/10 bg-[#0f172a]/95 backdrop-blur-md md:flex w-64">
+    <div className="flex h-screen overflow-hidden bg-background text-foreground selection:bg-primary/30">
+      <aside className="hidden shrink-0 flex-col border-r border-border/50 bg-card/95 backdrop-blur-md md:flex w-64">
         <SidebarBrand />
         <div className="flex-1 overflow-y-auto custom-scrollbar">
           <NavLinks />
         </div>
-        <div className="shrink-0 border-t border-white/10 p-3 flex flex-col gap-2 mt-auto">
-          <Button variant="ghost" className="w-full justify-start gap-2 text-slate-400 hover:text-slate-100" onClick={signOut}>
+        <div className="shrink-0 border-t border-border p-3 flex flex-col gap-2 mt-auto">
+          <Button variant="ghost" className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground" onClick={signOut}>
             <LogOut className="shrink-0 h-4 w-4" /> Sign out
           </Button>
         </div>
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col h-full overflow-hidden">
-        <header className="shrink-0 flex h-14 items-center gap-2 border-b border-white/10 bg-[#0f172a]/80 backdrop-blur-md px-3 sm:px-4">
+        <header className="shrink-0 flex h-14 items-center gap-2 border-b border-border/50 bg-card/80 backdrop-blur-md px-3 sm:px-4">
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden text-slate-300 hover:text-white">
+              <Button variant="ghost" size="icon" className="md:hidden text-muted-foreground hover:text-foreground">
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-72 border-r border-white/10 bg-[#0f172a] p-0 flex flex-col h-full">
+            <SheetContent side="left" className="w-72 border-r border-border/50 bg-card p-0 flex flex-col h-full">
               <SidebarBrand />
               <div className="flex-1 overflow-y-auto">
                 <NavLinks onClick={() => setOpen(false)} />
               </div>
-              <div className="shrink-0 border-t border-white/10 p-3 mt-auto">
-                <Button variant="ghost" className="w-full justify-start gap-2 text-slate-400 hover:text-slate-100" onClick={signOut}>
+              <div className="shrink-0 border-t border-border p-3 mt-auto">
+                <Button variant="ghost" className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground" onClick={signOut}>
                   <LogOut className="h-4 w-4 shrink-0" /> Sign out
                 </Button>
               </div>
@@ -104,12 +104,12 @@ export function TechnicianLayout({ children }: { children: ReactNode }) {
           <div className="flex-1 px-4 max-w-xl">
             <Button
               variant="outline"
-              className="w-full justify-start text-sm text-muted-foreground bg-white/5 border-white/10 hover:bg-white/10 hover:text-slate-200"
+              className="w-full justify-start text-sm text-muted-foreground bg-secondary border-border hover:bg-cardccent hover:text-foreground"
               onClick={openGlobalSearch}
             >
               <Search className="mr-2 h-4 w-4" />
               Search tickets, customers...
-              <kbd className="pointer-events-none ml-auto inline-flex h-5 select-none items-center gap-1 rounded border border-white/20 bg-white/5 px-1.5 font-mono text-[10px] font-medium text-slate-400">
+              <kbd className="pointer-events-none ml-auto inline-flex h-5 select-none items-center gap-1 rounded border border-white/20 bg-secondary px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
                 <span className="text-xs">⌘</span>K
               </kbd>
             </Button>

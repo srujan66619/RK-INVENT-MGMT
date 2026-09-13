@@ -75,15 +75,15 @@ function NavLinks({ onClick, collapsed }: { onClick?: () => void; collapsed?: bo
               "flex items-center gap-3 rounded-lg py-2.5 text-sm transition-all",
               collapsed ? "justify-center px-0 w-10 h-10" : "px-3",
               active
-                ? "bg-cyan-500/10 text-cyan-400 shadow-[inset_0_0_0_1px_rgba(34,211,238,0.2)]"
-                : "text-slate-400 hover:bg-white/5 hover:text-slate-100",
+                ? "bg-primary/10 text-primary shadow-[inset_0_0_0_1px_rgba(34,211,238,0.2)]"
+                : "text-muted-foreground hover:bg-secondary hover:text-foreground",
             )}
           >
             <item.icon
               className={cn(
                 "shrink-0",
                 collapsed ? "h-5 w-5" : "h-4 w-4",
-                active && "text-cyan-400",
+                active && "text-primary",
               )}
             />
             {!collapsed && <span>{item.label}</span>}
@@ -99,7 +99,7 @@ function SidebarBrand({ collapsed }: { collapsed?: boolean }) {
     <Link
       to="/dashboard"
       className={cn(
-        "flex items-center border-b border-white/5 py-5",
+        "flex items-center border-b border-border/50 py-5",
         collapsed ? "justify-center px-2" : "gap-3 px-5",
       )}
     >
@@ -107,16 +107,16 @@ function SidebarBrand({ collapsed }: { collapsed?: boolean }) {
         src="/logo.png"
         alt="RK Repair Labs"
         className={cn(
-          "rounded-lg object-contain bg-white/5 p-0.5 shrink-0",
+          "rounded-lg object-contain bg-secondary p-0.5 shrink-0",
           collapsed ? "h-8 w-8" : "h-10 w-10",
         )}
       />
       {!collapsed && (
         <div className="min-w-0">
-          <div className="text-sm font-bold tracking-tight text-slate-100 truncate">
+          <div className="text-sm font-bold tracking-tight text-foreground truncate">
             RK Repair Labs
           </div>
-          <div className="text-[10px] uppercase tracking-wider text-cyan-500 font-semibold">
+          <div className="text-[10px] uppercase tracking-wider text-primary font-semibold">
             Repair System
           </div>
         </div>
@@ -148,10 +148,10 @@ export function AppLayout({ children }: { children: ReactNode }) {
 
   return (
     <WaSenderProvider>
-      <div className="flex h-screen overflow-hidden bg-[#020617] text-slate-200 selection:bg-cyan-500/30">
+      <div className="flex h-screen overflow-hidden bg-background text-foreground selection:bg-primary/30">
         <aside
           className={cn(
-            "hidden shrink-0 flex-col border-r border-white/10 bg-[#0f172a]/95 backdrop-blur-md md:flex transition-all duration-300 ease-in-out h-full",
+            "hidden shrink-0 flex-col border-r border-border/50 bg-card/95 backdrop-blur-md md:flex transition-all duration-300 ease-in-out h-full",
             collapsed ? "w-[72px]" : "w-64",
           )}
         >
@@ -159,11 +159,11 @@ export function AppLayout({ children }: { children: ReactNode }) {
           <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
             <NavLinks collapsed={collapsed} />
           </div>
-          <div className="shrink-0 border-t border-white/10 p-3 flex flex-col gap-2 mt-auto">
+          <div className="shrink-0 border-t border-border p-3 flex flex-col gap-2 mt-auto">
             <Button
               variant="ghost"
               className={cn(
-                "justify-start gap-2 text-slate-400 hover:text-slate-100",
+                "justify-start gap-2 text-muted-foreground hover:text-foreground",
                 collapsed ? "px-0 justify-center h-10 w-10 mx-auto" : "w-full",
               )}
               onClick={signOut}
@@ -176,29 +176,29 @@ export function AppLayout({ children }: { children: ReactNode }) {
         </aside>
 
         <div className="flex min-w-0 flex-1 flex-col h-full overflow-hidden">
-          <header className="shrink-0 flex h-14 items-center gap-2 border-b border-white/10 bg-[#0f172a]/80 backdrop-blur-md px-3 sm:px-4">
+          <header className="shrink-0 flex h-14 items-center gap-2 border-b border-border/50 bg-card/80 backdrop-blur-md px-3 sm:px-4">
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="md:hidden text-slate-300 hover:text-white"
+                  className="md:hidden text-muted-foreground hover:text-foreground"
                 >
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
               <SheetContent
                 side="left"
-                className="w-72 border-r border-white/10 bg-[#0f172a] p-0 flex flex-col h-full"
+                className="w-72 border-r border-border/50 bg-card p-0 flex flex-col h-full"
               >
                 <SidebarBrand />
                 <div className="flex-1 overflow-y-auto">
                   <NavLinks onClick={() => setOpen(false)} />
                 </div>
-                <div className="shrink-0 border-t border-white/10 p-3 mt-auto">
+                <div className="shrink-0 border-t border-border p-3 mt-auto">
                   <Button
                     variant="ghost"
-                    className="w-full justify-start gap-2 text-slate-400 hover:text-slate-100"
+                    className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground"
                     onClick={signOut}
                   >
                     <LogOut className="h-4 w-4 shrink-0" /> Sign out
@@ -210,7 +210,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
             <Button
               variant="ghost"
               size="icon"
-              className="hidden md:flex text-slate-400 hover:text-slate-100"
+              className="hidden md:flex text-muted-foreground hover:text-foreground"
               onClick={toggleSidebar}
               title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
             >
@@ -224,12 +224,12 @@ export function AppLayout({ children }: { children: ReactNode }) {
             <div className="flex-1 px-4 max-w-xl">
               <Button
                 variant="outline"
-                className="w-full justify-start text-sm text-muted-foreground bg-white/5 border-white/10 hover:bg-white/10 hover:text-slate-200"
+                className="w-full justify-start text-sm text-muted-foreground bg-secondary border-border hover:bg-cardccent hover:text-foreground"
                 onClick={openGlobalSearch}
               >
                 <Search className="mr-2 h-4 w-4" />
                 Search tickets, customers...
-                <kbd className="pointer-events-none ml-auto inline-flex h-5 select-none items-center gap-1 rounded border border-white/20 bg-white/5 px-1.5 font-mono text-[10px] font-medium text-slate-400">
+                <kbd className="pointer-events-none ml-auto inline-flex h-5 select-none items-center gap-1 rounded border border-white/20 bg-secondary px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
                   <span className="text-xs">⌘</span>K
                 </kbd>
               </Button>
@@ -310,7 +310,7 @@ function NotificationsBell() {
         </Button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-80 p-0">
-        <div className="flex items-center justify-between border-b border-white/5 px-4 py-2">
+        <div className="flex items-center justify-between border-b border-border/50 px-4 py-2">
           <div className="text-sm font-semibold">Notifications</div>
           {unread > 0 && (
             <button
@@ -334,7 +334,7 @@ function NotificationsBell() {
                 <div
                   key={n.id}
                   className={cn(
-                    "flex gap-3 border-b border-white/5 px-4 py-3 last:border-0",
+                    "flex gap-3 border-b border-border/50 px-4 py-3 last:border-0",
                     !n.read_at && "bg-white/[0.03]",
                   )}
                 >

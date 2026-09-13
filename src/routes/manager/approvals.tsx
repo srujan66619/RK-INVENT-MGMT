@@ -44,17 +44,17 @@ function ApprovalsPage() {
 
   if (isAdmin === null) {
     return (
-      <div className="flex h-64 items-center justify-center text-slate-500">
-        <Loader2 className="mr-2 h-4 w-4 animate-spin text-cyan-400" /> Loading…
+      <div className="flex h-64 items-center justify-center text-muted-foreground">
+        <Loader2 className="mr-2 h-4 w-4 animate-spin text-primary" /> Loading…
       </div>
     );
   }
   if (!isAdmin) {
     return (
-      <div className="mx-auto mt-16 max-w-md rounded-2xl border border-white/10 bg-[#0f172a]/80 backdrop-blur-xl p-8 text-center shadow-lg">
-        <ShieldCheck className="mx-auto mb-4 h-10 w-10 text-cyan-400" />
-        <div className="text-xl font-bold tracking-tight text-slate-200">Admins only</div>
-        <p className="mt-2 text-sm text-slate-400">
+      <div className="mx-auto mt-16 max-w-md rounded-2xl border border-border bg-card/80 backdrop-blur-xl p-8 text-center shadow-lg">
+        <ShieldCheck className="mx-auto mb-4 h-10 w-10 text-primary" />
+        <div className="text-xl font-bold tracking-tight text-foreground">Admins only</div>
+        <p className="mt-2 text-sm text-muted-foreground">
           You need the admin role to review account approvals.
         </p>
       </div>
@@ -128,30 +128,30 @@ function ApprovalsInner() {
       animate={{ opacity: 1, y: 0 }}
       className="mx-auto max-w-7xl space-y-6"
     >
-      <div className="flex flex-col gap-1.5 border-b border-white/10 pb-6">
+      <div className="flex flex-col gap-1.5 border-b border-border pb-6">
         <h1 className="text-3xl font-bold tracking-tight">Account approvals</h1>
-        <p className="text-sm text-slate-400">
+        <p className="text-sm text-muted-foreground">
           Review new signups and assign a role before granting access.
         </p>
       </div>
 
       <Tabs defaultValue="pending" className="space-y-6">
-        <TabsList className="bg-[#0f172a]/80 backdrop-blur-xl border border-white/10 p-1 h-auto rounded-lg">
+        <TabsList className="bg-card/80 backdrop-blur-xl border border-border p-1 h-auto rounded-lg">
           <TabsTrigger
             value="pending"
-            className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400"
+            className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
           >
             Pending ({pending.length})
           </TabsTrigger>
           <TabsTrigger
             value="approved"
-            className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400"
+            className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
           >
             Approved ({approved.length})
           </TabsTrigger>
           <TabsTrigger
             value="rejected"
-            className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400"
+            className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
           >
             Rejected ({rejected.length})
           </TabsTrigger>
@@ -214,7 +214,7 @@ type ListProps = {
 function List({ rows, kind, decide, busy, rolesMap, onChangeRole, changing }: ListProps) {
   if (rows.length === 0) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-[#0f172a]/80 backdrop-blur-xl p-10 text-center shadow-lg text-sm text-slate-500">
+      <div className="rounded-2xl border border-border bg-card/80 backdrop-blur-xl p-10 text-center shadow-lg text-sm text-muted-foreground">
         Nothing here.
       </div>
     );
@@ -265,12 +265,12 @@ function Row({
     currentRoles[0] ?? (row.requested_role as AppRole) ?? "customer",
   );
   return (
-    <div className="rounded-xl border border-white/10 bg-[#0f172a]/60 p-4 transition-all hover:bg-white/[0.02]">
+    <div className="rounded-xl border border-border bg-card/60 p-4 transition-all hover:bg-white/[0.02]">
       <div className="flex flex-wrap items-center gap-3 justify-between mb-4">
         <div className="flex flex-wrap items-center gap-3">
-          <span className="font-semibold text-slate-200">{row.full_name ?? "Unnamed user"}</span>
+          <span className="font-semibold text-foreground">{row.full_name ?? "Unnamed user"}</span>
           {row.requested_role && (
-            <span className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-2.5 py-0.5 text-xs capitalize text-cyan-400">
+            <span className="rounded-full border border-primary/30 bg-primary/10 px-2.5 py-0.5 text-xs capitalize text-primary">
               requested: {row.requested_role}
             </span>
           )}
@@ -280,24 +280,24 @@ function Row({
             </span>
           )}
         </div>
-        <span className="text-xs font-medium text-slate-500">
+        <span className="text-xs font-medium text-muted-foreground">
           Signed up {fmtDateTime(row.created_at)}
         </span>
       </div>
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-black/20 p-3 rounded-lg border border-white/5">
+      <div className="flex flex-wrap items-center justify-between gap-3 bg-muted p-3 rounded-lg border border-border/50">
         {kind === "pending" ? (
           <>
             <div className="flex items-center gap-3">
-              <span className="text-xs uppercase tracking-widest text-slate-400 font-bold">
+              <span className="text-xs uppercase tracking-widest text-muted-foreground font-bold">
                 Assign role
               </span>
               <select
                 value={role}
                 onChange={(e) => setRole(e.target.value as AppRole)}
-                className="h-9 rounded-md border border-white/10 bg-[#0f172a] px-3 text-sm focus:border-cyan-500/50 outline-none text-slate-200"
+                className="h-9 rounded-md border border-border bg-card px-3 text-sm focus:border-primary/50 outline-none text-foreground"
               >
                 {ROLE_OPTIONS.map((r) => (
-                  <option key={r} value={r} className="bg-[#0f172a]">
+                  <option key={r} value={r} className="bg-card">
                     {r}
                   </option>
                 ))}
@@ -331,20 +331,20 @@ function Row({
           </>
         ) : kind === "approved" ? (
           <>
-            <div className="text-sm font-medium text-slate-400">
+            <div className="text-sm font-medium text-muted-foreground">
               Approved {row.approved_at ? fmtDateTime(row.approved_at) : "—"}
             </div>
             <div className="flex items-center gap-3">
-              <span className="text-xs uppercase tracking-widest text-slate-400 font-bold">
+              <span className="text-xs uppercase tracking-widest text-muted-foreground font-bold">
                 Change role
               </span>
               <select
                 value={editRole}
                 onChange={(e) => setEditRole(e.target.value as AppRole)}
-                className="h-9 rounded-md border border-white/10 bg-[#0f172a] px-3 text-sm focus:border-cyan-500/50 outline-none text-slate-200"
+                className="h-9 rounded-md border border-border bg-card px-3 text-sm focus:border-primary/50 outline-none text-foreground"
               >
                 {ROLE_OPTIONS.map((r) => (
-                  <option key={r} value={r} className="bg-[#0f172a]">
+                  <option key={r} value={r} className="bg-card">
                     {r}
                   </option>
                 ))}
@@ -352,7 +352,7 @@ function Row({
               <Button
                 size="sm"
                 variant="outline"
-                className="border-white/10 hover:bg-white/10 text-slate-300"
+                className="border-border hover:bg-cardccent text-muted-foreground"
                 disabled={changing || (currentRoles.length === 1 && currentRoles[0] === editRole)}
                 onClick={() => onChangeRole({ id: row.id, role: editRole, name: row.full_name })}
               >
@@ -361,10 +361,10 @@ function Row({
             </div>
           </>
         ) : (
-          <div className="text-sm font-medium text-slate-400">
+          <div className="text-sm font-medium text-muted-foreground">
             <span className="text-red-400 font-semibold">Rejected</span>
             {row.rejection_reason ? (
-              <span className="ml-2 text-slate-500">· {row.rejection_reason}</span>
+              <span className="ml-2 text-muted-foreground">· {row.rejection_reason}</span>
             ) : (
               ""
             )}

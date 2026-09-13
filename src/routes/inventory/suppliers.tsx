@@ -75,31 +75,31 @@ type Movement = {
 function SuppliersPage() {
   return (
     <div className="mx-auto max-w-7xl space-y-6">
-      <header className="flex flex-col gap-1.5 border-b border-white/10 pb-6">
+      <header className="flex flex-col gap-1.5 border-b border-border pb-6">
         <h1 className="text-3xl font-bold tracking-tight">Suppliers & Stock</h1>
-        <p className="text-sm text-slate-400">
+        <p className="text-sm text-muted-foreground">
           Manage suppliers, purchase orders, and full stock history.
         </p>
       </header>
       <Tabs defaultValue="suppliers">
-        <TabsList className="bg-[#0f172a]/80 backdrop-blur-xl border border-white/10 p-1 h-auto rounded-lg">
+        <TabsList className="bg-card/80 backdrop-blur-xl border border-border p-1 h-auto rounded-lg">
           <TabsTrigger
             value="suppliers"
-            className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400"
+            className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
           >
             <Truck className="mr-2 h-4 w-4" />
             Suppliers
           </TabsTrigger>
           <TabsTrigger
             value="po"
-            className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400"
+            className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
           >
             <FileText className="mr-2 h-4 w-4" />
             Purchase Orders
           </TabsTrigger>
           <TabsTrigger
             value="history"
-            className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400"
+            className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
           >
             <History className="mr-2 h-4 w-4" />
             Stock History
@@ -174,7 +174,7 @@ function SuppliersTab() {
   }
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-[#0f172a]/80 backdrop-blur-xl p-4 shadow-lg">
+    <div className="rounded-2xl border border-border bg-card/80 backdrop-blur-xl p-4 shadow-lg">
       <div className="mb-4 flex justify-end">
         <Dialog
           open={open}
@@ -191,8 +191,8 @@ function SuppliersTab() {
               <Plus className="mr-2 h-4 w-4" /> Add supplier
             </Button>
           </DialogTrigger>
-          <DialogContent className="glass-strong max-h-[90vh] overflow-y-auto custom-scrollbar border-white/10 shadow-2xl">
-            <DialogHeader className="border-b border-white/10 pb-4 mb-4">
+          <DialogContent className="glass-strong max-h-[90vh] overflow-y-auto custom-scrollbar border-border shadow-2xl">
+            <DialogHeader className="border-b border-border pb-4 mb-4">
               <DialogTitle className="text-xl tracking-tight">
                 {editing ? "Edit" : "Add"} supplier
               </DialogTitle>
@@ -204,53 +204,53 @@ function SuppliersTab() {
                   name="name"
                   defaultValue={editing?.name ?? ""}
                   required
-                  className="bg-black/20 border-white/10 focus:border-cyan-500/50"
+                  className="bg-muted border-border focus:border-primary/50"
                 />
                 <F
                   label="Contact person"
                   name="contact_person"
                   defaultValue={editing?.contact_person ?? ""}
-                  className="bg-black/20 border-white/10 focus:border-cyan-500/50"
+                  className="bg-muted border-border focus:border-primary/50"
                 />
                 <F
                   label="Phone"
                   name="phone"
                   defaultValue={editing?.phone ?? ""}
-                  className="bg-black/20 border-white/10 focus:border-cyan-500/50"
+                  className="bg-muted border-border focus:border-primary/50"
                 />
                 <F
                   label="Email"
                   name="email"
                   type="email"
                   defaultValue={editing?.email ?? ""}
-                  className="bg-black/20 border-white/10 focus:border-cyan-500/50"
+                  className="bg-muted border-border focus:border-primary/50"
                 />
                 <F
                   label="GSTIN"
                   name="gst_number"
                   defaultValue={editing?.gst_number ?? ""}
-                  className="bg-black/20 border-white/10 focus:border-cyan-500/50"
+                  className="bg-muted border-border focus:border-primary/50"
                 />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-slate-300">Address</Label>
+                <Label className="text-muted-foreground">Address</Label>
                 <Textarea
                   name="address"
                   rows={2}
                   defaultValue={editing?.address ?? ""}
-                  className="bg-black/20 border-white/10 focus:border-cyan-500/50 resize-none"
+                  className="bg-muted border-border focus:border-primary/50 resize-none"
                 />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-slate-300">Notes</Label>
+                <Label className="text-muted-foreground">Notes</Label>
                 <Textarea
                   name="notes"
                   rows={2}
                   defaultValue={editing?.notes ?? ""}
-                  className="bg-black/20 border-white/10 focus:border-cyan-500/50 resize-none"
+                  className="bg-muted border-border focus:border-primary/50 resize-none"
                 />
               </div>
-              <DialogFooter className="pt-4 border-t border-white/10">
+              <DialogFooter className="pt-4 border-t border-border">
                 <Button
                   type="submit"
                   disabled={save.isPending}
@@ -266,7 +266,7 @@ function SuppliersTab() {
       </div>
       <div className="overflow-x-auto custom-scrollbar">
         <table className="w-full text-sm whitespace-nowrap">
-          <thead className="bg-slate-900/50 text-xs uppercase tracking-wider text-slate-400">
+          <thead className="bg-card/50 text-xs uppercase tracking-wider text-muted-foreground">
             <tr>
               <th className="px-4 py-3 text-left rounded-tl-lg">Supplier</th>
               <th className="px-4 py-3 text-left">Contact</th>
@@ -278,14 +278,14 @@ function SuppliersTab() {
           <tbody>
             {isLoading && (
               <tr>
-                <td colSpan={5} className="px-4 py-12 text-center text-slate-500">
+                <td colSpan={5} className="px-4 py-12 text-center text-muted-foreground">
                   Loading…
                 </td>
               </tr>
             )}
             {!isLoading && suppliers.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-4 py-12 text-center text-slate-500">
+                <td colSpan={5} className="px-4 py-12 text-center text-muted-foreground">
                   No suppliers yet.
                 </td>
               </tr>
@@ -293,12 +293,12 @@ function SuppliersTab() {
             {suppliers.map((s) => (
               <tr
                 key={s.id}
-                className="group border-b border-white/5 hover:bg-white/[0.02] transition-colors"
+                className="group border-b border-border/50 hover:bg-white/[0.02] transition-colors"
               >
-                <td className="px-4 py-3 font-medium text-slate-200">{s.name}</td>
-                <td className="px-4 py-3 text-slate-400">{s.contact_person ?? "—"}</td>
-                <td className="px-4 py-3 text-slate-400">{s.phone ?? "—"}</td>
-                <td className="px-4 py-3 font-mono text-xs text-slate-400">
+                <td className="px-4 py-3 font-medium text-foreground">{s.name}</td>
+                <td className="px-4 py-3 text-muted-foreground">{s.contact_person ?? "—"}</td>
+                <td className="px-4 py-3 text-muted-foreground">{s.phone ?? "—"}</td>
+                <td className="px-4 py-3 font-mono text-xs text-muted-foreground">
                   {s.gst_number ?? "—"}
                 </td>
                 <td className="px-4 py-3 text-right">
@@ -306,7 +306,7 @@ function SuppliersTab() {
                     <Button
                       size="icon"
                       variant="ghost"
-                      className="h-8 w-8 text-slate-400 hover:text-cyan-400 hover:bg-cyan-400/10"
+                      className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10"
                       onClick={() => {
                         setEditing(s);
                         setOpen(true);
@@ -317,7 +317,7 @@ function SuppliersTab() {
                     <Button
                       size="icon"
                       variant="ghost"
-                      className="h-8 w-8 text-slate-400 hover:text-red-400 hover:bg-red-400/10"
+                      className="h-8 w-8 text-muted-foreground hover:text-red-400 hover:bg-red-400/10"
                       onClick={() => {
                         if (confirm("Delete?")) del.mutate(s.id);
                       }}
@@ -429,7 +429,7 @@ function PurchaseOrdersTab() {
   const supplierMap = new Map(suppliers.map((s) => [s.id, s.name]));
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-[#0f172a]/80 backdrop-blur-xl p-4 shadow-lg">
+    <div className="rounded-2xl border border-border bg-card/80 backdrop-blur-xl p-4 shadow-lg">
       <div className="mb-4 flex justify-end">
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
@@ -440,30 +440,30 @@ function PurchaseOrdersTab() {
               <Plus className="mr-2 h-4 w-4" /> New PO
             </Button>
           </DialogTrigger>
-          <DialogContent className="glass-strong max-h-[90vh] max-w-3xl overflow-y-auto custom-scrollbar border-white/10 shadow-2xl">
-            <DialogHeader className="border-b border-white/10 pb-4 mb-4">
+          <DialogContent className="glass-strong max-h-[90vh] max-w-3xl overflow-y-auto custom-scrollbar border-border shadow-2xl">
+            <DialogHeader className="border-b border-border pb-4 mb-4">
               <DialogTitle className="text-xl tracking-tight">New purchase order</DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <Label className="text-slate-300">Supplier</Label>
+                <Label className="text-muted-foreground">Supplier</Label>
                 <select
                   value={supplierId}
                   onChange={(e) => setSupplierId(e.target.value)}
-                  className="h-10 w-full rounded-md border border-white/10 bg-black/20 px-3 text-sm focus:border-cyan-500/50 outline-none"
+                  className="h-10 w-full rounded-md border border-border bg-muted px-3 text-sm focus:border-primary/50 outline-none"
                 >
-                  <option value="" className="bg-[#0f172a]">
+                  <option value="" className="bg-card">
                     — Select supplier —
                   </option>
                   {suppliers.map((s) => (
-                    <option key={s.id} value={s.id} className="bg-[#0f172a]">
+                    <option key={s.id} value={s.id} className="bg-card">
                       {s.name}
                     </option>
                   ))}
                 </select>
               </div>
               <div className="space-y-2">
-                <Label className="text-slate-300">Line items</Label>
+                <Label className="text-muted-foreground">Line items</Label>
                 {lines.map((l, idx) => (
                   <div key={idx} className="grid grid-cols-[1.5fr_1fr_70px_110px_40px] gap-2">
                     <Input
@@ -476,10 +476,10 @@ function PurchaseOrdersTab() {
                           ),
                         )
                       }
-                      className="bg-black/20 border-white/10 focus:border-cyan-500/50"
+                      className="bg-muted border-border focus:border-primary/50"
                     />
                     <select
-                      className="h-10 rounded-md border border-white/10 bg-black/20 px-2 text-xs focus:border-cyan-500/50 outline-none"
+                      className="h-10 rounded-md border border-border bg-muted px-2 text-xs focus:border-primary/50 outline-none"
                       value={l.item_id ?? ""}
                       onChange={(e) => {
                         const it = items.find((x) => x.id === e.target.value);
@@ -497,11 +497,11 @@ function PurchaseOrdersTab() {
                         );
                       }}
                     >
-                      <option value="" className="bg-[#0f172a]">
+                      <option value="" className="bg-card">
                         — Link inventory —
                       </option>
                       {items.map((it) => (
-                        <option key={it.id} value={it.id} className="bg-[#0f172a]">
+                        <option key={it.id} value={it.id} className="bg-card">
                           {it.name}
                         </option>
                       ))}
@@ -517,7 +517,7 @@ function PurchaseOrdersTab() {
                           ),
                         )
                       }
-                      className="bg-black/20 border-white/10 focus:border-cyan-500/50"
+                      className="bg-muted border-border focus:border-primary/50"
                     />
                     <Input
                       type="number"
@@ -531,13 +531,13 @@ function PurchaseOrdersTab() {
                           ),
                         )
                       }
-                      className="bg-black/20 border-white/10 focus:border-cyan-500/50"
+                      className="bg-muted border-border focus:border-primary/50"
                     />
                     <Button
                       type="button"
                       variant="ghost"
                       size="icon"
-                      className="h-10 w-10 text-slate-400 hover:text-red-400 hover:bg-red-400/10"
+                      className="h-10 w-10 text-muted-foreground hover:text-red-400 hover:bg-red-400/10"
                       onClick={() => setLines(lines.filter((_, i) => i !== idx))}
                     >
                       <Trash2 className="h-4 w-4" />
@@ -548,7 +548,7 @@ function PurchaseOrdersTab() {
                   type="button"
                   variant="outline"
                   size="sm"
-                  className="mt-2 border-white/10 bg-white/5 hover:bg-white/10"
+                  className="mt-2 border-border bg-secondary hover:bg-cardccent"
                   onClick={() =>
                     setLines([...lines, { description: "", quantity: 1, unit_cost: 0 }])
                   }
@@ -557,19 +557,19 @@ function PurchaseOrdersTab() {
                 </Button>
               </div>
               <div className="space-y-1.5">
-                <Label className="text-slate-300">Notes</Label>
+                <Label className="text-muted-foreground">Notes</Label>
                 <Textarea
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   rows={2}
-                  className="bg-black/20 border-white/10 focus:border-cyan-500/50 resize-none"
+                  className="bg-muted border-border focus:border-primary/50 resize-none"
                 />
               </div>
-              <div className="text-right text-xl font-bold text-slate-200 pt-4">
-                Total: <span className="text-cyan-400">{inrPrecise(total)}</span>
+              <div className="text-right text-xl font-bold text-foreground pt-4">
+                Total: <span className="text-primary">{inrPrecise(total)}</span>
               </div>
             </div>
-            <DialogFooter className="pt-4 border-t border-white/10">
+            <DialogFooter className="pt-4 border-t border-border">
               <Button
                 onClick={() => create.mutate()}
                 disabled={create.isPending}
@@ -584,7 +584,7 @@ function PurchaseOrdersTab() {
       </div>
       <div className="overflow-x-auto custom-scrollbar">
         <table className="w-full text-sm whitespace-nowrap">
-          <thead className="bg-slate-900/50 text-xs uppercase tracking-wider text-slate-400">
+          <thead className="bg-card/50 text-xs uppercase tracking-wider text-muted-foreground">
             <tr>
               <th className="px-4 py-3 text-left rounded-tl-lg">PO #</th>
               <th className="px-4 py-3 text-left">Supplier</th>
@@ -597,14 +597,14 @@ function PurchaseOrdersTab() {
           <tbody>
             {isLoading && (
               <tr>
-                <td colSpan={6} className="px-4 py-12 text-center text-slate-500">
+                <td colSpan={6} className="px-4 py-12 text-center text-muted-foreground">
                   Loading…
                 </td>
               </tr>
             )}
             {!isLoading && pos.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-4 py-12 text-center text-slate-500">
+                <td colSpan={6} className="px-4 py-12 text-center text-muted-foreground">
                   No purchase orders yet.
                 </td>
               </tr>
@@ -612,23 +612,23 @@ function PurchaseOrdersTab() {
             {pos.map((p) => (
               <tr
                 key={p.id}
-                className="group border-b border-white/5 hover:bg-white/[0.02] transition-colors"
+                className="group border-b border-border/50 hover:bg-white/[0.02] transition-colors"
               >
-                <td className="px-4 py-3 font-mono text-xs font-semibold text-cyan-400">
+                <td className="px-4 py-3 font-mono text-xs font-semibold text-primary">
                   {p.po_no}
                 </td>
-                <td className="px-4 py-3 text-slate-200">
+                <td className="px-4 py-3 text-foreground">
                   {p.supplier_id ? (supplierMap.get(p.supplier_id) ?? "—") : "—"}
                 </td>
-                <td className="px-4 py-3 text-slate-400">{fmtDateTime(p.created_at)}</td>
-                <td className="px-4 py-3 text-right font-medium text-slate-200">{inr(p.total)}</td>
+                <td className="px-4 py-3 text-muted-foreground">{fmtDateTime(p.created_at)}</td>
+                <td className="px-4 py-3 text-right font-medium text-foreground">{inr(p.total)}</td>
                 <td className="px-4 py-3">
                   <Badge
                     variant="outline"
                     className={
                       p.status === "received"
                         ? "border-emerald-500/40 text-emerald-400 bg-emerald-500/10"
-                        : "border-amber-500/40 text-amber-400 bg-amber-500/10"
+                        : "border-amber-500/40 text-amber-400 bg-cardmber-500/10"
                     }
                   >
                     {p.status}
@@ -666,10 +666,10 @@ function StockHistoryTab() {
   });
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-[#0f172a]/80 backdrop-blur-xl p-4 shadow-lg">
+    <div className="rounded-2xl border border-border bg-card/80 backdrop-blur-xl p-4 shadow-lg">
       <div className="overflow-x-auto custom-scrollbar">
         <table className="w-full text-sm whitespace-nowrap">
-          <thead className="bg-slate-900/50 text-xs uppercase tracking-wider text-slate-400">
+          <thead className="bg-card/50 text-xs uppercase tracking-wider text-muted-foreground">
             <tr>
               <th className="px-4 py-3 text-left rounded-tl-lg">When</th>
               <th className="px-4 py-3 text-left">Item</th>
@@ -682,14 +682,14 @@ function StockHistoryTab() {
           <tbody>
             {isLoading && (
               <tr>
-                <td colSpan={6} className="px-4 py-12 text-center text-slate-500">
+                <td colSpan={6} className="px-4 py-12 text-center text-muted-foreground">
                   Loading…
                 </td>
               </tr>
             )}
             {!isLoading && movements.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-4 py-12 text-center text-slate-500">
+                <td colSpan={6} className="px-4 py-12 text-center text-muted-foreground">
                   No movements yet.
                 </td>
               </tr>
@@ -697,14 +697,14 @@ function StockHistoryTab() {
             {movements.map((m) => (
               <tr
                 key={m.id}
-                className="border-b border-white/5 hover:bg-white/[0.02] transition-colors"
+                className="border-b border-border/50 hover:bg-white/[0.02] transition-colors"
               >
-                <td className="px-4 py-3 text-slate-400">{fmtDateTime(m.created_at)}</td>
-                <td className="px-4 py-3 font-medium text-slate-200">{m.item_name}</td>
+                <td className="px-4 py-3 text-muted-foreground">{fmtDateTime(m.created_at)}</td>
+                <td className="px-4 py-3 font-medium text-foreground">{m.item_name}</td>
                 <td className="px-4 py-3">
                   <Badge
                     variant="outline"
-                    className="border-white/20 text-[11px] text-slate-300 bg-white/5"
+                    className="border-white/20 text-[11px] text-muted-foreground bg-secondary"
                   >
                     {m.movement_type}
                   </Badge>
@@ -718,10 +718,10 @@ function StockHistoryTab() {
                   {m.change > 0 ? "+" : ""}
                   {m.change}
                 </td>
-                <td className="px-4 py-3 text-right font-medium text-slate-200">
+                <td className="px-4 py-3 text-right font-medium text-foreground">
                   {m.balance_after ?? "—"}
                 </td>
-                <td className="px-4 py-3 text-slate-400">{m.notes ?? "—"}</td>
+                <td className="px-4 py-3 text-muted-foreground">{m.notes ?? "—"}</td>
               </tr>
             ))}
           </tbody>
@@ -738,7 +738,7 @@ function F({
 }: { label: string; className?: string } & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <div className="space-y-1.5">
-      <Label className="text-slate-300">{label}</Label>
+      <Label className="text-muted-foreground">{label}</Label>
       <Input className={className} {...props} />
     </div>
   );

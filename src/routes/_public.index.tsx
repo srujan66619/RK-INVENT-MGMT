@@ -21,7 +21,7 @@ function PublicHome() {
       <section className="relative overflow-hidden pt-16 md:pt-24 lg:pt-32 pb-16 lg:pb-24">
         {/* Abstract Background Elements */}
         <div className="absolute inset-0 z-0">
-          <div className="absolute -top-[30%] -right-[10%] w-[70%] h-[70%] rounded-full bg-cyan-500/10 blur-[120px]" />
+          <div className="absolute -top-[30%] -right-[10%] w-[70%] h-[70%] rounded-full bg-primary/10 blur-[120px]" />
           <div className="absolute top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-blue-500/10 blur-[100px]" />
         </div>
 
@@ -34,11 +34,11 @@ function PublicHome() {
             >
               <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-white mb-4">
                 Expert Hands.{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-500">
                   Trusted Repairs.
                 </span>
               </h1>
-              <p className="text-xl md:text-2xl text-slate-300 font-medium max-w-2xl mx-auto">
+              <p className="text-xl md:text-2xl text-muted-foreground font-medium max-w-2xl mx-auto">
                 Only at RK Repair Labs
               </p>
             </motion.div>
@@ -48,7 +48,7 @@ function PublicHome() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
             >
-              <p className="text-base md:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
+              <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
                 MacBook & iPhone specialists. Skilled professionals with deep knowledge of all major
                 brands and models. Chip-level fixes, screens, batteries, charging, and more.
               </p>
@@ -68,7 +68,7 @@ function PublicHome() {
               </a>
               <Link
                 to="/track"
-                className="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#1e293b] border border-white/10 text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-white/5 transition-colors"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 bg-card border border-border text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-secondary transition-colors"
               >
                 Track Repair
               </Link>
@@ -78,11 +78,11 @@ function PublicHome() {
       </section>
 
       {/* Why Choose Us */}
-      <section className="py-20 bg-[#0f172a]/50">
+      <section className="py-20 bg-card/50">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Why Choose Us</h2>
-            <div className="h-1 w-20 bg-cyan-500 mx-auto rounded-full" />
+            <div className="h-1 w-20 bg-primary mx-auto rounded-full" />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -114,13 +114,13 @@ function PublicHome() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="bg-[#1e293b]/50 border border-white/5 rounded-2xl p-8 hover:bg-[#1e293b] transition-colors"
+                className="bg-card/50 border border-border/50 rounded-2xl p-8 hover:bg-card transition-colors"
               >
-                <div className="h-12 w-12 rounded-xl bg-cyan-500/20 flex items-center justify-center mb-6">
-                  <feature.icon className="h-6 w-6 text-cyan-400" />
+                <div className="h-12 w-12 rounded-xl bg-primary/20 flex items-center justify-center mb-6">
+                  <feature.icon className="h-6 w-6 text-primary" />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-3">{feature.title}</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">{feature.desc}</p>
+                <p className="text-muted-foreground text-sm leading-relaxed">{feature.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -132,13 +132,13 @@ function PublicHome() {
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Our Expert Services</h2>
-            <div className="h-1 w-20 bg-cyan-500 mx-auto rounded-full" />
+            <div className="h-1 w-20 bg-primary mx-auto rounded-full" />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="bg-gradient-to-b from-[#1e293b] to-[#0f172a] rounded-3xl p-8 border border-white/10 relative overflow-hidden group">
+            <div className="bg-gradient-to-b from-[#1e293b] to-[#0f172a] rounded-3xl p-8 border border-border relative overflow-hidden group">
               <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
-                <Laptop className="h-32 w-32 text-cyan-400" />
+                <Laptop className="h-32 w-32 text-primary" />
               </div>
               <h3 className="text-2xl font-bold text-white mb-6 relative z-10">Laptop Repairs</h3>
               <ul className="space-y-4 relative z-10">
@@ -149,17 +149,17 @@ function PublicHome() {
                   "Hinges repairs",
                   "Dead condition recovery",
                 ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3 text-slate-300">
-                    <CheckCircle2 className="h-5 w-5 text-cyan-500 shrink-0" />
+                  <li key={i} className="flex items-center gap-3 text-muted-foreground">
+                    <CheckCircle2 className="h-5 w-5 text-primary shrink-0" />
                     <span>{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="bg-gradient-to-b from-[#1e293b] to-[#0f172a] rounded-3xl p-8 border border-white/10 relative overflow-hidden group">
+            <div className="bg-gradient-to-b from-[#1e293b] to-[#0f172a] rounded-3xl p-8 border border-border relative overflow-hidden group">
               <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
-                <Smartphone className="h-32 w-32 text-cyan-400" />
+                <Smartphone className="h-32 w-32 text-primary" />
               </div>
               <h3 className="text-2xl font-bold text-white mb-6 relative z-10">Mobile Repairs</h3>
               <ul className="space-y-4 relative z-10">
@@ -170,17 +170,17 @@ function PublicHome() {
                   "Battery replacement",
                   "Water damage repair",
                 ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3 text-slate-300">
-                    <CheckCircle2 className="h-5 w-5 text-cyan-500 shrink-0" />
+                  <li key={i} className="flex items-center gap-3 text-muted-foreground">
+                    <CheckCircle2 className="h-5 w-5 text-primary shrink-0" />
                     <span>{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="bg-gradient-to-b from-[#1e293b] to-[#0f172a] rounded-3xl p-8 border border-white/10 relative overflow-hidden group">
+            <div className="bg-gradient-to-b from-[#1e293b] to-[#0f172a] rounded-3xl p-8 border border-border relative overflow-hidden group">
               <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
-                <Wrench className="h-32 w-32 text-cyan-400" />
+                <Wrench className="h-32 w-32 text-primary" />
               </div>
               <h3 className="text-2xl font-bold text-white mb-6 relative z-10">
                 Accessories & Upgrades
@@ -193,8 +193,8 @@ function PublicHome() {
                   "Chargers & cables",
                   "Protective cases",
                 ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3 text-slate-300">
-                    <CheckCircle2 className="h-5 w-5 text-cyan-500 shrink-0" />
+                  <li key={i} className="flex items-center gap-3 text-muted-foreground">
+                    <CheckCircle2 className="h-5 w-5 text-primary shrink-0" />
                     <span>{item}</span>
                   </li>
                 ))}
@@ -205,7 +205,7 @@ function PublicHome() {
           <div className="mt-12 text-center">
             <Link
               to="/services"
-              className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 font-semibold transition-colors"
+              className="inline-flex items-center gap-2 text-primary hover:text-primary font-semibold transition-colors"
             >
               View all services <span aria-hidden="true">&rarr;</span>
             </Link>
@@ -214,9 +214,9 @@ function PublicHome() {
       </section>
 
       {/* Trusted Brands */}
-      <section className="py-16 bg-[#0f172a]/80 border-y border-white/5 overflow-hidden">
+      <section className="py-16 bg-card/80 border-y border-border/50 overflow-hidden">
         <div className="container mx-auto px-6 mb-8">
-          <p className="text-center text-sm font-semibold tracking-widest uppercase text-slate-500">
+          <p className="text-center text-sm font-semibold tracking-widest uppercase text-muted-foreground">
             Trusted by All Major Brands
           </p>
         </div>

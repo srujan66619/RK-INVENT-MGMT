@@ -108,7 +108,7 @@ function TrackPage() {
 
         <form
           onSubmit={onSubmit}
-          className="glass mt-8 flex gap-2 rounded-2xl border border-white/10 p-3"
+          className="glass mt-8 flex gap-2 rounded-2xl border border-border p-3"
         >
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -142,7 +142,7 @@ function TrackPage() {
         )}
 
         {result && !result.found && (
-          <div className="glass mt-6 rounded-2xl border border-white/10 p-6 text-center text-muted-foreground">
+          <div className="glass mt-6 rounded-2xl border border-border p-6 text-center text-muted-foreground">
             Tracking ID not found. Please check the ID and try again.
           </div>
         )}
@@ -159,7 +159,7 @@ function ResultView({ data }: { data: Extract<TrackResult, { found: true }> }) {
 
   return (
     <div className="mt-6 space-y-4">
-      <div className="glass rounded-2xl border border-white/10 p-6">
+      <div className="glass rounded-2xl border border-border p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <div className="text-xs uppercase tracking-wider text-muted-foreground">Ticket</div>
@@ -193,7 +193,7 @@ function ResultView({ data }: { data: Extract<TrackResult, { found: true }> }) {
       </div>
 
       {customer && (
-        <div className="glass rounded-2xl border border-white/10 p-6">
+        <div className="glass rounded-2xl border border-border p-6">
           <div className="mb-3 text-xs uppercase tracking-wider text-muted-foreground">
             Customer
           </div>
@@ -231,7 +231,7 @@ function ResultView({ data }: { data: Extract<TrackResult, { found: true }> }) {
         </div>
       )}
 
-      <div className="glass rounded-2xl border border-white/10 p-6">
+      <div className="glass rounded-2xl border border-border p-6">
         <div className="mb-3 text-xs uppercase tracking-wider text-muted-foreground">
           Device & Issue
         </div>
@@ -264,7 +264,7 @@ function ResultView({ data }: { data: Extract<TrackResult, { found: true }> }) {
 
       {repair.appointment_at && <AppointmentCard repair={repair} />}
 
-      <div className="glass rounded-2xl border border-white/10 p-6">
+      <div className="glass rounded-2xl border border-border p-6">
         <div className="mb-3 text-xs uppercase tracking-wider text-muted-foreground">Timeline</div>
         <ul className="space-y-1.5 text-sm text-muted-foreground">
           <li>Created — {fmtDate(repair.created_at)}</li>
@@ -280,7 +280,7 @@ function ResultView({ data }: { data: Extract<TrackResult, { found: true }> }) {
       </div>
 
       {notes.length > 0 && (
-        <div className="glass rounded-2xl border border-white/10 p-6">
+        <div className="glass rounded-2xl border border-border p-6">
           <div className="mb-3 text-xs uppercase tracking-wider text-muted-foreground">
             Technician notes
           </div>

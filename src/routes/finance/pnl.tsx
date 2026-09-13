@@ -268,30 +268,30 @@ function PnLPage() {
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
-      <div className="flex flex-wrap items-end justify-between gap-4 border-b border-white/10 pb-6">
+      <div className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6">
         <div className="space-y-1.5">
           <h1 className="flex items-center gap-3 text-3xl font-bold tracking-tight">
-            <Calculator className="h-8 w-8 text-cyan-400" /> Profit & Loss
+            <Calculator className="h-8 w-8 text-primary" /> Profit & Loss
           </h1>
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-muted-foreground">
             Monthly P&L from revenue, COGS, and operating expenses.
           </p>
         </div>
         <div className="flex items-end gap-3">
           <div className="space-y-1.5">
-            <Label className="text-xs text-slate-400 uppercase tracking-widest font-bold">
+            <Label className="text-xs text-muted-foreground uppercase tracking-widest font-bold">
               Month
             </Label>
             <Input
               type="month"
               value={month}
               onChange={(e) => setMonth(e.target.value)}
-              className="w-44 h-10 bg-black/20 border-white/10 focus:ring-cyan-500/50"
+              className="w-44 h-10 bg-muted border-border focus:ring-primary/50"
             />
           </div>
           <Button
             variant="outline"
-            className="h-10 border-white/10 bg-white/5 hover:bg-white/10 text-slate-300"
+            className="h-10 border-border bg-secondary hover:bg-cardccent text-muted-foreground"
             onClick={exportPDF}
           >
             <FileDown className="mr-2 h-4 w-4 text-red-400" />
@@ -307,26 +307,26 @@ function PnLPage() {
                 Add Expense
               </Button>
             </DialogTrigger>
-            <DialogContent className="glass-strong border-white/10 shadow-2xl">
-              <DialogHeader className="border-b border-white/10 pb-4 mb-4">
+            <DialogContent className="glass-strong border-border shadow-2xl">
+              <DialogHeader className="border-b border-border pb-4 mb-4">
                 <DialogTitle className="text-xl tracking-tight">Add Operating Expense</DialogTitle>
               </DialogHeader>
               <div className="grid gap-4">
                 <div className="space-y-1.5">
-                  <Label className="text-slate-300">Category</Label>
+                  <Label className="text-muted-foreground">Category</Label>
                   <Select
                     value={form.category}
                     onValueChange={(v) => setForm({ ...form, category: v })}
                   >
-                    <SelectTrigger className="bg-black/20 border-white/10 focus:ring-cyan-500/50">
+                    <SelectTrigger className="bg-muted border-border focus:ring-primary/50">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-slate-900 border-white/10 text-slate-200">
+                    <SelectContent className="bg-card border-border text-foreground">
                       {EXPENSE_CATEGORIES.map((c) => (
                         <SelectItem
                           key={c}
                           value={c}
-                          className="focus:bg-cyan-500/20 focus:text-cyan-400"
+                          className="focus:bg-primary/20 focus:text-primary"
                         >
                           {c}
                         </SelectItem>
@@ -335,34 +335,34 @@ function PnLPage() {
                   </Select>
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-slate-300">Amount (INR)</Label>
+                  <Label className="text-muted-foreground">Amount (INR)</Label>
                   <Input
                     type="number"
                     step="0.01"
                     value={form.amount}
                     onChange={(e) => setForm({ ...form, amount: e.target.value })}
-                    className="bg-black/20 border-white/10 focus:border-cyan-500/50"
+                    className="bg-muted border-border focus:border-primary/50"
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-slate-300">Date</Label>
+                  <Label className="text-muted-foreground">Date</Label>
                   <Input
                     type="date"
                     value={form.expense_date}
                     onChange={(e) => setForm({ ...form, expense_date: e.target.value })}
-                    className="bg-black/20 border-white/10 focus:border-cyan-500/50"
+                    className="bg-muted border-border focus:border-primary/50"
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-slate-300">Description (optional)</Label>
+                  <Label className="text-muted-foreground">Description (optional)</Label>
                   <Input
                     value={form.description}
                     onChange={(e) => setForm({ ...form, description: e.target.value })}
-                    className="bg-black/20 border-white/10 focus:border-cyan-500/50"
+                    className="bg-muted border-border focus:border-primary/50"
                   />
                 </div>
               </div>
-              <DialogFooter className="pt-4 border-t border-white/10">
+              <DialogFooter className="pt-4 border-t border-border">
                 <Button
                   onClick={() => addExpense.mutate()}
                   disabled={!form.amount || addExpense.isPending}
@@ -417,8 +417,8 @@ function PnLPage() {
 
       {/* Charts */}
       <div className="grid gap-4 lg:grid-cols-3">
-        <div className="rounded-2xl border border-white/10 bg-[#0f172a]/80 backdrop-blur-xl p-5 shadow-lg lg:col-span-2">
-          <h3 className="mb-4 text-sm font-bold uppercase tracking-widest text-slate-400">
+        <div className="rounded-2xl border border-border bg-card/80 backdrop-blur-xl p-5 shadow-lg lg:col-span-2">
+          <h3 className="mb-4 text-sm font-bold uppercase tracking-widest text-muted-foreground">
             Daily Revenue vs Expenses
           </h3>
           <ResponsiveContainer width="100%" height={260}>
@@ -448,12 +448,12 @@ function PnLPage() {
             </BarChart>
           </ResponsiveContainer>
         </div>
-        <div className="rounded-2xl border border-white/10 bg-[#0f172a]/80 backdrop-blur-xl p-5 shadow-lg">
-          <h3 className="mb-4 text-sm font-bold uppercase tracking-widest text-slate-400">
+        <div className="rounded-2xl border border-border bg-card/80 backdrop-blur-xl p-5 shadow-lg">
+          <h3 className="mb-4 text-sm font-bold uppercase tracking-widest text-muted-foreground">
             Cost Breakdown
           </h3>
           {pieData.length === 0 ? (
-            <div className="grid h-[260px] place-items-center text-sm text-slate-500">
+            <div className="grid h-[260px] place-items-center text-sm text-muted-foreground">
               No data yet
             </div>
           ) : (
@@ -488,8 +488,8 @@ function PnLPage() {
       </div>
 
       {/* P&L Statement */}
-      <div className="rounded-2xl border border-white/10 bg-[#0f172a]/80 backdrop-blur-xl p-6 shadow-lg">
-        <h3 className="mb-5 text-sm font-bold uppercase tracking-widest text-slate-400">
+      <div className="rounded-2xl border border-border bg-card/80 backdrop-blur-xl p-6 shadow-lg">
+        <h3 className="mb-5 text-sm font-bold uppercase tracking-widest text-muted-foreground">
           P&L Statement — {month}
         </h3>
         <div className="space-y-1 text-sm">
@@ -521,24 +521,24 @@ function PnLPage() {
             big
           />
           <Row label="Net Margin" value={`${netMargin.toFixed(2)} %`} muted />
-          <div className="mt-4 rounded-lg bg-white/5 p-3 text-xs text-slate-400">
-            <strong className="text-slate-300">Info:</strong> Inventory purchases (POs received this
-            month): <span className="text-slate-200 font-mono">{inr(purchasesThisMonth)}</span> —
+          <div className="mt-4 rounded-lg bg-secondary p-3 text-xs text-muted-foreground">
+            <strong className="text-muted-foreground">Info:</strong> Inventory purchases (POs received this
+            month): <span className="text-foreground font-mono">{inr(purchasesThisMonth)}</span> —
             shown for reference, not subtracted (COGS is matched per invoice).
           </div>
         </div>
       </div>
 
       {/* Expenses table */}
-      <div className="rounded-2xl border border-white/10 bg-[#0f172a]/80 backdrop-blur-xl p-0 shadow-lg overflow-hidden">
-        <div className="p-5 border-b border-white/10 bg-white/[0.02]">
-          <h3 className="text-sm font-bold uppercase tracking-widest text-slate-400">
+      <div className="rounded-2xl border border-border bg-card/80 backdrop-blur-xl p-0 shadow-lg overflow-hidden">
+        <div className="p-5 border-b border-border bg-white/[0.02]">
+          <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
             Operating Expenses — {month}
           </h3>
         </div>
         <div className="overflow-x-auto custom-scrollbar p-1">
           <table className="w-full text-sm whitespace-nowrap">
-            <thead className="bg-slate-900/50 text-xs uppercase tracking-wider text-slate-400">
+            <thead className="bg-card/50 text-xs uppercase tracking-wider text-muted-foreground">
               <tr>
                 <th className="px-4 py-3 text-left">Date</th>
                 <th className="px-4 py-3 text-left">Category</th>
@@ -550,7 +550,7 @@ function PnLPage() {
             <tbody>
               {(expenses as any[]).length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-4 py-12 text-center text-slate-500">
+                  <td colSpan={5} className="px-4 py-12 text-center text-muted-foreground">
                     No expenses logged for this month.
                   </td>
                 </tr>
@@ -558,19 +558,19 @@ function PnLPage() {
                 (expenses as any[]).map((e) => (
                   <tr
                     key={e.id}
-                    className="group border-b border-white/5 hover:bg-white/[0.02] transition-colors"
+                    className="group border-b border-border/50 hover:bg-white/[0.02] transition-colors"
                   >
-                    <td className="px-4 py-3 text-slate-400">{fmtDate(e.expense_date)}</td>
-                    <td className="px-4 py-3 font-medium text-slate-200">{e.category}</td>
-                    <td className="px-4 py-3 text-slate-400">{e.description || "—"}</td>
-                    <td className="px-4 py-3 text-right font-medium text-slate-200">
+                    <td className="px-4 py-3 text-muted-foreground">{fmtDate(e.expense_date)}</td>
+                    <td className="px-4 py-3 font-medium text-foreground">{e.category}</td>
+                    <td className="px-4 py-3 text-muted-foreground">{e.description || "—"}</td>
+                    <td className="px-4 py-3 text-right font-medium text-foreground">
                       {inr(Number(e.amount))}
                     </td>
                     <td className="px-4 py-3 text-right">
                       <Button
                         size="icon"
                         variant="ghost"
-                        className="h-8 w-8 text-slate-400 hover:text-red-400 hover:bg-red-400/10 opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="h-8 w-8 text-muted-foreground hover:text-red-400 hover:bg-red-400/10 opacity-0 group-hover:opacity-100 transition-opacity"
                         onClick={() => delExpense.mutate(e.id)}
                       >
                         <Trash2 className="h-4 w-4" />
@@ -603,30 +603,30 @@ function KPI({
   const toneMap = { cyan: "#22d3ee", green: "#4ade80", red: "#f87171", amber: "#fbbf24" };
   const color = toneMap[tone];
   const textCls = {
-    cyan: "text-cyan-400",
+    cyan: "text-primary",
     green: "text-emerald-400",
     red: "text-red-400",
     amber: "text-amber-400",
   }[tone];
 
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-white/10 bg-[#0f172a]/80 backdrop-blur-xl p-5 shadow-lg transition-all hover:bg-white/5 hover:border-white/20 hover:-translate-y-0.5 hover:shadow-xl">
+    <div className="group relative overflow-hidden rounded-2xl border border-border bg-card/80 backdrop-blur-xl p-5 shadow-lg transition-all hover:bg-secondary hover:border-white/20 hover:-translate-y-0.5 hover:shadow-xl">
       <div
         className="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full opacity-10 blur-2xl transition-opacity group-hover:opacity-20"
         style={{ background: color }}
       />
       <div className="flex items-center justify-between">
-        <div className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
+        <div className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
           {label}
         </div>
         <div
-          className={`grid h-8 w-8 place-items-center rounded-lg border border-white/5 bg-white/[0.02] ${textCls}`}
+          className={`grid h-8 w-8 place-items-center rounded-lg border border-border/50 bg-white/[0.02] ${textCls}`}
         >
           {icon}
         </div>
       </div>
       <div className={`mt-2 text-2xl font-bold tracking-tight ${textCls}`}>{value}</div>
-      {hint && <div className="mt-1 text-xs text-slate-500">{hint}</div>}
+      {hint && <div className="mt-1 text-xs text-muted-foreground">{hint}</div>}
     </div>
   );
 }
@@ -647,10 +647,10 @@ function Row({
   tone?: "green" | "red";
 }) {
   const toneCls =
-    tone === "green" ? "text-emerald-400" : tone === "red" ? "text-red-400" : "text-slate-200";
+    tone === "green" ? "text-emerald-400" : tone === "red" ? "text-red-400" : "text-foreground";
   return (
     <div
-      className={`flex items-center justify-between py-1.5 transition-colors hover:bg-white/[0.02] px-2 -mx-2 rounded-md ${muted ? "text-slate-400 text-xs pl-6" : ""} ${bold ? "font-bold" : ""} ${big ? "text-xl font-black tracking-tight" : ""}`}
+      className={`flex items-center justify-between py-1.5 transition-colors hover:bg-white/[0.02] px-2 -mx-2 rounded-md ${muted ? "text-muted-foreground text-xs pl-6" : ""} ${bold ? "font-bold" : ""} ${big ? "text-xl font-black tracking-tight" : ""}`}
     >
       <span>{label}</span>
       <span className={toneCls}>{value}</span>

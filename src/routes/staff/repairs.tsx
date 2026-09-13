@@ -82,8 +82,8 @@ const STATUSES = [
 const STATUS_COLOR: Record<string, string> = {
   received: "bg-blue-400 text-black border-blue-500 font-semibold",
   diagnosis: "bg-purple-400 text-black border-purple-500 font-semibold",
-  waiting_parts: "bg-amber-400 text-black border-amber-500 font-semibold",
-  in_progress: "bg-cyan-400 text-black border-cyan-500 font-semibold",
+  waiting_parts: "bg-cardmber-400 text-black border-amber-500 font-semibold",
+  in_progress: "bg-primary text-black border-primary font-semibold",
   completed: "bg-emerald-400 text-black border-emerald-500 font-semibold",
   ready_delivery: "bg-teal-400 text-black border-teal-500 font-semibold",
   delivered: "bg-green-400 text-black border-green-500 font-semibold",
@@ -499,10 +499,10 @@ function RepairsPage() {
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
-      <header className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-6">
+      <header className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-6">
         <div className="space-y-1.5">
           <h1 className="text-3xl font-bold tracking-tight">Repairs</h1>
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-muted-foreground">
             {repairs.length} tickets · workflow tracking · WhatsApp receipts
           </p>
         </div>
@@ -521,8 +521,8 @@ function RepairsPage() {
               <Plus className="mr-2 h-4 w-4" /> New ticket
             </Button>
           </DialogTrigger>
-          <DialogContent className="glass-strong max-h-[90vh] max-w-2xl overflow-y-auto custom-scrollbar border-white/10 shadow-2xl">
-            <DialogHeader className="border-b border-white/10 pb-4 mb-4">
+          <DialogContent className="glass-strong max-h-[90vh] max-w-2xl overflow-y-auto custom-scrollbar border-border shadow-2xl">
+            <DialogHeader className="border-b border-border pb-4 mb-4">
               <DialogTitle className="text-xl tracking-tight">
                 {editing ? `Edit ${editing.ticket_no}` : "New repair ticket"}
               </DialogTitle>
@@ -536,7 +536,7 @@ function RepairsPage() {
             >
               {/* Customer autocomplete */}
               <div className="space-y-1.5">
-                <Label className="text-slate-300">Customer</Label>
+                <Label className="text-muted-foreground">Customer</Label>
                 <div className="relative">
                   <div className="flex gap-2">
                     <Input
@@ -546,13 +546,13 @@ function RepairsPage() {
                         setCustSearch(e.target.value);
                         if (form.customer_id) setForm((f) => ({ ...f, customer_id: "" }));
                       }}
-                      className="bg-black/20 border-white/10 focus:border-cyan-500/50"
+                      className="bg-muted border-border focus:border-primary/50"
                     />
                     <Button
                       type="button"
                       variant="outline"
                       size="icon"
-                      className="shrink-0 border-white/10 bg-white/5 hover:bg-white/10 hover:text-cyan-400"
+                      className="shrink-0 border-border bg-secondary hover:bg-cardccent hover:text-primary"
                       onClick={() => setNewCustOpen(true)}
                       title="Add new customer"
                     >
@@ -560,12 +560,12 @@ function RepairsPage() {
                     </Button>
                   </div>
                   {custSuggestions.length > 0 && (
-                    <div className="absolute z-20 mt-1 max-h-60 w-full overflow-y-auto rounded-xl border border-white/10 bg-[#0f172a] shadow-xl custom-scrollbar">
+                    <div className="absolute z-20 mt-1 max-h-60 w-full overflow-y-auto rounded-xl border border-border bg-card shadow-xl custom-scrollbar">
                       {custSuggestions.map((c) => (
                         <button
                           key={c.id}
                           type="button"
-                          className="flex w-full flex-col items-start gap-0.5 border-b border-white/5 px-4 py-3 text-left text-sm hover:bg-white/5 transition-colors"
+                          className="flex w-full flex-col items-start gap-0.5 border-b border-border/50 px-4 py-3 text-left text-sm hover:bg-secondary transition-colors"
                           onClick={() => {
                             setForm((f) => ({
                               ...f,
@@ -575,8 +575,8 @@ function RepairsPage() {
                             setCustSearch(c.name);
                           }}
                         >
-                          <span className="font-medium text-slate-200">{c.name}</span>
-                          <span className="text-xs text-slate-400">
+                          <span className="font-medium text-foreground">{c.name}</span>
+                          <span className="text-xs text-muted-foreground">
                             {c.phone ?? c.whatsapp ?? "—"}
                             {c.address ? ` · ${c.address}` : ""}
                           </span>
@@ -586,9 +586,9 @@ function RepairsPage() {
                   )}
                 </div>
                 {selectedCustomer && (
-                  <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/5 p-3 text-xs mt-2 shadow-sm">
-                    <div className="font-semibold text-cyan-400">{selectedCustomer.name}</div>
-                    <div className="text-cyan-400/70 mt-1">
+                  <div className="rounded-xl border border-primary/20 bg-primary/5 p-3 text-xs mt-2 shadow-sm">
+                    <div className="font-semibold text-primary">{selectedCustomer.name}</div>
+                    <div className="text-primary/70 mt-1">
                       {selectedCustomer.phone && (
                         <span className="mr-2">📞 {selectedCustomer.phone}</span>
                       )}
@@ -604,30 +604,30 @@ function RepairsPage() {
               </div>
 
               <div className="space-y-1.5">
-                <Label className="text-slate-300">Customer mobile number</Label>
+                <Label className="text-muted-foreground">Customer mobile number</Label>
                 <Input
                   type="tel"
                   inputMode="tel"
                   placeholder="e.g. 9876543210"
                   value={form.customer_mobile}
                   onChange={(e) => setForm((f) => ({ ...f, customer_mobile: e.target.value }))}
-                  className="bg-black/20 border-white/10 focus:border-cyan-500/50"
+                  className="bg-muted border-border focus:border-primary/50"
                 />
-                <div className="text-[11px] text-slate-400">
+                <div className="text-[11px] text-muted-foreground">
                   Saved to the selected customer's record if their phone is empty.
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <Label className="text-slate-300">Device type</Label>
+                  <Label className="text-muted-foreground">Device type</Label>
                   <select
                     value={form.device_type}
                     onChange={(e) => setForm((f) => ({ ...f, device_type: e.target.value }))}
-                    className="h-10 w-full rounded-md border border-white/10 bg-black/20 px-3 text-sm focus:border-cyan-500/50 outline-none"
+                    className="h-10 w-full rounded-md border border-border bg-muted px-3 text-sm focus:border-primary/50 outline-none"
                   >
                     {DEVICE_TYPES.map((t) => (
-                      <option key={t} value={t} className="bg-[#0f172a]">
+                      <option key={t} value={t} className="bg-card">
                         {t}
                       </option>
                     ))}
@@ -637,29 +637,29 @@ function RepairsPage() {
                   label="Brand"
                   value={form.device_brand}
                   onChange={(v) => setForm((f) => ({ ...f, device_brand: v }))}
-                  className="bg-black/20 border-white/10 focus:border-cyan-500/50"
+                  className="bg-muted border-border focus:border-primary/50"
                 />
                 <FieldC
                   label="Model"
                   value={form.device_model}
                   onChange={(v) => setForm((f) => ({ ...f, device_model: v }))}
-                  className="bg-black/20 border-white/10 focus:border-cyan-500/50"
+                  className="bg-muted border-border focus:border-primary/50"
                 />
                 <FieldC
                   label="IMEI / Serial"
                   value={form.imei}
                   onChange={(v) => setForm((f) => ({ ...f, imei: v }))}
-                  className="bg-black/20 border-white/10 focus:border-cyan-500/50"
+                  className="bg-muted border-border focus:border-primary/50"
                 />
                 <div className="space-y-1.5">
-                  <Label className="text-slate-300">Status</Label>
+                  <Label className="text-muted-foreground">Status</Label>
                   <select
                     value={form.status}
                     onChange={(e) => setForm((f) => ({ ...f, status: e.target.value }))}
-                    className="h-10 w-full rounded-md border border-white/10 bg-black/20 px-3 text-sm focus:border-cyan-500/50 outline-none"
+                    className="h-10 w-full rounded-md border border-border bg-muted px-3 text-sm focus:border-primary/50 outline-none"
                   >
                     {STATUSES.map((s) => (
-                      <option key={s.v} value={s.v} className="bg-[#0f172a]">
+                      <option key={s.v} value={s.v} className="bg-card">
                         {s.label}
                       </option>
                     ))}
@@ -670,7 +670,7 @@ function RepairsPage() {
                   type="date"
                   value={form.estimated_completion}
                   onChange={(v) => setForm((f) => ({ ...f, estimated_completion: v }))}
-                  className="bg-black/20 border-white/10 focus:border-cyan-500/50"
+                  className="bg-muted border-border focus:border-primary/50"
                 />
                 <FieldC
                   label="Estimated cost (₹)"
@@ -678,12 +678,12 @@ function RepairsPage() {
                   step="0.01"
                   value={String(form.estimated_cost)}
                   onChange={(v) => setForm((f) => ({ ...f, estimated_cost: Number(v || 0) }))}
-                  className="bg-black/20 border-white/10 focus:border-cyan-500/50"
+                  className="bg-muted border-border focus:border-primary/50"
                 />
               </div>
 
-              <div className="rounded-xl border border-white/10 bg-white/5 p-4 space-y-3 shadow-inner">
-                <div className="text-xs font-bold uppercase tracking-wider text-cyan-400">
+              <div className="rounded-xl border border-border bg-secondary p-4 space-y-3 shadow-inner">
+                <div className="text-xs font-bold uppercase tracking-wider text-primary">
                   Appointment slot (optional)
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -693,40 +693,40 @@ function RepairsPage() {
                     value={form.appointment_date}
                     min={new Date().toISOString().slice(0, 10)}
                     onChange={(v) => setForm((f) => ({ ...f, appointment_date: v }))}
-                    className="bg-black/20 border-white/10 focus:border-cyan-500/50"
+                    className="bg-muted border-border focus:border-primary/50"
                   />
                   <div className="space-y-1.5">
-                    <Label className="text-slate-300">Time slot</Label>
+                    <Label className="text-muted-foreground">Time slot</Label>
                     <select
                       value={form.appointment_time}
                       onChange={(e) => setForm((f) => ({ ...f, appointment_time: e.target.value }))}
                       disabled={!form.appointment_date}
-                      className="h-10 w-full rounded-md border border-white/10 bg-black/20 px-3 text-sm disabled:opacity-50 focus:border-cyan-500/50 outline-none"
+                      className="h-10 w-full rounded-md border border-border bg-muted px-3 text-sm disabled:opacity-50 focus:border-primary/50 outline-none"
                     >
-                      <option value="" className="bg-[#0f172a]">
+                      <option value="" className="bg-card">
                         Select a slot…
                       </option>
                       {TIME_SLOTS.map((t) => (
-                        <option key={t} value={t} className="bg-[#0f172a]">
+                        <option key={t} value={t} className="bg-card">
                           {t}
                         </option>
                       ))}
                     </select>
                   </div>
                 </div>
-                <div className="text-[11px] text-slate-400">
+                <div className="text-[11px] text-muted-foreground">
                   Pick when the customer will drop off the device. Saved with the ticket.
                 </div>
               </div>
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label className="text-slate-300">Issue description</Label>
+                  <Label className="text-muted-foreground">Issue description</Label>
                   <Button
                     type="button"
                     size="sm"
                     variant="ghost"
-                    className="h-8 text-cyan-400 hover:text-cyan-300 hover:bg-cyan-400/10"
+                    className="h-8 text-primary hover:text-primary hover:bg-primary/10"
                     onClick={handleTranslate}
                     disabled={translating || !form.issue.trim()}
                   >
@@ -744,13 +744,13 @@ function RepairsPage() {
                   placeholder="Describe the problem in any language — Hindi, Tamil, Telugu, English, etc."
                   required
                   rows={3}
-                  className="bg-black/20 border-white/10 focus:border-cyan-500/50 resize-none min-h-[80px]"
+                  className="bg-muted border-border focus:border-primary/50 resize-none min-h-[80px]"
                 />
                 {suggestion && (
-                  <div className="flex gap-3 rounded-xl border border-cyan-500/20 bg-cyan-500/5 p-4 text-sm mt-2 shadow-sm">
-                    <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-cyan-400" />
-                    <div className="text-slate-300">
-                      <span className="font-semibold text-cyan-400">AI suggestion:</span>{" "}
+                  <div className="flex gap-3 rounded-xl border border-primary/20 bg-primary/5 p-4 text-sm mt-2 shadow-sm">
+                    <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                    <div className="text-muted-foreground">
+                      <span className="font-semibold text-primary">AI suggestion:</span>{" "}
                       {suggestion}
                     </div>
                   </div>
@@ -758,7 +758,7 @@ function RepairsPage() {
               </div>
 
               {!editing && (
-                <div className="rounded-xl border border-white/10 bg-white/5 p-4 space-y-4 shadow-inner">
+                <div className="rounded-xl border border-border bg-secondary p-4 space-y-4 shadow-inner">
                   <div className="text-xs font-bold uppercase tracking-wider text-emerald-400">
                     Advance payment (optional)
                   </div>
@@ -769,36 +769,36 @@ function RepairsPage() {
                       step="0.01"
                       value={String(form.advance_amount)}
                       onChange={(v) => setForm((f) => ({ ...f, advance_amount: Number(v || 0) }))}
-                      className="bg-black/20 border-white/10"
+                      className="bg-muted border-border"
                     />
                     <div className="space-y-1.5">
-                      <Label className="text-slate-300">Mode</Label>
+                      <Label className="text-muted-foreground">Mode</Label>
                       <select
                         value={form.payment_mode}
                         onChange={(e) => setForm((f) => ({ ...f, payment_mode: e.target.value }))}
-                        className="h-10 w-full rounded-md border border-white/10 bg-black/20 px-3 text-sm focus:border-emerald-500/50 outline-none"
+                        className="h-10 w-full rounded-md border border-border bg-muted px-3 text-sm focus:border-emerald-500/50 outline-none"
                       >
-                        <option className="bg-[#0f172a]">Cash</option>
-                        <option className="bg-[#0f172a]">UPI</option>
-                        <option className="bg-[#0f172a]">Card</option>
-                        <option className="bg-[#0f172a]">Bank Transfer</option>
+                        <option className="bg-card">Cash</option>
+                        <option className="bg-card">UPI</option>
+                        <option className="bg-card">Card</option>
+                        <option className="bg-card">Bank Transfer</option>
                       </select>
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="text-slate-300">Balance due</Label>
-                      <div className="grid h-10 place-items-center rounded-md border border-white/10 bg-black/20 text-sm font-bold text-emerald-400">
+                      <Label className="text-muted-foreground">Balance due</Label>
+                      <div className="grid h-10 place-items-center rounded-md border border-border bg-muted text-sm font-bold text-emerald-400">
                         {inr(balance)}
                       </div>
                     </div>
                   </div>
-                  <label className="flex items-center gap-3 rounded-lg border border-white/10 bg-black/20 px-4 py-3 text-sm cursor-pointer hover:bg-white/5 transition-colors">
+                  <label className="flex items-center gap-3 rounded-lg border border-border bg-muted px-4 py-3 text-sm cursor-pointer hover:bg-secondary transition-colors">
                     <input
                       type="checkbox"
                       checked={form.auto_send_wa}
                       onChange={(e) => setForm((f) => ({ ...f, auto_send_wa: e.target.checked }))}
                       className="h-4 w-4 accent-emerald-500 rounded border-white/20"
                     />
-                    <span className="text-slate-300 text-sm">
+                    <span className="text-muted-foreground text-sm">
                       One-click WhatsApp — auto-send advance receipt to customer
                     </span>
                   </label>
@@ -806,16 +806,16 @@ function RepairsPage() {
               )}
 
               <div className="space-y-1.5 pt-2">
-                <Label className="text-slate-300">Initial technician notes (optional)</Label>
+                <Label className="text-muted-foreground">Initial technician notes (optional)</Label>
                 <Textarea
                   value={form.technician_notes}
                   onChange={(e) => setForm((f) => ({ ...f, technician_notes: e.target.value }))}
                   rows={2}
-                  className="bg-black/20 border-white/10 resize-none min-h-[60px]"
+                  className="bg-muted border-border resize-none min-h-[60px]"
                 />
               </div>
 
-              <DialogFooter className="pt-4 border-t border-white/10">
+              <DialogFooter className="pt-4 border-t border-border">
                 <Button
                   type="submit"
                   disabled={save.isPending}
@@ -843,22 +843,22 @@ function RepairsPage() {
         />
       )}
 
-      <div className="rounded-2xl border border-white/10 bg-[#0f172a]/80 backdrop-blur-xl p-4 shadow-lg">
+      <div className="rounded-2xl border border-border bg-card/80 backdrop-blur-xl p-4 shadow-lg">
         <div className="mb-4 flex flex-wrap gap-3">
           <div className="relative flex-1 min-w-[220px]">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search ticket, IMEI, brand, customer…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 h-10 bg-black/20 border-white/10"
+              className="pl-9 h-10 bg-muted border-border"
             />
           </div>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="h-10 w-48 bg-black/20 border-white/10 text-slate-200">
+            <SelectTrigger className="h-10 w-48 bg-muted border-border text-foreground">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent className="bg-[#0f172a] border-white/10">
+            <SelectContent className="bg-card border-border">
               <SelectItem value="all">All statuses</SelectItem>
               {STATUSES.map((s) => (
                 <SelectItem key={s.v} value={s.v}>
@@ -871,7 +871,7 @@ function RepairsPage() {
 
         <div className="overflow-x-auto custom-scrollbar">
           <table className="w-full text-sm whitespace-nowrap">
-            <thead className="bg-slate-900/50 text-xs uppercase tracking-wider text-slate-400">
+            <thead className="bg-card/50 text-xs uppercase tracking-wider text-muted-foreground">
               <tr>
                 <th className="px-4 py-3 text-left rounded-tl-lg">Ticket</th>
                 <th className="px-4 py-3 text-left">Customer</th>
@@ -886,14 +886,14 @@ function RepairsPage() {
             <tbody>
               {isLoading && (
                 <tr>
-                  <td colSpan={8} className="py-12 text-center text-slate-500">
+                  <td colSpan={8} className="py-12 text-center text-muted-foreground">
                     Loading…
                   </td>
                 </tr>
               )}
               {!isLoading && filtered.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="py-12 text-center text-slate-500">
+                  <td colSpan={8} className="py-12 text-center text-muted-foreground">
                     No repair tickets.
                   </td>
                 </tr>
@@ -903,21 +903,21 @@ function RepairsPage() {
                 return (
                   <tr
                     key={r.id}
-                    className="group border-b border-white/5 hover:bg-white/[0.02] transition-colors"
+                    className="group border-b border-border/50 hover:bg-white/[0.02] transition-colors"
                   >
                     <td className="px-4 py-3 font-mono text-xs font-semibold">
                       <button
-                        className="text-cyan-400 hover:text-cyan-300 hover:underline transition-colors"
+                        className="text-primary hover:text-primary hover:underline transition-colors"
                         onClick={() => setDetail(r)}
                       >
                         {r.ticket_no}
                       </button>
                     </td>
-                    <td className="px-4 py-3 text-slate-200">
-                      {c?.name ?? <span className="text-slate-500">—</span>}
+                    <td className="px-4 py-3 text-foreground">
+                      {c?.name ?? <span className="text-muted-foreground">—</span>}
                     </td>
                     <td
-                      className="px-4 py-3 text-slate-400 truncate max-w-[200px]"
+                      className="px-4 py-3 text-muted-foreground truncate max-w-[200px]"
                       title={
                         [r.device_brand, r.device_model].filter(Boolean).join(" ") ||
                         r.device_type ||
@@ -928,13 +928,13 @@ function RepairsPage() {
                         r.device_type ||
                         "—"}
                     </td>
-                    <td className="px-4 py-3 text-slate-400">{r.technician_name ?? "—"}</td>
+                    <td className="px-4 py-3 text-muted-foreground">{r.technician_name ?? "—"}</td>
                     <td className="px-4 py-3">
                       <select
                         value={r.status}
                         onChange={(e) => updateStatus.mutate({ id: r.id, status: e.target.value })}
                         className={
-                          "rounded-md border bg-black/40 px-2.5 py-1 text-[11px] uppercase tracking-wider outline-none cursor-pointer transition-colors " +
+                          "rounded-md border bg-muted px-2.5 py-1 text-[11px] uppercase tracking-wider outline-none cursor-pointer transition-colors " +
                           STATUS_COLOR[r.status]
                         }
                       >
@@ -942,23 +942,23 @@ function RepairsPage() {
                           <option
                             key={s.v}
                             value={s.v}
-                            className="bg-[#0f172a] text-slate-200 normal-case"
+                            className="bg-card text-foreground normal-case"
                           >
                             {s.label}
                           </option>
                         ))}
                       </select>
                     </td>
-                    <td className="px-4 py-3 text-right font-medium text-slate-200">
+                    <td className="px-4 py-3 text-right font-medium text-foreground">
                       {inr(r.estimated_cost)}
                     </td>
-                    <td className="px-4 py-3 text-slate-400">{fmtDate(r.estimated_completion)}</td>
+                    <td className="px-4 py-3 text-muted-foreground">{fmtDate(r.estimated_completion)}</td>
                     <td className="px-4 py-3 text-right">
                       <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <Button
                           size="icon"
                           variant="ghost"
-                          className="h-8 w-8 text-slate-400 hover:text-slate-100 hover:bg-white/10"
+                          className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-cardccent"
                           aria-label={`Open details for ${r.ticket_no}`}
                           title="Open details"
                           onClick={() => setDetail(r)}
@@ -989,7 +989,7 @@ function RepairsPage() {
                         <Button
                           size="icon"
                           variant="ghost"
-                          className="h-8 w-8 text-slate-400 hover:text-cyan-400 hover:bg-cyan-400/10"
+                          className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10"
                           aria-label={`Edit ${r.ticket_no}`}
                           onClick={() => loadEditing(r)}
                         >
@@ -998,7 +998,7 @@ function RepairsPage() {
                         <Button
                           size="icon"
                           variant="ghost"
-                          className="h-8 w-8 text-slate-400 hover:text-red-400 hover:bg-red-400/10"
+                          className="h-8 w-8 text-muted-foreground hover:text-red-400 hover:bg-red-400/10"
                           aria-label={`Delete ${r.ticket_no}`}
                           onClick={() => {
                             if (confirm(`Delete ${r.ticket_no}?`)) del.mutate(r.id);
@@ -1280,7 +1280,7 @@ function RepairDetailDialog({
             {notes.map((n) => (
               <div
                 key={n.id}
-                className="flex items-start gap-3 rounded-lg border border-white/5 bg-white/5 p-3 text-sm"
+                className="flex items-start gap-3 rounded-lg border border-border/50 bg-secondary p-3 text-sm"
               >
                 <button
                   onClick={() => toggleDone.mutate(n)}
@@ -1498,7 +1498,7 @@ function AppointmentPanel({
 
   const actionBadge: Record<ApptEvent["action"], string> = {
     scheduled: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30",
-    rescheduled: "bg-amber-500/15 text-amber-300 border-amber-500/30",
+    rescheduled: "bg-cardmber-500/15 text-amber-300 border-amber-500/30",
     cancelled: "bg-red-500/15 text-red-300 border-red-500/30",
   };
 
@@ -1600,7 +1600,7 @@ function AppointmentPanel({
             {events.map((ev) => (
               <li
                 key={ev.id}
-                className="flex flex-wrap items-center gap-2 rounded-lg border border-white/5 bg-white/[0.02] px-3 py-2 text-sm"
+                className="flex flex-wrap items-center gap-2 rounded-lg border border-border/50 bg-white/[0.02] px-3 py-2 text-sm"
               >
                 <span
                   className={`rounded-full border px-2 py-0.5 text-xs capitalize ${actionBadge[ev.action]}`}
@@ -1664,7 +1664,7 @@ function WaLogPanel({ repairId }: { repairId: string }) {
     sent: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30",
     blocked: "bg-red-500/15 text-red-300 border-red-500/30",
     cancelled: "bg-white/10 text-muted-foreground border-white/20",
-    no_phone: "bg-amber-500/15 text-amber-300 border-amber-500/30",
+    no_phone: "bg-cardmber-500/15 text-amber-300 border-amber-500/30",
   };
 
   return (
@@ -1686,7 +1686,7 @@ function WaLogPanel({ repairId }: { repairId: string }) {
       ) : (
         <div className="space-y-2">
           {logs.map((l) => (
-            <div key={l.id} className="rounded-lg border border-white/5 bg-white/5 p-3 text-xs">
+            <div key={l.id} className="rounded-lg border border-border/50 bg-secondary p-3 text-xs">
               <div className="flex flex-wrap items-center gap-2">
                 <Badge variant="outline" className={statusClass[l.status] ?? "border-white/20"}>
                   {l.status}

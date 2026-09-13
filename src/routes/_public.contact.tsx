@@ -43,8 +43,8 @@ function Contact() {
   return (
     <div className="w-full pb-20">
       {/* Page Header */}
-      <section className="relative pt-16 md:pt-24 pb-12 overflow-hidden border-b border-white/10 bg-[#0f172a]/50">
-        <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-cyan-900/20 via-[#0f172a]/0 to-transparent" />
+      <section className="relative pt-16 md:pt-24 pb-12 overflow-hidden border-b border-border bg-card/50">
+        <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/20 via-[#0f172a]/0 to-transparent" />
         <div className="container relative z-10 mx-auto px-6 text-center">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
@@ -58,7 +58,7 @@ function Contact() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-lg text-slate-400 max-w-2xl mx-auto"
+            className="text-lg text-muted-foreground max-w-2xl mx-auto"
           >
             Have a question or need a quote? Reach out to us and our expert technicians will assist
             you.
@@ -81,12 +81,12 @@ function Contact() {
                 <h2 className="text-3xl font-bold text-white mb-8">Get in Touch</h2>
                 <div className="space-y-6">
                   <div className="flex items-start gap-4">
-                    <div className="h-12 w-12 rounded-full bg-[#1e293b] flex items-center justify-center shrink-0 border border-white/5">
-                      <MapPin className="h-5 w-5 text-cyan-400" />
+                    <div className="h-12 w-12 rounded-full bg-card flex items-center justify-center shrink-0 border border-border/50">
+                      <MapPin className="h-5 w-5 text-primary" />
                     </div>
                     <div>
                       <h3 className="text-lg font-bold text-white mb-1">Our Location</h3>
-                      <p className="text-slate-400">
+                      <p className="text-muted-foreground">
                         14-13, Brindavan Gardens 1st Ln,
                         <br />
                         Brindavan Gardens,
@@ -97,15 +97,15 @@ function Contact() {
                   </div>
 
                   <div className="flex items-start gap-4">
-                    <div className="h-12 w-12 rounded-full bg-[#1e293b] flex items-center justify-center shrink-0 border border-white/5">
-                      <Phone className="h-5 w-5 text-cyan-400" />
+                    <div className="h-12 w-12 rounded-full bg-card flex items-center justify-center shrink-0 border border-border/50">
+                      <Phone className="h-5 w-5 text-primary" />
                     </div>
                     <div>
                       <h3 className="text-lg font-bold text-white mb-1">Phone</h3>
-                      <p className="text-slate-400">
+                      <p className="text-muted-foreground">
                         <a
                           href="tel:+919666984949"
-                          className="hover:text-cyan-400 transition-colors"
+                          className="hover:text-primary transition-colors"
                         >
                           +91 96669 84949
                         </a>
@@ -114,15 +114,15 @@ function Contact() {
                   </div>
 
                   <div className="flex items-start gap-4">
-                    <div className="h-12 w-12 rounded-full bg-[#1e293b] flex items-center justify-center shrink-0 border border-white/5">
-                      <Mail className="h-5 w-5 text-cyan-400" />
+                    <div className="h-12 w-12 rounded-full bg-card flex items-center justify-center shrink-0 border border-border/50">
+                      <Mail className="h-5 w-5 text-primary" />
                     </div>
                     <div>
                       <h3 className="text-lg font-bold text-white mb-1">Email</h3>
-                      <p className="text-slate-400">
+                      <p className="text-muted-foreground">
                         <a
                           href="mailto:info@rkrepairlabs.com"
-                          className="hover:text-cyan-400 transition-colors"
+                          className="hover:text-primary transition-colors"
                         >
                           info@rkrepairlabs.com
                         </a>
@@ -131,12 +131,12 @@ function Contact() {
                   </div>
 
                   <div className="flex items-start gap-4">
-                    <div className="h-12 w-12 rounded-full bg-[#1e293b] flex items-center justify-center shrink-0 border border-white/5">
-                      <Clock className="h-5 w-5 text-cyan-400" />
+                    <div className="h-12 w-12 rounded-full bg-card flex items-center justify-center shrink-0 border border-border/50">
+                      <Clock className="h-5 w-5 text-primary" />
                     </div>
                     <div>
                       <h3 className="text-lg font-bold text-white mb-1">Business Hours</h3>
-                      <p className="text-slate-400">
+                      <p className="text-muted-foreground">
                         Monday - Saturday: 10:00 AM - 8:30 PM
                         <br />
                         Sunday: Closed
@@ -147,7 +147,7 @@ function Contact() {
               </div>
 
               {/* Map */}
-              <div className="rounded-3xl overflow-hidden border border-white/10 aspect-video bg-[#1e293b] relative group">
+              <div className="rounded-3xl overflow-hidden border border-border aspect-video bg-card relative group">
                 <iframe
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3829.4182998632616!2d80.4195551!3d16.3150446!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a4a75a4222b8609%3A0x5b8731d711a07ad8!2sRk%20repair%20labs!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
                   width="100%"
@@ -167,34 +167,34 @@ function Contact() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              <div className="bg-[#1e293b]/50 border border-white/10 rounded-3xl p-8 md:p-12">
+              <div className="bg-card/50 border border-border rounded-3xl p-8 md:p-12">
                 <h2 className="text-2xl font-bold text-white mb-6">Send us a Message</h2>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-slate-300">Your Name</label>
+                    <label className="text-sm font-medium text-muted-foreground">Your Name</label>
                     <Input
                       required
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="John Doe"
-                      className="bg-[#020617] border-white/10 h-12 text-white"
+                      className="bg-background border-border h-12 text-white"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-slate-300">Phone Number</label>
+                    <label className="text-sm font-medium text-muted-foreground">Phone Number</label>
                     <Input
                       required
                       type="tel"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="+91 XXXXX XXXXX"
-                      className="bg-[#020617] border-white/10 h-12 text-white"
+                      className="bg-background border-border h-12 text-white"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-slate-300">
+                    <label className="text-sm font-medium text-muted-foreground">
                       Email Address (Optional)
                     </label>
                     <Input
@@ -202,25 +202,25 @@ function Contact() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="john@example.com"
-                      className="bg-[#020617] border-white/10 h-12 text-white"
+                      className="bg-background border-border h-12 text-white"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-slate-300">Device & Issue</label>
+                    <label className="text-sm font-medium text-muted-foreground">Device & Issue</label>
                     <Textarea
                       required
                       value={issue}
                       onChange={(e) => setIssue(e.target.value)}
                       placeholder="E.g. MacBook Pro M1 - Screen cracked"
-                      className="bg-[#020617] border-white/10 min-h-[120px] resize-y text-white"
+                      className="bg-background border-border min-h-[120px] resize-y text-white"
                     />
                   </div>
 
                   <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full h-12 text-base font-bold bg-cyan-500 hover:bg-cyan-400 text-black"
+                    className="w-full h-12 text-base font-bold bg-primary hover:bg-primary text-black"
                   >
                     {isSubmitting ? (
                       "Sending..."
@@ -232,8 +232,8 @@ function Contact() {
                   </Button>
                 </form>
 
-                <div className="mt-8 pt-8 border-t border-white/10 text-center">
-                  <p className="text-slate-400 text-sm mb-4">Or reach us instantly via WhatsApp</p>
+                <div className="mt-8 pt-8 border-t border-border text-center">
+                  <p className="text-muted-foreground text-sm mb-4">Or reach us instantly via WhatsApp</p>
                   <a
                     href="https://wa.me/917729066619"
                     target="_blank"

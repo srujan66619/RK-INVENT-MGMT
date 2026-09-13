@@ -23,7 +23,7 @@ export function ThemeToggle() {
           <DropdownMenuItem
             key={t.id}
             onClick={() => setTheme(t.id)}
-            className={theme === t.id ? "bg-cyan-500/10 text-cyan-400 font-medium" : ""}
+            className={theme === t.id ? "bg-primary/10 text-primary font-medium" : ""}
           >
             {t.label}
           </DropdownMenuItem>

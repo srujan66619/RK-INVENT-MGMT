@@ -13,8 +13,8 @@ function AdminGate() {
   
   if (loading) {
     return (
-      <div className="grid min-h-screen place-items-center bg-[#020617]">
-        <Loader2 className="h-6 w-6 animate-spin text-cyan-500" />
+      <div className="grid min-h-screen place-items-center bg-background">
+        <Loader2 className="h-6 w-6 animate-spin text-primary" />
       </div>
     );
   }
@@ -25,11 +25,11 @@ function AdminGate() {
 
   if (user.role !== "admin") {
     return (
-      <div className="grid min-h-screen place-items-center bg-[#020617] text-slate-200">
+      <div className="grid min-h-screen place-items-center bg-background text-foreground">
         <div className="text-center space-y-4">
           <h1 className="text-2xl font-bold text-red-400">Access Denied</h1>
-          <p className="text-slate-400">You must be an administrator to access this area.</p>
-          <a href="/" className="text-cyan-400 hover:underline">Go to Home</a>
+          <p className="text-muted-foreground">You must be an administrator to access this area.</p>
+          <a href="/" className="text-primary hover:underline">Go to Home</a>
         </div>
       </div>
     );

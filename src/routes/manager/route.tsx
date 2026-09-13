@@ -16,8 +16,8 @@ function ManagerGate() {
   
   if (loading) {
     return (
-      <div className="grid min-h-screen place-items-center bg-[#020617]">
-        <Loader2 className="h-6 w-6 animate-spin text-cyan-500" />
+      <div className="grid min-h-screen place-items-center bg-background">
+        <Loader2 className="h-6 w-6 animate-spin text-primary" />
       </div>
     );
   }
@@ -31,21 +31,21 @@ function ManagerGate() {
     return (
       <AppLayout>
         <div className="flex-1 flex items-center justify-center p-6 h-full">
-          <div className="max-w-md w-full bg-slate-900 border border-slate-800 rounded-xl p-8 shadow-2xl flex flex-col items-center text-center space-y-6">
+          <div className="max-w-md w-full bg-card border border-border rounded-xl p-8 shadow-2xl flex flex-col items-center text-center space-y-6">
             <div className="h-16 w-16 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center">
               <ShieldAlert className="h-8 w-8" />
             </div>
             
             <div className="space-y-2">
-              <h1 className="text-2xl font-bold text-slate-100">Access Denied</h1>
-              <p className="text-slate-400">
+              <h1 className="text-2xl font-bold text-foreground">Access Denied</h1>
+              <p className="text-muted-foreground">
                 You do not have the required permissions to view the manager portal.
               </p>
             </div>
             
             <Button 
               variant="default"
-              className="w-full bg-cyan-600 hover:bg-cyan-700 text-white flex items-center justify-center gap-2"
+              className="w-full bg-primary hover:bg-primary/90 text-white flex items-center justify-center gap-2"
               onClick={() => window.history.back()}
             >
               <ArrowLeft className="h-4 w-4" />

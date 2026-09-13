@@ -109,10 +109,10 @@ function CustomersPage() {
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
-      <header className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-6">
+      <header className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-6">
         <div className="space-y-1.5">
           <h1 className="text-3xl font-bold tracking-tight">Customers</h1>
-          <p className="text-sm text-slate-400">{customers.length} total customers</p>
+          <p className="text-sm text-muted-foreground">{customers.length} total customers</p>
         </div>
         <Dialog
           open={open}
@@ -169,20 +169,20 @@ function CustomersPage() {
         </Dialog>
       </header>
 
-      <div className="rounded-2xl border border-white/10 bg-[#0f172a]/80 backdrop-blur-xl p-4 shadow-lg">
+      <div className="rounded-2xl border border-border bg-card/80 backdrop-blur-xl p-4 shadow-lg">
         <div className="relative mb-4">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Search by name, phone or email…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-9 h-10 bg-black/20 border-white/10"
+            className="pl-9 h-10 bg-muted border-border"
           />
         </div>
 
         <div className="overflow-x-auto custom-scrollbar">
           <table className="w-full text-sm whitespace-nowrap">
-            <thead className="bg-slate-900/50 text-xs uppercase tracking-wider text-slate-400">
+            <thead className="bg-card/50 text-xs uppercase tracking-wider text-muted-foreground">
               <tr>
                 <th className="px-4 py-3 text-left rounded-tl-lg">Name</th>
                 <th className="px-4 py-3 text-left">Contact</th>
@@ -194,14 +194,14 @@ function CustomersPage() {
             <tbody>
               {isLoading && (
                 <tr>
-                  <td colSpan={5} className="px-4 py-12 text-center text-slate-500">
+                  <td colSpan={5} className="px-4 py-12 text-center text-muted-foreground">
                     Loading…
                   </td>
                 </tr>
               )}
               {!isLoading && filtered.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-4 py-12 text-center text-slate-500">
+                  <td colSpan={5} className="px-4 py-12 text-center text-muted-foreground">
                     No customers yet. Add your first one.
                   </td>
                 </tr>
@@ -209,10 +209,10 @@ function CustomersPage() {
               {filtered.map((c) => (
                 <tr
                   key={c.id}
-                  className="group border-b border-white/5 hover:bg-white/[0.02] transition-colors"
+                  className="group border-b border-border/50 hover:bg-white/[0.02] transition-colors"
                 >
-                  <td className="px-4 py-3 font-medium text-slate-200">{c.name}</td>
-                  <td className="px-4 py-3 text-slate-400">
+                  <td className="px-4 py-3 font-medium text-foreground">{c.name}</td>
+                  <td className="px-4 py-3 text-muted-foreground">
                     <div className="flex flex-col gap-1">
                       {c.phone && (
                         <span className="inline-flex items-center gap-1.5">
@@ -233,18 +233,18 @@ function CustomersPage() {
                     </div>
                   </td>
                   <td
-                    className="px-4 py-3 text-slate-400 truncate max-w-[200px]"
+                    className="px-4 py-3 text-muted-foreground truncate max-w-[200px]"
                     title={c.address ?? ""}
                   >
                     {c.address ?? "—"}
                   </td>
-                  <td className="px-4 py-3 text-slate-400">{fmtDate(c.created_at)}</td>
+                  <td className="px-4 py-3 text-muted-foreground">{fmtDate(c.created_at)}</td>
                   <td className="px-4 py-3 text-right">
                     <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       <Button
                         size="icon"
                         variant="ghost"
-                        className="h-8 w-8 text-slate-400 hover:text-cyan-400 hover:bg-cyan-400/10"
+                        className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10"
                         onClick={() => {
                           setEditing(c);
                           setOpen(true);
@@ -255,7 +255,7 @@ function CustomersPage() {
                       <Button
                         size="icon"
                         variant="ghost"
-                        className="h-8 w-8 text-slate-400 hover:text-red-400 hover:bg-red-400/10"
+                        className="h-8 w-8 text-muted-foreground hover:text-red-400 hover:bg-red-400/10"
                         onClick={() => {
                           if (confirm(`Delete ${c.name}?`)) del.mutate(c.id);
                         }}
