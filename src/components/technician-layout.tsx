@@ -4,7 +4,7 @@ import { useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-import { useTheme } from "@/hooks/use-theme";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { logoutFn } from "@/lib/api/auth";
 import { GlobalSearch, openGlobalSearch } from "@/components/global-search";
 
@@ -59,7 +59,7 @@ function SidebarBrand() {
 export function TechnicianLayout({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const { theme, toggle } = useTheme();
+
 
   async function signOut() {
     await logoutFn();
@@ -117,9 +117,7 @@ export function TechnicianLayout({ children }: { children: ReactNode }) {
           
           <div className="flex-1" />
           
-          <Button variant="ghost" size="icon" onClick={toggle} title="Toggle theme">
-            {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-          </Button>
+          <ThemeToggle />
         </header>
         <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 custom-scrollbar">
           <div className="mx-auto w-full max-w-6xl">

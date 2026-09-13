@@ -27,6 +27,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils";
 import { fmtDateTime } from "@/lib/format";
 import { WaSenderProvider } from "@/components/wa-sender";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { useTheme } from "@/hooks/use-theme";
 import { meFn, logoutFn } from "@/lib/api/auth";
 import { getNotificationsFn, markNotificationsReadFn } from "@/lib/api/notifications";
@@ -258,20 +259,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
   );
 }
 
-function ThemeToggle() {
-  const { theme, toggle } = useTheme();
-  return (
-    <Button
-      variant="ghost"
-      size="icon"
-      onClick={toggle}
-      aria-label="Toggle theme"
-      title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-    >
-      {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-    </Button>
-  );
-}
+
 
 type Notif = {
   id: string;
