@@ -39,13 +39,23 @@ export async function getSession() {
   return session;
 }
 
+import { userService } from "@/services/user.service";
+
 export async function requireAuth(allowedRoles?: string[]) {
   const session = await getSession();
   if (!session) {
     throw new Error("Unauthorized");
   }
 
-  // Optional: Add logic to check custom roles in the user metadata or from a users table
-  // For now, if logged in, we return the session.
-  return { session, user: session.user };
+  const profile = await userService.getProfileById(session.user.id);
+  
+  if (!profile || profile.approval_status !== "approved") {
+    throw new Error("Account pending approval or rejected");
+  }
+
+  if (allowedRoles && allowedRoles.length > 0 && !allowedRoles.includes(profile.role)) {
+    throw new Error("Unauthorized: Insufficient permissions");
+  }
+
+  return { session, user: profile };
 }
