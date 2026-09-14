@@ -39,6 +39,7 @@ import { getCustomersFn } from "@/lib/api/customers";
 import { getRepairsFn } from "@/lib/api/repairs";
 import { getProfileFn } from "@/lib/api/settings";
 import { cn } from "@/lib/utils";
+import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
 
 export const Route = createFileRoute("/finance/billing")({
   head: () => ({ meta: [{ title: "Billing — RK Labs" }] }),
@@ -700,7 +701,7 @@ function BillingPage() {
                           title="Send PDF on WhatsApp"
                           onClick={() => shareWhatsApp(inv)}
                         >
-                          <Send className="h-4 w-4" />
+                          <WhatsAppIcon className="h-4 w-4" />
                         </Button>
                         {inv.payment_status !== "paid" && (
                           <Button
