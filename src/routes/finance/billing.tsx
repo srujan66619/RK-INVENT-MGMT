@@ -46,7 +46,7 @@ export const Route = createFileRoute("/finance/billing")({
   component: BillingPage,
 });
 
-type LineItem = { description: string; quantity: number; unit_price: number };
+type LineItem = { description: string; quantity: number; unit_price: number; warranty: string };
 type Invoice = {
   id: string;
   invoice_no: string;
@@ -101,7 +101,7 @@ function BillingPage() {
   const wa = useWaSender();
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState<LineItem[]>([
-    { description: "Repair charges", quantity: 1, unit_price: 0 },
+    { description: "Repair charges", quantity: 1, unit_price: 0, warranty: "" },
   ]);
   const [discount, setDiscount] = useState(0);
   const [gst, setGst] = useState(18);
@@ -174,6 +174,7 @@ function BillingPage() {
           quantity: i.quantity,
           unit_price: i.unit_price,
           total_price: i.quantity * i.unit_price,
+          warranty: i.warranty || null,
         }));
       if (rows.length) await createInvoiceItemsFn({ data: rows });
       return { ...payload, id: inv.id, created_at: inv.created_at } as Invoice;
@@ -415,6 +416,7 @@ function BillingPage() {
                             description: q.label,
                             quantity: 1,
                             unit_price: q.price,
+                            warranty: "",
                           };
                           if (empty >= 0) return prev.map((p, i) => (i === empty ? newItem : p));
                           return [...prev, newItem];
@@ -429,8 +431,17 @@ function BillingPage() {
 
               <div className="space-y-2">
                 <Label>Line items</Label>
+                {/* Column headers */}
+                <div className="grid grid-cols-[1fr_70px_110px_110px_110px_40px] gap-2 px-1">
+                  <span className="text-xs font-medium text-muted-foreground">Description</span>
+                  <span className="text-xs font-medium text-muted-foreground">Qty</span>
+                  <span className="text-xs font-medium text-muted-foreground">Unit ₹</span>
+                  <span className="text-xs font-medium text-muted-foreground">Warranty</span>
+                  <span className="text-xs font-medium text-muted-foreground">Total</span>
+                  <span />
+                </div>
                 {items.map((it, idx) => (
-                  <div key={idx} className="grid grid-cols-[1fr_70px_110px_110px_40px] gap-2">
+                  <div key={idx} className="grid grid-cols-[1fr_70px_110px_110px_110px_40px] gap-2">
                     <Input
                       placeholder="Description"
                       value={it.description}
@@ -467,6 +478,17 @@ function BillingPage() {
                         )
                       }
                     />
+                    <Input
+                      placeholder="e.g. 3 months"
+                      value={it.warranty}
+                      onChange={(e) =>
+                        setItems(
+                          items.map((x, i) =>
+                            i === idx ? { ...x, warranty: e.target.value } : x,
+                          ),
+                        )
+                      }
+                    />
                     <div className="grid h-9 place-items-center rounded-md border border-border bg-secondary text-sm">
                       {inr(it.quantity * it.unit_price)}
                     </div>
@@ -485,7 +507,7 @@ function BillingPage() {
                   variant="outline"
                   size="sm"
                   onClick={() =>
-                    setItems([...items, { description: "", quantity: 1, unit_price: 0 }])
+                    setItems([...items, { description: "", quantity: 1, unit_price: 0, warranty: "" }])
                   }
                 >
                   <Plus className="mr-1 h-4 w-4" /> Add line

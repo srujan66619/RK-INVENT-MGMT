@@ -101,6 +101,33 @@ export async function drawPdfFooter(doc: jsPDF, y: number) {
   const phoneIcon = await getIconDataUrl(React.createElement(Phone), "#008A9A", 16);
   const webIcon = await getIconDataUrl(React.createElement(Globe), "#008A9A", 16);
 
+  // --- Generated timestamp ---
+  const now = new Date();
+  const dateStr = now.toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    timeZone: "Asia/Kolkata",
+  });
+  const timeStr = now.toLocaleTimeString("en-IN", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
+    timeZone: "Asia/Kolkata",
+  });
+  const generatedText = `Generated on: ${dateStr}, ${timeStr.toUpperCase()} IST`;
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(7.5);
+  doc.setTextColor(120, 120, 120);
+  doc.text(generatedText, pw / 2, y - 8, { align: "center" });
+
+  // Thin divider line above footer
+  doc.setDrawColor(200, 200, 200);
+  doc.setLineWidth(0.5);
+  doc.line(marginX, y - 4, pw - marginX, y - 4);
+
   doc.setFillColor(30, 41, 59);
   doc.rect(marginX, y, pw - marginX * 2, 55, "F");
 

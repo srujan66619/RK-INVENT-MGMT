@@ -1,16 +1,18 @@
+"use server";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { repairService } from "@/services/repair.service";
-import { customerService } from "@/services/customer.service";
-import { db } from "@/db";
-import { repairNotes } from "@/db/schema/repairs";
-import { eq, desc } from "drizzle-orm";
 
 const schema = z.object({ ticket: z.string().trim().min(1).max(64) });
 
 export const trackRepair = createServerFn({ method: "GET" })
   .validator((data: unknown) => schema.parse(data))
   .handler(async ({ data }) => {
+    const { repairService } = await import("@/services/repair.service");
+    const { customerService } = await import("@/services/customer.service");
+    const { db } = await import("@/db");
+    const { repairNotes } = await import("@/db/schema/repairs");
+    const { eq, desc } = await import("drizzle-orm");
+
     const ticket = data.ticket.toUpperCase();
 
     const repairs = await repairService.getRepairs(); // Alternatively fetch specifically by ticket, but this matches previous behavior

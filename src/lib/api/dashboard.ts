@@ -1,8 +1,5 @@
+"use server";
 import { createServerFn } from "@tanstack/react-start";
-import { repairService } from "@/services/repair.service";
-import { invoiceService } from "@/services/invoice.service";
-import { inventoryService } from "@/services/inventory.service";
-import { customerService } from "@/services/customer.service";
 import { requireAuth } from "../auth.server";
 
 export const getDashboardStatsFn = createServerFn({ method: "GET" }).handler(async () => {
@@ -13,6 +10,11 @@ export const getDashboardStatsFn = createServerFn({ method: "GET" }).handler(asy
   const startMonth = new Date();
   startMonth.setDate(1);
   startMonth.setHours(0, 0, 0, 0);
+
+  const { repairService } = await import("@/services/repair.service");
+  const { invoiceService } = await import("@/services/invoice.service");
+  const { inventoryService } = await import("@/services/inventory.service");
+  const { customerService } = await import("@/services/customer.service");
 
   const reps = await repairService.getRepairs();
   const invs = await invoiceService.getInvoices();

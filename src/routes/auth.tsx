@@ -167,6 +167,7 @@ function AuthPage() {
                   <Input
                     id="email"
                     type="email"
+                    autoComplete="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -178,6 +179,7 @@ function AuthPage() {
                     <Input
                       id="pw"
                       type={showPassword ? "text" : "password"}
+                      autoComplete="current-password"
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -221,6 +223,7 @@ function AuthPage() {
                   <Label htmlFor="name">Full name</Label>
                   <Input
                     id="name"
+                    autoComplete="name"
                     required
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
@@ -250,6 +253,7 @@ function AuthPage() {
                   <Input
                     id="email2"
                     type="email"
+                    autoComplete="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -261,6 +265,7 @@ function AuthPage() {
                     <Input
                       id="pw2"
                       type={showPassword ? "text" : "password"}
+                      autoComplete="new-password"
                       required
                       minLength={8}
                       value={password}

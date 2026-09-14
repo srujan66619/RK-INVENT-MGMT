@@ -1,25 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { invoiceService } from "@/services/invoice.service";
-import { customerService } from "@/services/customer.service";
-import { userService } from "@/services/user.service";
+import { getPublicInvoiceFn } from "@/lib/api/invoices";
 import { Logo } from "@/components/logo";
 
 export const Route = createFileRoute("/_public/invoice/$id")({
   loader: async ({ params }) => {
     try {
-      const invoice = await invoiceService.getInvoiceById(params.id);
-      if (!invoice) return { invoice: null };
-      
-      const customer = invoice.customer_id ? await customerService.getCustomerById(invoice.customer_id) : null;
-      const profile = await userService.getProfileById(invoice.owner_id);
-      const items = await invoiceService.getInvoiceItems(invoice.id);
-      
-      return { 
-        invoice, 
-        customer, 
-        shop: profile,
-        items
-      };
+      return await getPublicInvoiceFn({ data: params.id });
     } catch (e) {
       return { invoice: null };
     }

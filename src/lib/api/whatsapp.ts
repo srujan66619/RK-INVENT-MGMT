@@ -1,14 +1,11 @@
+"use server";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireAuth } from "../auth.server";
-import { whatsappService } from "@/services/whatsapp.service";
-import { repairService } from "@/services/repair.service";
-import { customerService } from "@/services/customer.service";
-import { userService } from "@/services/user.service";
-import { invoiceService } from "@/services/invoice.service";
 
 export const getWhatsappStatusFn = createServerFn({ method: "GET" }).handler(async () => {
   await requireAuth();
+  const { whatsappService } = await import("@/services/whatsapp.service");
   return {
     isConfigured: whatsappService.isConfigured,
   };
@@ -27,6 +24,12 @@ export const sendManualWhatsappFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     const { session } = await requireAuth();
+    const { userService } = await import("@/services/user.service");
+    const { whatsappService } = await import("@/services/whatsapp.service");
+    const { repairService } = await import("@/services/repair.service");
+    const { customerService } = await import("@/services/customer.service");
+    const { invoiceService } = await import("@/services/invoice.service");
+
     const profile = await userService.getProfileById(session.user.id);
     const shopName = profile?.shop_name || "RK Labs";
 
@@ -84,6 +87,7 @@ export const sendTestWhatsappFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     const { session } = await requireAuth();
+    const { whatsappService } = await import("@/services/whatsapp.service");
     
     await whatsappService.sendTemplateMessage({
       phone: data.phone,

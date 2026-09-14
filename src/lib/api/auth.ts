@@ -1,7 +1,7 @@
+"use server";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { getSupabaseServerClient, getSession } from "../auth.server";
-import { userService } from "@/services/user.service";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -31,7 +31,7 @@ export const loginFn = createServerFn({ method: "POST" })
 
     const authUser = authData.user;
     
-    // Fetch fresh profile from Drizzle to get real approval status and role
+    const { userService } = await import("@/services/user.service");
     let profile = await userService.getProfileById(authUser.id);
     if (!profile) {
       console.warn("Profile not found for authenticated user. Attempting auto-heal...");
@@ -69,6 +69,7 @@ export const registerFn = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const supabase = getSupabaseServerClient();
     
+    const { userService } = await import("@/services/user.service");
     const profileCount = await userService.countProfiles();
     const isFirstUser = profileCount === 0;
     
@@ -120,6 +121,7 @@ export const meFn = createServerFn({ method: "GET" }).handler(async () => {
 
   const authUser = session.user;
   
+  const { userService } = await import("@/services/user.service");
   // Fetch fresh profile from Drizzle
   const profile = await userService.getProfileById(authUser.id);
   if (!profile) return { user: null };

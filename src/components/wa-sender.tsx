@@ -13,7 +13,7 @@ import {
 import { MessageCircle, X, Copy } from "lucide-react";
 import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
 import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 
 import { sendManualWhatsappFn, getWhatsappStatusFn } from "@/lib/api/whatsapp";
 

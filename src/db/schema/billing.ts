@@ -33,8 +33,10 @@ export const invoiceItems = pgTable("invoice_items", {
   quantity: integer("quantity").notNull(),
   unit_price: real("unit_price").notNull(),
   total_price: real("total_price").notNull(),
+  warranty: varchar("warranty", { length: 100 }), // e.g. "3 months", "1 year", "No warranty"
   created_at: timestamp("created_at").defaultNow().notNull(),
 });
+
 
 export const purchaseOrders = pgTable("purchase_orders", {
   id: uuid("id").primaryKey().defaultRandom(),

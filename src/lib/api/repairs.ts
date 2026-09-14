@@ -1,6 +1,6 @@
+"use server";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { repairService } from "@/services/repair.service";
 import { requireAuth } from "../auth.server";
 
 const repairSchema = z.object({
@@ -18,12 +18,11 @@ const repairSchema = z.object({
   ticket_no: z.string().optional(),
 });
 
-import { customerService } from "@/services/customer.service";
-import { userService } from "@/services/user.service";
-import { whatsappService } from "@/services/whatsapp.service";
 
 export const getRepairsFn = createServerFn({ method: "GET" }).handler(async () => {
   const { session, user } = await requireAuth();
+  const { repairService } = await import("@/services/repair.service");
+  const { customerService } = await import("@/services/customer.service");
   
   if (user.role === "customer") {
     const customer = await customerService.getCustomerByProfileId(user.id);
@@ -42,6 +41,11 @@ export const createRepairFn = createServerFn({ method: "POST" })
   .validator((data) => repairSchema.parse(data))
   .handler(async ({ data }) => {
     const { session, user } = await requireAuth();
+    const { repairService } = await import("@/services/repair.service");
+    const { customerService } = await import("@/services/customer.service");
+    const { userService } = await import("@/services/user.service");
+    const { whatsappService } = await import("@/services/whatsapp.service");
+
     const ticket_no = data.ticket_no || `TK-${Date.now().toString().slice(-6)}`;
     
     let assignedCustomerId = data.customer_id;
@@ -81,6 +85,10 @@ export const updateRepairFn = createServerFn({ method: "POST" })
   .validator((data) => z.object({ id: z.string(), data: repairSchema.partial() }).parse(data))
   .handler(async ({ data }) => {
     await requireAuth();
+    const { repairService } = await import("@/services/repair.service");
+    const { customerService } = await import("@/services/customer.service");
+    const { userService } = await import("@/services/user.service");
+    const { whatsappService } = await import("@/services/whatsapp.service");
     
     // Convert date strings to Date objects if present
     const updateData: any = { ...data.data };
@@ -111,6 +119,7 @@ export const deleteRepairFn = createServerFn({ method: "POST" })
   .validator((id: string) => z.string().parse(id))
   .handler(async ({ data }) => {
     await requireAuth();
+    const { repairService } = await import("@/services/repair.service");
     await repairService.deleteRepair(data);
     return { success: true };
   });
@@ -120,6 +129,7 @@ export const getRepairNotesFn = createServerFn({ method: "GET" })
   .validator((data) => z.object({ repair_id: z.string() }).parse(data))
   .handler(async ({ data }) => {
     await requireAuth();
+    const { repairService } = await import("@/services/repair.service");
     return await repairService.getRepairNotes(data.repair_id);
   });
 
@@ -131,6 +141,7 @@ export const createRepairNoteFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     await requireAuth();
+    const { repairService } = await import("@/services/repair.service");
     const note = await repairService.createRepairNote({
       ...data,
       task_done: false,
@@ -142,6 +153,7 @@ export const updateRepairNoteFn = createServerFn({ method: "POST" })
   .validator((data) => z.object({ id: z.string(), data: z.any() }).parse(data))
   .handler(async ({ data }) => {
     await requireAuth();
+    const { repairService } = await import("@/services/repair.service");
     await repairService.updateRepairNote(data.id, data.data);
     return { success: true };
   });
@@ -151,6 +163,7 @@ export const getAppointmentEventsFn = createServerFn({ method: "GET" })
   .validator((data) => z.object({ repair_id: z.string() }).parse(data))
   .handler(async ({ data }) => {
     await requireAuth();
+    const { repairService } = await import("@/services/repair.service");
     const events = await repairService.getAppointmentEvents(data.repair_id);
     return events.map((e: any) => ({
       id: e.id,
@@ -175,6 +188,7 @@ export const createAppointmentEventFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     const { session } = await requireAuth();
+    const { repairService } = await import("@/services/repair.service");
     const apt = await repairService.createAppointmentEvent({
       repair_id: data.repair_id,
       title: data.action,
@@ -189,5 +203,6 @@ export const getWaLogsFn = createServerFn({ method: "GET" })
   .validator((data) => z.object({ repair_id: z.string() }).parse(data))
   .handler(async ({ data }) => {
     await requireAuth();
+    const { repairService } = await import("@/services/repair.service");
     return await repairService.getWaLogs(data.repair_id);
   });

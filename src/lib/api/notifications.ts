@@ -1,11 +1,13 @@
+"use server";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { userService } from "@/services/user.service";
+
 import { requireAuth } from "../auth.server";
 
 export const getNotificationsFn = createServerFn({ method: "GET" }).handler(async () => {
   const { session } = await requireAuth();
 
+  const { userService } = await import("@/services/user.service");
   const notifs = await userService.getNotificationsByUserId(session.user.id);
 
   return notifs.map((n: any) => ({
@@ -24,6 +26,7 @@ export const markNotificationsReadFn = createServerFn({ method: "POST" })
     await requireAuth();
     const now = new Date();
 
+    const { userService } = await import("@/services/user.service");
     for (const id of data) {
       await userService.updateNotification(id, { read_at: now });
     }

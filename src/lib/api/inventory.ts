@@ -1,8 +1,6 @@
+"use server";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { inventoryService } from "@/services/inventory.service";
-import { supplierService } from "@/services/supplier.service";
-import { purchaseorderService } from "@/services/purchaseorder.service";
 import { requireAuth } from "../auth.server";
 
 // === INVENTORY ITEMS ===
@@ -19,6 +17,7 @@ const inventoryItemSchema = z.object({
 
 export const getInventoryItemsFn = createServerFn({ method: "GET" }).handler(async () => {
   await requireAuth();
+  const { inventoryService } = await import("@/services/inventory.service");
   return await inventoryService.getInventoryItems();
 });
 
@@ -26,6 +25,7 @@ export const createInventoryItemFn = createServerFn({ method: "POST" })
   .validator((data) => inventoryItemSchema.parse(data))
   .handler(async ({ data }) => {
     const { session } = await requireAuth();
+    const { inventoryService } = await import("@/services/inventory.service");
     const item = await inventoryService.createInventoryItem({
       ...data,
       quantity: data.stock_level,
@@ -40,6 +40,7 @@ export const updateInventoryItemFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     await requireAuth();
+    const { inventoryService } = await import("@/services/inventory.service");
     await inventoryService.updateInventoryItem(data.id, data.data);
     return { success: true };
   });
@@ -48,6 +49,7 @@ export const deleteInventoryItemFn = createServerFn({ method: "POST" })
   .validator((id: string) => z.string().parse(id))
   .handler(async ({ data }) => {
     await requireAuth();
+    const { inventoryService } = await import("@/services/inventory.service");
     await inventoryService.deleteInventoryItem(data);
     return { success: true };
   });
@@ -64,6 +66,7 @@ const stockMovementSchema = z.object({
 
 export const getStockMovementsFn = createServerFn({ method: "GET" }).handler(async () => {
   await requireAuth();
+  const { inventoryService } = await import("@/services/inventory.service");
   const movements = await inventoryService.getStockMovements();
   return movements.map((m: any) => ({
     id: m.id,
@@ -82,6 +85,7 @@ export const createStockMovementFn = createServerFn({ method: "POST" })
   .validator((data) => stockMovementSchema.parse(data))
   .handler(async ({ data }) => {
     const { session } = await requireAuth();
+    const { inventoryService } = await import("@/services/inventory.service");
     await inventoryService.createStockMovement({
       ...data,
       owner_id: session.user.id,
@@ -114,6 +118,7 @@ const supplierSchema = z.object({
 
 export const getSuppliersFn = createServerFn({ method: "GET" }).handler(async () => {
   await requireAuth();
+  const { supplierService } = await import("@/services/supplier.service");
   return await supplierService.getSuppliers();
 });
 
@@ -121,6 +126,7 @@ export const createSupplierFn = createServerFn({ method: "POST" })
   .validator((data) => supplierSchema.parse(data))
   .handler(async ({ data }) => {
     const { session } = await requireAuth();
+    const { supplierService } = await import("@/services/supplier.service");
     const supplier = await supplierService.createSupplier({
       ...data,
       owner_id: session.user.id,
@@ -132,6 +138,7 @@ export const updateSupplierFn = createServerFn({ method: "POST" })
   .validator((data) => z.object({ id: z.string(), data: supplierSchema.partial() }).parse(data))
   .handler(async ({ data }) => {
     await requireAuth();
+    const { supplierService } = await import("@/services/supplier.service");
     await supplierService.updateSupplier(data.id, data.data);
     return { success: true };
   });
@@ -140,6 +147,7 @@ export const deleteSupplierFn = createServerFn({ method: "POST" })
   .validator((id: string) => z.string().parse(id))
   .handler(async ({ data }) => {
     await requireAuth();
+    const { supplierService } = await import("@/services/supplier.service");
     await supplierService.deleteSupplier(data);
     return { success: true };
   });
@@ -147,6 +155,7 @@ export const deleteSupplierFn = createServerFn({ method: "POST" })
 // === PURCHASE ORDERS ===
 export const getPurchaseOrdersFn = createServerFn({ method: "GET" }).handler(async () => {
   await requireAuth();
+  const { purchaseorderService } = await import("@/services/purchaseorder.service");
   const pos = await purchaseorderService.getPurchaseOrders();
   return pos.map((i: any) => ({
     id: i.id,
@@ -164,6 +173,7 @@ export const getPurchaseOrderItemsFn = createServerFn({ method: "GET" })
   .validator((data) => z.object({ po_id: z.string() }).parse(data))
   .handler(async ({ data }) => {
     await requireAuth();
+    const { purchaseorderService } = await import("@/services/purchaseorder.service");
     return await purchaseorderService.getPurchaseOrderItems(data.po_id);
   });
 
@@ -172,6 +182,7 @@ export const createPurchaseOrderFn = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { session } = await requireAuth();
     const poNumber = `PO-${Date.now().toString().slice(-6)}`;
+    const { purchaseorderService } = await import("@/services/purchaseorder.service");
     const po = await purchaseorderService.createPurchaseOrder({
       po_number: poNumber,
       supplier_id: data.supplier_id,
@@ -199,6 +210,7 @@ export const updatePurchaseOrderFn = createServerFn({ method: "POST" })
   .validator((data) => z.object({ id: z.string(), data: z.any() }).parse(data))
   .handler(async ({ data }) => {
     await requireAuth();
+    const { purchaseorderService } = await import("@/services/purchaseorder.service");
     await purchaseorderService.updatePurchaseOrder(data.id, data.data);
     return { success: true };
   });
@@ -207,6 +219,7 @@ export const deletePurchaseOrderFn = createServerFn({ method: "POST" })
   .validator((id: string) => z.string().parse(id))
   .handler(async ({ data }) => {
     await requireAuth();
+    const { purchaseorderService } = await import("@/services/purchaseorder.service");
     await purchaseorderService.deletePurchaseOrder(data);
     return { success: true };
   });

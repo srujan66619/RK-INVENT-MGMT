@@ -1,11 +1,13 @@
+"use server";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { userService } from "@/services/user.service";
+
 import { requireAuth } from "../auth.server";
 
 export const getProfileFn = createServerFn({ method: "GET" }).handler(async () => {
   const { session } = await requireAuth();
 
+  const { userService } = await import("@/services/user.service");
   const profile = await userService.getProfileById(session.user.id);
   if (!profile) throw new Error("Profile not found");
 
@@ -32,6 +34,7 @@ export const updateProfileFn = createServerFn({ method: "POST" })
   .validator((data) => z.any().parse(data))
   .handler(async ({ data }) => {
     const { session } = await requireAuth();
+    const { userService } = await import("@/services/user.service");
     await userService.updateProfile(session.user.id, data);
     return { success: true };
   });

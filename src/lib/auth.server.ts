@@ -39,14 +39,13 @@ export async function getSession() {
   return session;
 }
 
-import { userService } from "@/services/user.service";
-
 export async function requireAuth(allowedRoles?: string[]) {
   const session = await getSession();
   if (!session) {
     throw new Error("Unauthorized");
   }
 
+  const { userService } = await import("@/services/user.service");
   const profile = await userService.getProfileById(session.user.id);
   
   if (!profile || profile.approval_status !== "approved") {

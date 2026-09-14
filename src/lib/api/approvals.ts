@@ -1,6 +1,7 @@
+"use server";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { userService } from "@/services/user.service";
+
 import { requireAuth } from "../auth.server";
 
 export const getApprovalsFn = createServerFn({ method: "GET" }).handler(async () => {
@@ -10,6 +11,7 @@ export const getApprovalsFn = createServerFn({ method: "GET" }).handler(async ()
     throw new Error("Unauthorized: Admins only");
   }
 
+  const { userService } = await import("@/services/user.service");
   const profiles = await userService.getProfiles();
   return profiles.map((p: any) => ({
     id: p.id,
@@ -55,6 +57,7 @@ export const decideApprovalFn = createServerFn({ method: "POST" })
       updateData.rejection_reason = data.reason || null;
     }
 
+    const { userService } = await import("@/services/user.service");
     await userService.updateProfile(data.id, updateData);
 
     // Create notifications
@@ -90,6 +93,7 @@ export const changeRoleFn = createServerFn({ method: "POST" })
       throw new Error("Unauthorized: Admins only");
     }
 
+    const { userService } = await import("@/services/user.service");
     await userService.updateProfile(data.id, { role: data.role });
 
     await userService.createNotification({

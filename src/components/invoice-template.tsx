@@ -139,78 +139,13 @@ export const InvoiceTemplate = forwardRef<HTMLDivElement, InvoiceTemplateProps>(
               justifyContent: "center",
             }}
           >
-            {shop?.logo_url ? (
-              <img
-                src={shop.logo_url}
-                alt="Company Logo"
-                style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
-                crossOrigin="anonymous"
-              />
-            ) : (
-              <div
-                style={{
-                  width: "100px",
-                  height: "100px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  borderRadius: "50%",
-                  border: `4px solid ${teal}`,
-                  backgroundColor: "#111827",
-                  boxShadow: `0 0 0 4px ${orange}`,
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginTop: "4px",
-                  }}
-                >
-                  <div style={{ display: "flex", alignItems: "baseline" }}>
-                    <span
-                      style={{
-                        fontSize: "44px",
-                        fontWeight: 900,
-                        color: teal,
-                        lineHeight: 1,
-                        fontFamily: 'Impact, "Arial Black", sans-serif',
-                      }}
-                    >
-                      R
-                    </span>
-                    <span
-                      style={{
-                        fontSize: "44px",
-                        fontWeight: 900,
-                        color: orange,
-                        lineHeight: 1,
-                        fontFamily: 'Impact, "Arial Black", sans-serif',
-                      }}
-                    >
-                      K
-                    </span>
-                  </div>
-                  <div
-                    style={{
-                      backgroundColor: "#ffffff",
-                      color: "#111827",
-                      fontSize: "7px",
-                      fontWeight: "bold",
-                      padding: "2px 4px",
-                      marginTop: "2px",
-                      letterSpacing: "1px",
-                      textTransform: "uppercase",
-                      borderRadius: "2px",
-                    }}
-                  >
-                    Repair Labs
-                  </div>
-                </div>
-              </div>
-            )}
+            {/* Always show the official RK Repair Labs brand logo */}
+            <img
+              src="/assets/rk-repair-labs-logo.png"
+              alt="RK Repair Labs"
+              style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
+              crossOrigin="anonymous"
+            />
           </div>
 
           {/* Center - Brand Name */}
@@ -424,7 +359,7 @@ export const InvoiceTemplate = forwardRef<HTMLDivElement, InvoiceTemplateProps>(
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "40px 1fr 80px 80px 100px",
+              gridTemplateColumns: "40px 1fr 110px 80px 80px 100px",
               background: teal,
               color: "white",
               padding: "8px 12px",
@@ -435,6 +370,7 @@ export const InvoiceTemplate = forwardRef<HTMLDivElement, InvoiceTemplateProps>(
           >
             <div style={{ textAlign: "center" }}>S.No</div>
             <div>Description of Service / Product</div>
+            <div style={{ textAlign: "center" }}>Warranty</div>
             <div style={{ textAlign: "center" }}>Qty</div>
             <div style={{ textAlign: "right" }}>Rate</div>
             <div style={{ textAlign: "right" }}>Amount (₹)</div>
@@ -448,7 +384,7 @@ export const InvoiceTemplate = forwardRef<HTMLDivElement, InvoiceTemplateProps>(
                   key={idx}
                   style={{
                     display: "grid",
-                    gridTemplateColumns: "40px 1fr 80px 80px 100px",
+                    gridTemplateColumns: "40px 1fr 110px 80px 80px 100px",
                     padding: "10px 12px",
                     borderBottom: "1px solid #e2e8f0",
                     fontSize: "11px",
@@ -458,6 +394,9 @@ export const InvoiceTemplate = forwardRef<HTMLDivElement, InvoiceTemplateProps>(
                 >
                   <div style={{ textAlign: "center" }}>{idx + 1}</div>
                   <div>{it.description || "Repair Service"}</div>
+                  <div style={{ textAlign: "center", color: (it as any).warranty ? "#008A9A" : "#999", fontWeight: (it as any).warranty ? 600 : 400 }}>
+                    {(it as any).warranty || "—"}
+                  </div>
                   <div style={{ textAlign: "center" }}>{it.quantity || 1}</div>
                   <div style={{ textAlign: "right" }}>{(it.unit_price || 0).toFixed(2)}</div>
                   <div style={{ textAlign: "right" }}>

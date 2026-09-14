@@ -1,11 +1,7 @@
+"use server";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { invoiceService } from "@/services/invoice.service";
 import { requireAuth } from "../auth.server";
-import { customerService } from "@/services/customer.service";
-import { userService } from "@/services/user.service";
-import { whatsappService } from "@/services/whatsapp.service";
-
 const invoiceSchema = z.object({
   invoice_no: z.string(),
   customer_id: z.string().nullable().optional(),
@@ -23,13 +19,37 @@ const invoiceSchema = z.object({
 
 export const getInvoicesFn = createServerFn({ method: "GET" }).handler(async () => {
   await requireAuth();
+  const { invoiceService } = await import("@/services/invoice.service");
   return await invoiceService.getInvoices();
 });
+
+export const getPublicInvoiceFn = createServerFn({ method: "GET" })
+  .validator((id: string) => z.string().parse(id))
+  .handler(async ({ data: id }) => {
+    const { invoiceService } = await import("@/services/invoice.service");
+    const { customerService } = await import("@/services/customer.service");
+    const { userService } = await import("@/services/user.service");
+
+    const invoice = await invoiceService.getInvoiceById(id);
+    if (!invoice) return { invoice: null };
+    
+    const customer = invoice.customer_id ? await customerService.getCustomerById(invoice.customer_id) : null;
+    const profile = await userService.getProfileById(invoice.owner_id);
+    const items = await invoiceService.getInvoiceItems(invoice.id);
+    
+    return { 
+      invoice, 
+      customer, 
+      shop: profile,
+      items
+    };
+  });
 
 export const createInvoiceFn = createServerFn({ method: "POST" })
   .validator((data) => invoiceSchema.parse(data))
   .handler(async ({ data }) => {
     const { session } = await requireAuth();
+    const { invoiceService } = await import("@/services/invoice.service");
     const invoice = await invoiceService.createInvoice({
       ...data,
       owner_id: session.user.id,
@@ -41,6 +61,7 @@ export const updateInvoiceFn = createServerFn({ method: "POST" })
   .validator((data) => z.object({ id: z.string(), data: z.any() }).parse(data))
   .handler(async ({ data }) => {
     await requireAuth();
+    const { invoiceService } = await import("@/services/invoice.service");
     await invoiceService.updateInvoice(data.id, data.data);
     const invoice = await invoiceService.getInvoiceById(data.id);
     
@@ -58,6 +79,7 @@ export const deleteInvoiceFn = createServerFn({ method: "POST" })
   .validator((id: string) => z.string().parse(id))
   .handler(async ({ data }) => {
     await requireAuth();
+    const { invoiceService } = await import("@/services/invoice.service");
     await invoiceService.deleteInvoice(data);
     return { success: true };
   });
@@ -67,6 +89,7 @@ export const getInvoiceItemsFn = createServerFn({ method: "GET" })
   .validator((data) => z.object({ invoice_id: z.string() }).parse(data))
   .handler(async ({ data }) => {
     await requireAuth();
+    const { invoiceService } = await import("@/services/invoice.service");
     return await invoiceService.getInvoiceItems(data.invoice_id);
   });
 
@@ -80,14 +103,17 @@ export const createInvoiceItemsFn = createServerFn({ method: "POST" })
           quantity: z.number(),
           unit_price: z.number(),
           total_price: z.number(),
+          warranty: z.string().nullable().optional(),
         }),
       )
       .parse(data),
   )
   .handler(async ({ data }) => {
     await requireAuth();
+    const { invoiceService } = await import("@/services/invoice.service");
     for (const item of data) {
       await invoiceService.createInvoiceItem(item);
     }
     return { success: true };
   });
+

@@ -1,12 +1,8 @@
+"use server";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireAuth } from "../auth.server";
-import { invoiceService } from "@/services/invoice.service";
-import { inventoryService } from "@/services/inventory.service";
-import { purchaseorderService } from "@/services/purchaseorder.service";
-import { expenseRepository } from "@/repositories/expense.repository";
-import { repairService } from "@/services/repair.service";
-import { customerService } from "@/services/customer.service";
+
 
 // === PNL DATA ===
 export const getPnlDataFn = createServerFn({ method: "POST" })
@@ -23,6 +19,11 @@ export const getPnlDataFn = createServerFn({ method: "POST" })
 
     const fromDate = new Date(data.from);
     const toDate = new Date(data.to);
+
+    const { invoiceService } = await import("@/services/invoice.service");
+    const { inventoryService } = await import("@/services/inventory.service");
+    const { purchaseorderService } = await import("@/services/purchaseorder.service");
+    const { expenseRepository } = await import("@/repositories/expense.repository");
 
     const allInvoices = await invoiceService.getInvoices();
     const invoices = allInvoices.filter((i) => i.created_at && new Date(i.created_at) >= fromDate && new Date(i.created_at) < toDate);
@@ -99,6 +100,7 @@ export const createExpenseFn = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { session } = await requireAuth();
 
+    const { expenseRepository } = await import("@/repositories/expense.repository");
     const expense = await expenseRepository.create({
       category: data.category,
       description: data.description || "",
@@ -114,6 +116,7 @@ export const deleteExpenseFn = createServerFn({ method: "POST" })
   .validator((id: string) => z.string().parse(id))
   .handler(async ({ data }) => {
     await requireAuth();
+    const { expenseRepository } = await import("@/repositories/expense.repository");
     await expenseRepository.delete(data);
     return { success: true };
   });
@@ -131,6 +134,10 @@ export const getReportsDataFn = createServerFn({ method: "POST" })
     await requireAuth();
 
     const fromDate = new Date(data.from);
+
+    const { invoiceService } = await import("@/services/invoice.service");
+    const { repairService } = await import("@/services/repair.service");
+    const { customerService } = await import("@/services/customer.service");
 
     const allInvoices = await invoiceService.getInvoices();
     const invoices = allInvoices.filter((i) => i.created_at && new Date(i.created_at) >= fromDate);

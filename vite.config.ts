@@ -59,6 +59,33 @@ export default defineConfig(async ({ command, mode }) => {
         "react/jsx-runtime",
         "react/jsx-dev-runtime",
       ],
+      // Exclude all Node.js-only packages — they must NEVER end up in the client bundle
+      exclude: [
+        "postgres",
+        "drizzle-orm",
+        "drizzle-orm/postgres-js",
+        "@neondatabase/serverless",
+        "pg",
+        "pg-native",
+        "fs",
+        "path",
+        "crypto",
+        "net",
+        "tls",
+        "dns",
+        "child_process",
+      ],
+    },
+    ssr: {
+      // Keep these as external for SSR (Node.js handles them natively)
+      external: [
+        "postgres",
+        "pg",
+        "pg-native",
+        "@neondatabase/serverless",
+      ],
+      // Prevent drizzle-orm from being inlined into SSR bundle (causes issues)
+      noExternal: [],
     },
     server: {
       host: "::",

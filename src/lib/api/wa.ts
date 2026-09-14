@@ -1,6 +1,7 @@
+"use server";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { waRepository } from "@/repositories/wa.repository";
+
 import { requireAuth } from "../auth.server";
 
 export const logWaMessageFn = createServerFn({ method: "POST" })
@@ -21,6 +22,7 @@ export const logWaMessageFn = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { session } = await requireAuth();
 
+    const { waRepository } = await import("@/repositories/wa.repository");
     await waRepository.create({
       owner_id: session.user.id,
       ...data,
@@ -41,6 +43,7 @@ export const getWaLogsFn = createServerFn({ method: "GET" })
   .handler(async ({ data }) => {
     const { session } = await requireAuth();
 
+    const { waRepository } = await import("@/repositories/wa.repository");
     const logs = await waRepository.getLogs(session.user.id, data.repair_id, data.invoice_id);
 
     return logs;
