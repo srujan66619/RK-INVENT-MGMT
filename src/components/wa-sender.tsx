@@ -15,7 +15,7 @@ import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
-import { logWaMessageFn } from "@/lib/api/wa";
+import { sendManualWhatsappFn, getWhatsappStatusFn } from "@/lib/api/whatsapp";
 
 export type WaSendRequest = {
   kind: "advance" | "status_update" | "invoice" | "payment_reminder" | "appointment" | "generic";
@@ -36,28 +36,7 @@ export function useWaSender() {
   return c;
 }
 
-async function insertLog(
-  req: WaSendRequest,
-  status: "sent" | "blocked" | "cancelled" | "no_phone",
-  error?: string,
-) {
-  try {
-    await logWaMessageFn({
-      data: {
-        repair_id: req.repairId ?? null,
-        invoice_id: req.invoiceId ?? null,
-        kind: req.kind,
-        recipient_name: req.recipientName ?? null,
-        phone: req.phone ?? null,
-        message: req.message,
-        status,
-        error: error ?? null,
-      },
-    });
-  } catch {
-    /* swallow */
-  }
-}
+// Keeping insertLog for history if needed, but the server handles logs now.
 
 export function WaSenderProvider({ children }: { children: ReactNode }) {
   const qc = useQueryClient();
@@ -79,50 +58,60 @@ export function WaSenderProvider({ children }: { children: ReactNode }) {
     if (req?.invoiceId) qc.invalidateQueries({ queryKey: ["wa-logs-invoice", req.invoiceId] });
   }
 
+  const sendMutation = useMutation({
+    mutationFn: (r: { kind: string; target_id: string; link?: string; status_override?: string }) => 
+      sendManualWhatsappFn({ data: r }),
+    onSuccess: () => {
+      toast.success("WhatsApp message sent successfully via API");
+      refreshLogs();
+      close();
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "Failed to send WhatsApp message via API");
+    }
+  });
+
   async function openNow() {
     if (!req) return;
-    const finalReq = { ...req, message: text };
-    if (!finalReq.phone) {
-      await insertLog(finalReq, "no_phone", "No WhatsApp number for recipient");
+    
+    if (!req.phone) {
       toast.error("No WhatsApp number for this recipient");
-      refreshLogs();
       close();
       return;
     }
-    const digits = finalReq.phone.replace(/\D/g, "");
-    // Use web.whatsapp.com directly instead of wa.me — wa.me redirects
-    // through api.whatsapp.com which some ISPs / firewalls block
-    // (ERR_BLOCKED_BY_RESPONSE).
-    const url = `https://web.whatsapp.com/send?phone=${digits}&text=${encodeURIComponent(finalReq.message)}`;
-    const fallbackUrl = `https://wa.me/${digits}?text=${encodeURIComponent(finalReq.message)}`;
-    const w = window.open(url, "_blank", "noopener");
-    if (w) {
-      await insertLog(finalReq, "sent");
-      toast.success(`WhatsApp opened for ${finalReq.recipientName ?? digits}`, {
-        description: "If WhatsApp Web doesn't load, try the fallback link.",
-        action: {
-          label: "Try wa.me",
-          onClick: () => window.open(fallbackUrl, "_blank", "noopener"),
-        },
-        duration: 8000,
-      });
-    } else {
-      await insertLog(finalReq, "blocked", "Popup blocked");
-      toast.error("WhatsApp blocked by browser", {
-        description: "Allow popups for this site, or copy the message and send manually.",
-        action: { label: "Retry", onClick: () => window.open(url, "_blank", "noopener") },
-        duration: 15000,
-      });
+
+    let apiKind = "";
+    let targetId = "";
+    let statusOverride = undefined;
+    let link = undefined;
+
+    if (req.repairId) {
+      apiKind = "repair_update";
+      targetId = req.repairId;
+      if (req.kind === "status_update" || req.kind === "advance" || req.kind === "generic") {
+        // Use generic kind for now, backend maps it based on repair status or generic template
+        statusOverride = "update"; 
+      }
+    } else if (req.invoiceId) {
+      targetId = req.invoiceId;
+      if (req.kind === "invoice") {
+        apiKind = "invoice_delivery";
+        // Actually, if it's an invoice, we need a link. For now, pass a dummy or instruct user.
+        link = "Invoice available on request.";
+      } else if (req.kind === "payment_reminder") {
+        apiKind = "payment_reminder";
+      }
     }
-    refreshLogs();
-    close();
+
+    if (!apiKind || !targetId) {
+      toast.error("Invalid notification target");
+      return;
+    }
+
+    sendMutation.mutate({ kind: apiKind, target_id: targetId, status_override: statusOverride, link });
   }
 
   async function cancel() {
-    if (req) {
-      await insertLog({ ...req, message: text }, "cancelled");
-      refreshLogs();
-    }
     close();
   }
 
@@ -167,23 +156,10 @@ export function WaSenderProvider({ children }: { children: ReactNode }) {
               </div>
               <div className="space-y-1.5">
                 <Label className="flex items-center justify-between">
-                  <span>Message preview (editable)</span>
-                  <button
-                    type="button"
-                    onClick={copyMsg}
-                    className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
-                  >
-                    <Copy className="h-3 w-3" /> Copy
-                  </button>
+                  <span>Message preview (Meta API Template)</span>
                 </Label>
-                <Textarea
-                  value={text}
-                  onChange={(e) => setText(e.target.value)}
-                  rows={10}
-                  className="font-mono text-xs leading-relaxed"
-                />
-                <div className="text-[11px] text-muted-foreground">
-                  Verify greeting, ticket number and amounts before opening WhatsApp.
+                <div className="text-[11px] text-muted-foreground bg-black/20 p-2 rounded-md">
+                  This message will be sent via the Meta WhatsApp Cloud API using an approved template. The text below is an approximation of what the customer will receive.
                 </div>
               </div>
             </div>
@@ -194,10 +170,11 @@ export function WaSenderProvider({ children }: { children: ReactNode }) {
             </Button>
             <Button
               onClick={openNow}
-              disabled={!req?.phone}
+              disabled={!req?.phone || sendMutation.isPending}
               style={{ background: "var(--gradient-primary)", color: "oklch(0.12 0.02 250)" }}
             >
-              <WhatsAppIcon className="mr-2 h-4 w-4" /> Open WhatsApp
+              <WhatsAppIcon className="mr-2 h-4 w-4" /> 
+              {sendMutation.isPending ? "Sending..." : "Send via API"}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -47,6 +47,8 @@ import { Route as StaffRepairsRouteImport } from './routes/staff/repairs'
 import { Route as TechnicianIndexRouteImport } from './routes/technician/index'
 import { Route as TechnicianDashboardRouteImport } from './routes/technician/dashboard'
 import { Route as TechnicianJobsRouteImport } from './routes/technician/jobs'
+import { Route as PublicInvoiceIdRouteImport } from './routes/_public.invoice.$id'
+import { Route as ApiWebhooksWhatsappRouteImport } from './routes/api.webhooks.whatsapp'
 
 const PublicRoute = PublicRouteImport.update({
   id: '/_public',
@@ -237,6 +239,16 @@ const TechnicianJobsRoute = TechnicianJobsRouteImport.update({
   path: '/jobs',
   getParentRoute: () => TechnicianRouteRoute,
 } as any)
+const PublicInvoiceIdRoute = PublicInvoiceIdRouteImport.update({
+  id: '/invoice/$id',
+  path: '/invoice/$id',
+  getParentRoute: () => PublicRoute,
+} as any)
+const ApiWebhooksWhatsappRoute = ApiWebhooksWhatsappRouteImport.update({
+  id: '/api/webhooks/whatsapp',
+  path: '/api/webhooks/whatsapp',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteRouteWithChildren
@@ -276,6 +288,8 @@ export interface FileRoutesByFullPath {
   '/management/': typeof ManagementIndexRoute
   '/manager/': typeof ManagerIndexRoute
   '/technician/': typeof TechnicianIndexRoute
+  '/invoice/$id': typeof PublicInvoiceIdRoute
+  '/api/webhooks/whatsapp': typeof ApiWebhooksWhatsappRoute
 }
 export interface FileRoutesByTo {
   '/staff': typeof StaffRouteRouteWithChildren
@@ -308,6 +322,8 @@ export interface FileRoutesByTo {
   '/management': typeof ManagementIndexRoute
   '/manager': typeof ManagerIndexRoute
   '/technician': typeof TechnicianIndexRoute
+  '/invoice/$id': typeof PublicInvoiceIdRoute
+  '/api/webhooks/whatsapp': typeof ApiWebhooksWhatsappRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -349,6 +365,8 @@ export interface FileRoutesById {
   '/management/': typeof ManagementIndexRoute
   '/manager/': typeof ManagerIndexRoute
   '/technician/': typeof TechnicianIndexRoute
+  '/_public/invoice/$id': typeof PublicInvoiceIdRoute
+  '/api/webhooks/whatsapp': typeof ApiWebhooksWhatsappRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -390,6 +408,8 @@ export interface FileRouteTypes {
     | '/management/'
     | '/manager/'
     | '/technician/'
+    | '/invoice/$id'
+    | '/api/webhooks/whatsapp'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/staff'
@@ -422,6 +442,8 @@ export interface FileRouteTypes {
     | '/management'
     | '/manager'
     | '/technician'
+    | '/invoice/$id'
+    | '/api/webhooks/whatsapp'
   id:
     | '__root__'
     | '/admin'
@@ -462,6 +484,8 @@ export interface FileRouteTypes {
     | '/management/'
     | '/manager/'
     | '/technician/'
+    | '/_public/invoice/$id'
+    | '/api/webhooks/whatsapp'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -476,6 +500,7 @@ export interface RootRouteChildren {
   PublicRoute: typeof PublicRouteWithChildren
   AuthRoute: typeof AuthRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  ApiWebhooksWhatsappRoute: typeof ApiWebhooksWhatsappRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -746,6 +771,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TechnicianJobsRouteImport
       parentRoute: typeof TechnicianRouteRoute
     }
+    '/_public/invoice/$id': {
+      id: '/_public/invoice/$id'
+      path: '/invoice/$id'
+      fullPath: '/invoice/$id'
+      preLoaderRoute: typeof PublicInvoiceIdRouteImport
+      parentRoute: typeof PublicRoute
+    }
+    '/api/webhooks/whatsapp': {
+      id: '/api/webhooks/whatsapp'
+      path: '/api/webhooks/whatsapp'
+      fullPath: '/api/webhooks/whatsapp'
+      preLoaderRoute: typeof ApiWebhooksWhatsappRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -879,6 +918,7 @@ interface PublicRouteChildren {
   PublicServicesRoute: typeof PublicServicesRoute
   PublicTrackRoute: typeof PublicTrackRoute
   PublicIndexRoute: typeof PublicIndexRoute
+  PublicInvoiceIdRoute: typeof PublicInvoiceIdRoute
 }
 
 const PublicRouteChildren: PublicRouteChildren = {
@@ -887,6 +927,7 @@ const PublicRouteChildren: PublicRouteChildren = {
   PublicServicesRoute: PublicServicesRoute,
   PublicTrackRoute: PublicTrackRoute,
   PublicIndexRoute: PublicIndexRoute,
+  PublicInvoiceIdRoute: PublicInvoiceIdRoute,
 }
 
 const PublicRouteWithChildren =
@@ -904,6 +945,7 @@ const rootRouteChildren: RootRouteChildren = {
   PublicRoute: PublicRouteWithChildren,
   AuthRoute: AuthRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  ApiWebhooksWhatsappRoute: ApiWebhooksWhatsappRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -151,78 +151,12 @@ export const IntakeReceiptTemplate = forwardRef<HTMLDivElement, IntakeReceiptPro
               justifyContent: "center",
             }}
           >
-            {shop?.logo_url ? (
-              <img
-                src={shop.logo_url}
-                alt="Company Logo"
-                style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
-                crossOrigin="anonymous"
-              />
-            ) : (
-              <div
-                style={{
-                  width: "100px",
-                  height: "100px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  borderRadius: "50%",
-                  border: `4px solid ${teal}`,
-                  backgroundColor: "#111827",
-                  boxShadow: `0 0 0 4px ${orange}`,
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginTop: "4px",
-                  }}
-                >
-                  <div style={{ display: "flex", alignItems: "baseline" }}>
-                    <span
-                      style={{
-                        fontSize: "44px",
-                        fontWeight: 900,
-                        color: teal,
-                        lineHeight: 1,
-                        fontFamily: 'Impact, "Arial Black", sans-serif',
-                      }}
-                    >
-                      R
-                    </span>
-                    <span
-                      style={{
-                        fontSize: "44px",
-                        fontWeight: 900,
-                        color: orange,
-                        lineHeight: 1,
-                        fontFamily: 'Impact, "Arial Black", sans-serif',
-                      }}
-                    >
-                      K
-                    </span>
-                  </div>
-                  <div
-                    style={{
-                      backgroundColor: "#ffffff",
-                      color: "#111827",
-                      fontSize: "7px",
-                      fontWeight: "bold",
-                      padding: "2px 4px",
-                      marginTop: "2px",
-                      letterSpacing: "1px",
-                      textTransform: "uppercase",
-                      borderRadius: "2px",
-                    }}
-                  >
-                    Repair Labs
-                  </div>
-                </div>
-              </div>
-            )}
+            <img
+              src="/assets/rk-repair-labs-logo.png"
+              alt="RK Repair Labs"
+              style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
+              crossOrigin="anonymous"
+            />
           </div>
 
           {/* Center - Brand Name + Icons */}

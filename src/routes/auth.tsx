@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate, Link, Navigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Wrench, Loader2, Clock, XCircle, Eye, EyeOff } from "lucide-react";
+import { Loader2, Clock, XCircle, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
+import { Logo } from "@/components/logo";
 
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
@@ -63,7 +64,7 @@ function AuthPage() {
       const res = await loginFn({ data: { email, password } });
       if (res && "error" in res) {
         setBusy(false);
-        setAuthError(res.error);
+        setAuthError(res.error || "Login failed");
         return;
       }
       setBusy(false);
@@ -104,13 +105,7 @@ function AuthPage() {
       />
       <main className="container relative mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 py-12">
         <Link to="/" className="mb-8 flex items-center gap-2">
-          <div
-            className="grid h-9 w-9 place-items-center rounded-lg"
-            style={{ background: "var(--gradient-primary)" }}
-          >
-            <Wrench className="h-5 w-5 text-background" />
-          </div>
-          <span className="text-lg font-bold">RK Labs</span>
+          <Logo className="h-10 w-auto" />
         </Link>
 
         <motion.div

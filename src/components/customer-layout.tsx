@@ -1,5 +1,6 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import { LayoutDashboard, Wrench, CalendarPlus, LogOut, Sun, Moon, Menu } from "lucide-react";
+import { Logo } from "@/components/logo";
 import { useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -43,15 +44,7 @@ function NavLinks({ onClick }: { onClick?: () => void }) {
 function SidebarBrand() {
   return (
     <div className="flex items-center border-b border-border/50 py-5 gap-3 px-5">
-      <img src="/logo.png" alt="RK Repair Labs" className="rounded-lg object-contain bg-secondary p-0.5 shrink-0 h-10 w-10" />
-      <div className="min-w-0">
-        <div className="text-sm font-bold tracking-tight text-foreground truncate">
-          RK Repair Labs
-        </div>
-        <div className="text-[10px] uppercase tracking-wider text-primary font-semibold">
-          Customer Portal
-        </div>
-      </div>
+      <Logo className="h-8 w-auto" />
     </div>
   );
 }
@@ -102,6 +95,7 @@ export function CustomerLayout({ children }: { children: ReactNode }) {
           </Sheet>
 
           <div className="flex-1" />
+          <Logo className="h-8 w-auto" />
           <ThemeToggle />
         </header>
         <main className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6 lg:p-8 custom-scrollbar">

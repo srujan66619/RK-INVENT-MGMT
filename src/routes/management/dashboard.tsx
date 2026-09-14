@@ -105,12 +105,7 @@ function Dashboard() {
     queryFn: async () => {
       const { user } = await meFn();
       if (!user) return null;
-      return user as {
-        approval_status: string;
-        requested_role: string | null;
-        approved_at: string | null;
-        rejection_reason: string | null;
-      } | null;
+      return user as any;
     },
   });
 

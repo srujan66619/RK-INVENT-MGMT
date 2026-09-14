@@ -15,6 +15,20 @@
       "when": 1789058428498,
       "tag": "0001_moaning_patriot",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789373238440,
+      "tag": "0002_organic_hercules",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1789373659788,
+      "tag": "0003_nasty_white_tiger",
+      "breakpoints": true
     }
   ]
 }

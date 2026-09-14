@@ -28,6 +28,7 @@ import { cn } from "@/lib/utils";
 import { fmtDateTime } from "@/lib/format";
 import { WaSenderProvider } from "@/components/wa-sender";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Logo } from "@/components/logo";
 import { useTheme } from "@/hooks/use-theme";
 import { meFn, logoutFn } from "@/lib/api/auth";
 import { getNotificationsFn, markNotificationsReadFn } from "@/lib/api/notifications";
@@ -96,32 +97,11 @@ function NavLinks({ onClick, collapsed }: { onClick?: () => void; collapsed?: bo
 
 function SidebarBrand({ collapsed }: { collapsed?: boolean }) {
   return (
-    <Link
-      to="/dashboard"
-      className={cn(
-        "flex items-center border-b border-border/50 py-5",
-        collapsed ? "justify-center px-2" : "gap-3 px-5",
-      )}
-    >
-      <img
-        src="/logo.png"
-        alt="RK Repair Labs"
-        className={cn(
-          "rounded-lg object-contain bg-secondary p-0.5 shrink-0",
-          collapsed ? "h-8 w-8" : "h-10 w-10",
-        )}
-      />
-      {!collapsed && (
-        <div className="min-w-0">
-          <div className="text-sm font-bold tracking-tight text-foreground truncate">
-            RK Repair Labs
-          </div>
-          <div className="text-[10px] uppercase tracking-wider text-primary font-semibold">
-            Repair System
-          </div>
-        </div>
-      )}
-    </Link>
+    <div className={cn("flex h-[60px] items-center px-4 pt-4 pb-2", collapsed && "justify-center px-2")}>
+      <Link to="/management/dashboard" className="flex items-center gap-2 px-2 hover:opacity-80 transition-opacity">
+        <Logo className={cn("w-auto", collapsed ? "h-8" : "h-10")} />
+      </Link>
+    </div>
   );
 }
 

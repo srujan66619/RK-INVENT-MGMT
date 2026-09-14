@@ -20,7 +20,7 @@ export interface Profile {
   gst_percent?: number;
   wa_templates?: Record<string, string>;
   auto_reminders?: boolean;
-  created_at: string;
+  created_at: string | Date;
 }
 
 export interface Customer {
@@ -33,7 +33,7 @@ export interface Customer {
   notes?: string | null;
   owner_id: string;
   profile_id?: string | null;
-  created_at: string;
+  created_at: string | Date;
 }
 
 export interface Repair {
@@ -53,7 +53,11 @@ export interface Repair {
   appointment_at?: string | null;
   owner_id: string;
   technician_id?: string | null;
-  created_at: string;
+  technician_name?: string | null;
+  completed_at?: string | Date | null;
+  delivered_at?: string | Date | null;
+  assigned_at?: string | Date | null;
+  created_at: string | Date;
 }
 
 export interface RepairNote {
@@ -62,7 +66,8 @@ export interface RepairNote {
   note: string;
   technician_name?: string;
   task_done: boolean;
-  created_at: string;
+  created_at: string | Date;
+  completed_at?: string | Date | null;
 }
 
 export interface Invoice {
@@ -80,7 +85,7 @@ export interface Invoice {
   payment_method?: string | null;
   notes?: string | null;
   owner_id: string;
-  created_at: string;
+  created_at: string | Date;
 }
 
 export interface InvoiceItem {
@@ -172,7 +177,7 @@ export interface Notification {
   title: string;
   body?: string | null;
   read_at?: string | null;
-  created_at: string;
+  created_at: string | Date;
 }
 
 export interface WaLog {
@@ -180,13 +185,23 @@ export interface WaLog {
   owner_id: string;
   repair_id?: string | null;
   invoice_id?: string | null;
+  customer_id?: string | null;
   kind: string;
   recipient_name?: string | null;
   phone?: string | null;
   message: string;
-  status: string; // "sent" | "blocked" | "cancelled" | "no_phone"
+  status: string; // "pending" | "sent" | "delivered" | "read" | "failed"
+  template_name?: string | null;
+  template_language?: string | null;
+  provider_message_id?: string | null;
+  notification_key?: string | null;
   error?: string | null;
-  created_at: string;
+  sent_at?: string | Date | null;
+  delivered_at?: string | Date | null;
+  read_at?: string | Date | null;
+  failed_at?: string | Date | null;
+  created_at: string | Date;
+  updated_at: string | Date;
 }
 
 export interface Appointment {

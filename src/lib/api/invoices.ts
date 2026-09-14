@@ -2,6 +2,9 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { invoiceService } from "@/services/invoice.service";
 import { requireAuth } from "../auth.server";
+import { customerService } from "@/services/customer.service";
+import { userService } from "@/services/user.service";
+import { whatsappService } from "@/services/whatsapp.service";
 
 const invoiceSchema = z.object({
   invoice_no: z.string(),
@@ -39,6 +42,15 @@ export const updateInvoiceFn = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     await requireAuth();
     await invoiceService.updateInvoice(data.id, data.data);
+    const invoice = await invoiceService.getInvoiceById(data.id);
+    
+    // Auto Payment Reminder logic
+    if (invoice && data.data.payment_status && data.data.payment_status !== "paid") {
+      // Typically you'd have a cron job, but if updated manually and balance remains, we might remind
+      // Or if explicitly requested via a separate route. We'll let manual UI buttons handle reminders 
+      // primarily, but we can hook in here if needed.
+    }
+
     return { success: true };
   });
 

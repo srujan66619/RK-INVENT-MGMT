@@ -19,6 +19,8 @@ const repairSchema = z.object({
 });
 
 import { customerService } from "@/services/customer.service";
+import { userService } from "@/services/user.service";
+import { whatsappService } from "@/services/whatsapp.service";
 
 export const getRepairsFn = createServerFn({ method: "GET" }).handler(async () => {
   const { session, user } = await requireAuth();
@@ -58,6 +60,20 @@ export const createRepairFn = createServerFn({ method: "POST" })
     };
 
     const repair = await repairService.createRepair(repairData);
+
+    // Trigger WhatsApp notification for Repair Received
+    if (repair.customer_id) {
+      try {
+        const customer = await customerService.getCustomerById(repair.customer_id);
+        const profile = await userService.getProfileById(session.user.id);
+        if (customer && profile?.auto_reminders) {
+          whatsappService.sendRepairReceived(repair, customer, profile.shop_name || "RK Labs").catch(console.error);
+        }
+      } catch (e) {
+        console.error("Failed to auto-send WhatsApp for new repair", e);
+      }
+    }
+
     return { id: repair.id, ticket_no, created_at: repair.created_at };
   });
 
@@ -69,8 +85,25 @@ export const updateRepairFn = createServerFn({ method: "POST" })
     // Convert date strings to Date objects if present
     const updateData: any = { ...data.data };
     
+    const oldRepair = await repairService.getRepairById(data.id);
     await repairService.updateRepair(data.id, updateData);
     const repair = await repairService.getRepairById(data.id);
+    
+    // Trigger auto status reminder if status changed
+    if (repair && oldRepair && data.data.status && data.data.status !== oldRepair.status) {
+      if (repair.customer_id) {
+        try {
+          const customer = await customerService.getCustomerById(repair.customer_id);
+          const profile = await userService.getProfileById(repair.owner_id);
+          if (customer && profile?.auto_reminders) {
+            whatsappService.sendRepairStatusUpdate(repair, customer, profile.shop_name || "RK Labs", data.data.status).catch(console.error);
+          }
+        } catch (e) {
+          console.error("Failed to auto-send WhatsApp for repair update", e);
+        }
+      }
+    }
+
     return { id: data.id, ticket_no: repair?.ticket_no };
   });
 

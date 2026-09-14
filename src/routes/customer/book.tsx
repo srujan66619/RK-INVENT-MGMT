@@ -63,7 +63,7 @@ function BookRepair() {
           <Button onClick={() => navigate({ to: "/customer/dashboard" })}>
             Go to Dashboard
           </Button>
-          <Button variant="outline" onClick={() => navigate({ to: "/track", search: { ticket: ticketNo } })}>
+          <Button variant="outline" onClick={() => navigate({ to: "/track", search: { id: ticketNo } })}>
             Track Ticket
           </Button>
         </div>

@@ -11,6 +11,7 @@ import {
   ChevronRight,
   MessageCircle,
 } from "lucide-react";
+import { Logo } from "@/components/logo";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -31,19 +32,7 @@ function PublicHeader() {
       <div className="container mx-auto flex h-16 md:h-20 items-center justify-between px-4 sm:px-6">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-3">
-          <img
-            src="/logo.png"
-            alt="RK Repair Labs"
-            className="h-10 w-10 md:h-12 md:w-12 rounded-full border border-border bg-secondary"
-          />
-          <div className="hidden sm:block">
-            <div className="text-base md:text-lg font-bold tracking-tight text-white leading-none">
-              RK Repair Labs
-            </div>
-            <div className="text-[10px] md:text-xs uppercase tracking-widest text-primary font-semibold mt-1">
-              Repair System
-            </div>
-          </div>
+          <Logo className="h-10 w-auto" />
         </Link>
 
         {/* Desktop Navigation */}
@@ -94,11 +83,7 @@ function PublicHeader() {
               className="w-full sm:w-80 border-l border-border/50 bg-card p-0 flex flex-col h-full"
             >
               <div className="p-6 border-b border-border/50 flex items-center gap-3">
-                <img src="/logo.png" alt="RK Repair Labs" className="h-10 w-10 rounded-full" />
-                <div>
-                  <div className="text-lg font-bold text-white">RK Repair Labs</div>
-                  <div className="text-xs uppercase text-primary">Repair System</div>
-                </div>
+                <Logo className="h-10 w-auto" />
               </div>
               <div className="flex-1 overflow-y-auto py-6 px-4 flex flex-col gap-2">
                 {NAV_LINKS.map((link) => (
@@ -141,19 +126,7 @@ function PublicFooter() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           <div className="space-y-6">
             <Link to="/" className="flex items-center gap-3">
-              <img
-                src="/logo.png"
-                alt="RK Repair Labs"
-                className="h-12 w-12 rounded-full border border-border bg-secondary"
-              />
-              <div>
-                <div className="text-xl font-bold tracking-tight text-white leading-none">
-                  RK Repair Labs
-                </div>
-                <div className="text-xs uppercase tracking-widest text-primary font-semibold mt-1">
-                  Repair System
-                </div>
-              </div>
+              <Logo className="h-10 w-auto" />
             </Link>
             <p className="text-muted-foreground text-sm leading-relaxed">
               Expert laptop and mobile repair services in Guntur. 11+ years of experience in

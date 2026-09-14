@@ -11,7 +11,6 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 
-import rkLogo from "../assets/rk-logo.jpg.asset.json";
 import { ThemeProvider } from "../hooks/use-theme";
 
 function NotFoundComponent() {
@@ -81,11 +80,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "RK Repair Labs" },
-      { name: "twitter:card", content: "summary" },
+      { property: "og:image", content: "https://rklabs.syncailabs.in/assets/rk-repair-labs-logo.png" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: "https://rklabs.syncailabs.in/assets/rk-repair-labs-logo.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", type: "image/jpeg", href: rkLogo.url },
+      { rel: "icon", type: "image/png", href: "/favicon.png" },
+      { rel: "apple-touch-icon", href: "/favicon.png" },
     ],
     scripts: [
       {

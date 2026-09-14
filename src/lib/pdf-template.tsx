@@ -10,9 +10,21 @@ export const PDF_COLORS = {
   lightGray: [241, 245, 249] as [number, number, number],
 };
 
+export async function getLogoDataUrl() {
+  const response = await fetch('/assets/rk-repair-labs-logo.png');
+  const blob = await response.blob();
+  return new Promise<string>((resolve) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result as string);
+    reader.readAsDataURL(blob);
+  });
+}
+
 export async function drawPdfHeader(doc: jsPDF, title: string, identifierText?: string, identifierLabel?: string) {
   const pw = 595.28;
   const marginX = 24;
+  
+  const logoDataUrl = await getLogoDataUrl();
   
   const { teal, orange, darkBg } = PDF_COLORS;
 
@@ -22,25 +34,7 @@ export async function drawPdfHeader(doc: jsPDF, title: string, identifierText?: 
   doc.triangle(170, 0, 240, 0, 170, 170, "F");
 
   // 2. Logo
-  doc.setDrawColor(teal[0], teal[1], teal[2]);
-  doc.setLineWidth(3);
-  doc.circle(85, 85, 65, "S");
-  doc.setDrawColor(orange[0], orange[1], orange[2]);
-  doc.setLineWidth(1);
-  doc.circle(85, 85, 70, "S");
-
-  doc.setFont("helvetica", "bold");
-  doc.setTextColor(teal[0], teal[1], teal[2]);
-  doc.setFontSize(54);
-  doc.text("R", 50, 98);
-  doc.setTextColor(orange[0], orange[1], orange[2]);
-  doc.text("K", 92, 98);
-
-  doc.setFillColor(255, 255, 255);
-  doc.rect(35, 125, 100, 20, "F");
-  doc.setTextColor(darkBg[0], darkBg[1], darkBg[2]);
-  doc.setFontSize(9);
-  doc.text("REPAIR LABS", 85, 139, { align: "center" });
+  doc.addImage(logoDataUrl, "PNG", 30, 20, 100, 100);
 
   // 3. Center Branding
   doc.setTextColor(teal[0], teal[1], teal[2]);

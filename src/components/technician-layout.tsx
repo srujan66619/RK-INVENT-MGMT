@@ -1,5 +1,6 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import { LayoutDashboard, Wrench, CheckCircle2, LogOut, Sun, Moon, Menu, Search } from "lucide-react";
+import { Logo } from "@/components/logo";
 import { useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -43,15 +44,7 @@ function NavLinks({ onClick }: { onClick?: () => void }) {
 function SidebarBrand() {
   return (
     <div className="flex items-center border-b border-border/50 py-5 gap-3 px-5">
-      <img src="/logo.png" alt="RK Repair Labs" className="rounded-lg object-contain bg-secondary p-0.5 shrink-0 h-10 w-10" />
-      <div className="min-w-0">
-        <div className="text-sm font-bold tracking-tight text-foreground truncate">
-          RK Repair Labs
-        </div>
-        <div className="text-[10px] uppercase tracking-wider text-primary font-semibold">
-          Technician Portal
-        </div>
-      </div>
+      <Logo className="h-8 w-auto" />
     </div>
   );
 }
