@@ -1,7 +1,7 @@
-import { pgTable, uuid, varchar, text, timestamp, real, boolean } from "drizzle-orm/pg-core";
+import { pgTable, uuid, varchar, text, timestamp, real, boolean, integer } from "drizzle-orm/pg-core";
 import { profiles } from "./users";
 import { customers } from "./customers";
-
+import { inventory } from "./inventory";
 export const repairs = pgTable("repairs", {
   id: uuid("id").primaryKey().defaultRandom(),
   ticket_no: varchar("ticket_no", { length: 50 }).notNull(),
@@ -47,5 +47,17 @@ export const appointments = pgTable("appointments", {
   owner_id: uuid("owner_id")
     .references(() => profiles.id)
     .notNull(),
+  created_at: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const repairParts = pgTable("repair_parts", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  repair_id: uuid("repair_id")
+    .references(() => repairs.id)
+    .notNull(),
+  item_id: uuid("item_id").references(() => inventory.id).notNull(),
+  quantity: integer("quantity").notNull(),
+  unit_cost: real("unit_cost").notNull(),
+  technician_id: uuid("technician_id").references(() => profiles.id),
   created_at: timestamp("created_at").defaultNow().notNull(),
 });

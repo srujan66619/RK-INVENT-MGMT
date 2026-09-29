@@ -20,6 +20,7 @@ import {
   updateRepairFn,
   createRepairNoteFn,
 } from "@/lib/api/repairs";
+import { RepairPartsPanel } from "@/components/repair-parts-panel";
 
 export const Route = createFileRoute("/technician/jobs")({
   component: TechnicianJobsPage,
@@ -176,6 +177,8 @@ function TechnicianJobsPage() {
                   ))}
                 </select>
               </div>
+
+              <RepairPartsPanel repairId={editing.id} />
               
               <div className="space-y-2">
                 <Label>Add Note for Shop/Customer</Label>

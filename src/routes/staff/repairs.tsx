@@ -62,6 +62,7 @@ import {
 } from "@/lib/api/repairs";
 import { getCustomersFn } from "@/lib/api/customers";
 import { meFn } from "@/lib/api/auth";
+import { RepairPartsPanel } from "@/components/repair-parts-panel";
 
 export const Route = createFileRoute("/staff/repairs")({
   head: () => ({ meta: [{ title: "Repairs — RK Labs" }] }),
@@ -1234,6 +1235,8 @@ function RepairDetailDialog({
           <div className="text-xs uppercase tracking-wider text-muted-foreground">Issue</div>
           <div className="mt-1">{repair.issue}</div>
         </div>
+
+        <RepairPartsPanel repairId={repair.id} />
 
         <AppointmentPanel repair={repair} customer={customer} profile={profile} />
 

@@ -43,6 +43,13 @@ export const getPnlDataFn = createServerFn({ method: "POST" })
       return d >= fromDate && d < toDate;
     });
 
+    const { repairPartsService } = await import("@/services/repair-parts.service");
+    const allRepairParts = await repairPartsService.getAllRepairParts();
+    // We get all repair parts used in the period.
+    const repairParts = allRepairParts.filter(
+      (rp) => rp.created_at && new Date(rp.created_at) >= fromDate && new Date(rp.created_at) < toDate
+    );
+
     let invoiceItems = [] as any[];
     for (const inv of invoices) {
       const items = await invoiceService.getInvoiceItems(inv.id);
@@ -81,6 +88,13 @@ export const getPnlDataFn = createServerFn({ method: "POST" })
         description: e.description,
         amount: e.amount,
         expense_date: e.expense_date ? new Date(e.expense_date).toISOString() : (e.date || ""),
+      })),
+      repairParts: repairParts.map((rp) => ({
+        id: rp.id,
+        repair_id: rp.repair_id,
+        item_id: rp.item_id,
+        quantity: rp.quantity,
+        unit_cost: rp.unit_cost,
       })),
     };
   });
@@ -145,6 +159,10 @@ export const getReportsDataFn = createServerFn({ method: "POST" })
     const allRepairs = await repairService.getRepairs();
     const repairs = allRepairs.filter((r) => r.created_at && new Date(r.created_at) >= fromDate);
     
+    const { repairPartsService } = await import("@/services/repair-parts.service");
+    const allRepairParts = await repairPartsService.getAllRepairParts();
+    const repairParts = allRepairParts.filter((rp) => rp.created_at && new Date(rp.created_at) >= fromDate);
+    
     const allCustomers = await customerService.getCustomers();
     const customers = allCustomers.map((c) => ({ id: c.id, name: c.name }));
 
@@ -166,6 +184,16 @@ export const getReportsDataFn = createServerFn({ method: "POST" })
         status: r.status,
         estimated_cost: r.estimated_cost,
         final_cost: r.final_cost,
+        ticket_no: r.ticket_no,
+      })),
+      repairParts: repairParts.map((rp) => ({
+        id: rp.id,
+        repair_id: rp.repair_id,
+        item_id: rp.item_id,
+        item_name: rp.item_name,
+        quantity: rp.quantity,
+        unit_cost: rp.unit_cost,
+        created_at: rp.created_at ? new Date(rp.created_at).toISOString() : null,
       })),
       customers,
     };

@@ -36,12 +36,44 @@ export const createInventoryItemFn = createServerFn({ method: "POST" })
 
 export const updateInventoryItemFn = createServerFn({ method: "POST" })
   .validator((data) =>
-    z.object({ id: z.string(), data: inventoryItemSchema.partial() }).parse(data),
+    z.object({ 
+      id: z.string(), 
+      data: inventoryItemSchema.partial(),
+      reason: z.string().optional()
+    }).parse(data),
   )
   .handler(async ({ data }) => {
-    await requireAuth();
+    const { session } = await requireAuth();
     const { inventoryService } = await import("@/services/inventory.service");
-    await inventoryService.updateInventoryItem(data.id, data.data);
+    
+    // Fetch old item to check if stock changed
+    const oldItem = await inventoryService.getInventoryItemById(data.id);
+    if (!oldItem) throw new Error("Item not found");
+
+    const updateData: any = { ...data.data };
+    
+    // Synchronize quantity if stock_level is provided
+    if (updateData.stock_level !== undefined) {
+      updateData.quantity = updateData.stock_level;
+      
+      const diff = updateData.stock_level - oldItem.stock_level;
+      if (diff !== 0) {
+        if (!data.reason) {
+          throw new Error("A reason is required when adjusting stock levels.");
+        }
+        
+        await inventoryService.createStockMovement({
+          item_id: data.id,
+          type: diff > 0 ? "in" : "out",
+          quantity: Math.abs(diff),
+          reference_type: diff > 0 ? "adjustment_in" : "adjustment_out",
+          notes: data.reason,
+          owner_id: session.user.id,
+        });
+      }
+    }
+    
+    await inventoryService.updateInventoryItem(data.id, updateData);
     return { success: true };
   });
 

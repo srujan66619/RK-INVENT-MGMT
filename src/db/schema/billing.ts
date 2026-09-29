@@ -29,6 +29,7 @@ export const invoiceItems = pgTable("invoice_items", {
   invoice_id: uuid("invoice_id")
     .references(() => invoices.id)
     .notNull(),
+  item_id: uuid("item_id").references(() => inventory.id),
   description: text("description").notNull(),
   quantity: integer("quantity").notNull(),
   unit_price: real("unit_price").notNull(),

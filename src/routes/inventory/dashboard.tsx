@@ -47,6 +47,7 @@ function InventoryPage() {
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Item | null>(null);
+  const [reason, setReason] = useState("");
 
   const { data: items = [], isLoading } = useQuery({
     queryKey: ["inventory"],
@@ -85,7 +86,7 @@ function InventoryPage() {
       };
 
       if (editing) {
-        await updateInventoryItemFn({ data: { id: editing.id, data: payload } });
+        await updateInventoryItemFn({ data: { id: editing.id, data: payload, reason: form.reason } });
       } else {
         await createInventoryItemFn({ data: payload });
       }
@@ -95,6 +96,7 @@ function InventoryPage() {
       qc.invalidateQueries({ queryKey: ["inventory"] });
       setOpen(false);
       setEditing(null);
+      setReason("");
     },
     onError: (e: any) => toast.error(e.message),
   });
@@ -122,6 +124,7 @@ function InventoryPage() {
       supplier: String(fd.get("supplier") || "") || null,
       warranty_months: Number(fd.get("warranty_months") || 0),
       low_stock_threshold: Number(fd.get("low_stock_threshold") || 5),
+      reason,
     });
   }
 
@@ -136,7 +139,10 @@ function InventoryPage() {
           open={open}
           onOpenChange={(v) => {
             setOpen(v);
-            if (!v) setEditing(null);
+            if (!v) {
+              setEditing(null);
+              setReason("");
+            }
           }}
         >
           <DialogTrigger asChild>
@@ -250,6 +256,19 @@ function InventoryPage() {
                   className="bg-muted border-border focus:border-primary/50"
                 />
               </div>
+              
+              {editing && (
+                <div className="space-y-1.5 pt-2">
+                  <Label className="text-muted-foreground">Adjustment Reason (Required if changing quantity)</Label>
+                  <Input 
+                    placeholder="e.g. Damaged screens, stock recount..." 
+                    value={reason}
+                    onChange={(e) => setReason(e.target.value)}
+                    className="bg-muted border-border focus:border-primary/50" 
+                  />
+                </div>
+              )}
+              
               <DialogFooter className="pt-4 border-t border-border">
                 <Button
                   type="submit"
@@ -355,6 +374,7 @@ function InventoryPage() {
                         aria-label={`Edit ${i.name}`}
                         onClick={() => {
                           setEditing(i);
+                          setReason("");
                           setOpen(true);
                         }}
                       >

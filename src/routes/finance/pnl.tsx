@@ -110,6 +110,7 @@ function PnLPage() {
   const inventory = data?.inventory || [];
   const purchaseOrders = data?.purchaseOrders || [];
   const expenses = data?.expenses || [];
+  const repairParts = data?.repairParts || [];
 
   // --- Calculations ---
   const totalRevenue = (invoices as any[]).reduce((s, i) => s + Number(i.total || 0), 0);
@@ -122,17 +123,27 @@ function PnLPage() {
   const gstCollected = (invoices as any[]).reduce((s, i) => s + Number(i.gst_amount || 0), 0);
   const discountsGiven = (invoices as any[]).reduce((s, i) => s + Number(i.discount || 0), 0);
 
-  // COGS — match invoice line descriptions to inventory cost_price; fallback 60% of unit_price
+  // COGS — use actual repair_parts cost for invoiced repairs, fallback to matching invoice line descriptions
+  const invoicedRepairIds = new Set(invoices.map((i: any) => i.repair_id).filter(Boolean));
+  const repairPartsCost = repairParts.reduce((s: number, rp: any) => s + (Number(rp.unit_cost || 0) * Number(rp.quantity || 0)), 0);
+  
   const invByName = new Map(
     (inventory as any[]).map((it) => [String(it.name).toLowerCase(), Number(it.cost_price || 0)]),
   );
-  const cogs = (invoiceItems as any[]).reduce((s, it) => {
+  
+  const fallbackCogs = (invoiceItems as any[]).reduce((s, it) => {
+    // Only apply fallback for invoices that don't have a repair, or if we want to add non-repair parts
+    const inv = invoices.find((i: any) => i.id === it.invoice_id);
+    if (inv && inv.repair_id) return s; // already counted in repairPartsCost
+    
     const key = String(it.description || "").toLowerCase();
     const cost = invByName.get(key);
     const qty = Number(it.quantity || 0);
     if (cost && cost > 0) return s + cost * qty;
     return s + Number(it.unit_price || 0) * qty * 0.6;
   }, 0);
+
+  const cogs = repairPartsCost + fallbackCogs;
 
   const purchasesThisMonth = (purchaseOrders as any[]).reduce(
     (s, p) => s + Number(p.total || 0),

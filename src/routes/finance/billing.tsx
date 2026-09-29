@@ -37,6 +37,7 @@ import {
 } from "@/lib/api/invoices";
 import { getCustomersFn } from "@/lib/api/customers";
 import { getRepairsFn } from "@/lib/api/repairs";
+import { getRepairPartsFn } from "@/lib/api/repair-parts";
 import { getProfileFn } from "@/lib/api/settings";
 import { cn } from "@/lib/utils";
 import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
@@ -103,6 +104,7 @@ function BillingPage() {
   const [items, setItems] = useState<LineItem[]>([
     { description: "Repair charges", quantity: 1, unit_price: 0, warranty: "" },
   ]);
+  const [loadingParts, setLoadingParts] = useState(false);
   const [discount, setDiscount] = useState(0);
   const [gst, setGst] = useState(18);
   const [customerId, setCustomerId] = useState("");
@@ -138,6 +140,35 @@ function BillingPage() {
       }
     },
   });
+
+  const handleRepairChange = async (newRepairId: string) => {
+    setRepairId(newRepairId);
+    if (!newRepairId) return;
+    
+    setLoadingParts(true);
+    try {
+      const parts = await getRepairPartsFn({ data: { repair_id: newRepairId } });
+      if (parts && parts.length > 0) {
+        const newItems = parts.map((p: any) => ({
+          description: p.item_name || "Repair Part",
+          quantity: p.quantity,
+          unit_price: p.unit_cost, // You could add markup here if required
+          warranty: "",
+        }));
+        
+        // Merge with existing items, removing the default empty "Repair charges" if it's untouched
+        setItems(current => {
+          const isDefault = current.length === 1 && current[0].description === "Repair charges" && current[0].unit_price === 0;
+          if (isDefault) return newItems;
+          return [...current, ...newItems];
+        });
+      }
+    } catch (e) {
+      toast.error("Failed to load repair parts");
+    } finally {
+      setLoadingParts(false);
+    }
+  };
 
   const subtotal = items.reduce((s, i) => s + i.quantity * i.unit_price, 0);
   const taxable = Math.max(0, subtotal - discount);
@@ -372,7 +403,8 @@ function BillingPage() {
                   <Label>Repair ticket</Label>
                   <select
                     value={repairId}
-                    onChange={(e) => setRepairId(e.target.value)}
+                    onChange={(e) => handleRepairChange(e.target.value)}
+                    disabled={loadingParts}
                     className="h-9 w-full rounded-md border border-input bg-input/40 px-3 text-sm"
                   >
                     <option value="">— None —</option>

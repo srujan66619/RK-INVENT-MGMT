@@ -64,9 +64,11 @@ function ReportsPage() {
 
   const invoices = data?.invoices || [];
   const repairs = data?.repairs || [];
+  const repairParts = data?.repairParts || [];
   const customers = data?.customers || [];
 
   const custName = new Map(customers.map((c: any) => [c.id, c.name]));
+  const repairTicketMap = new Map(repairs.map((r: any) => [r.id, r.ticket_no]));
   const revenue = invoices
     .filter((i: any) => i.payment_status === "paid")
     .reduce((s: number, i: any) => s + Number(i.total), 0);
@@ -174,9 +176,10 @@ function ReportsPage() {
         </Select>
       </header>
 
-      <div className="grid gap-4 sm:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-5">
         <Stat label="Invoices" value={String(invoices.length)} />
         <Stat label="Repairs" value={String(repairs.length)} />
+        <Stat label="Parts Used" value={String(repairParts.reduce((acc: number, rp: any) => acc + rp.quantity, 0))} color="#8b5cf6" />
         <Stat label="Revenue (paid)" value={inr(revenue)} color="#10b981" />
         <Stat label="Outstanding" value={inr(outstanding)} tone="warn" color="#ef4444" />
       </div>
@@ -201,6 +204,12 @@ function ReportsPage() {
             className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
           >
             Customers
+          </TabsTrigger>
+          <TabsTrigger
+            value="parts"
+            className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
+          >
+            Parts Consumption
           </TabsTrigger>
         </TabsList>
 
@@ -292,6 +301,51 @@ function ReportsPage() {
           <DataTable
             head={["Customer", "Repairs", "Spend"]}
             rows={custStats.map((c) => [c.name, String(c.repairs), inr(c.spend)])}
+          />
+        </TabsContent>
+
+        <TabsContent value="parts" className="mt-6 space-y-4">
+          <Toolbar
+            onXlsx={() =>
+              exportXlsx(
+                "Parts Consumption",
+                repairParts.map((rp: any) => ({
+                  date: fmtDate(rp.created_at),
+                  repair_ticket: repairTicketMap.get(rp.repair_id) || rp.repair_id,
+                  item: rp.item_name || "Unknown Item",
+                  quantity: rp.quantity,
+                  cost: Number(rp.unit_cost),
+                  total_cost: Number(rp.unit_cost) * rp.quantity,
+                })),
+                `parts-consumption-${range}.xlsx`,
+              )
+            }
+            onPdf={() =>
+              exportPdf(
+                "Parts Consumption Report",
+                ["Date", "Repair", "Part", "Qty", "Unit Cost", "Total Cost"],
+                repairParts.map((rp: any) => [
+                  fmtDate(rp.created_at),
+                  repairTicketMap.get(rp.repair_id) || rp.repair_id,
+                  rp.item_name || "Unknown Item",
+                  String(rp.quantity),
+                  inrPdf(rp.unit_cost),
+                  inrPdf(rp.unit_cost * rp.quantity),
+                ]),
+                `parts-consumption-${range}.pdf`,
+              )
+            }
+          />
+          <DataTable
+            head={["Date", "Repair", "Part", "Qty", "Unit Cost", "Total Cost"]}
+            rows={repairParts.map((rp: any) => [
+              fmtDate(rp.created_at),
+              repairTicketMap.get(rp.repair_id) || rp.repair_id,
+              rp.item_name || "Unknown Item",
+              String(rp.quantity),
+              inr(rp.unit_cost),
+              inr(rp.unit_cost * rp.quantity),
+            ])}
           />
         </TabsContent>
       </Tabs>

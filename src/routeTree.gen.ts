@@ -35,6 +35,7 @@ import { Route as FinanceIndexRouteImport } from './routes/finance/index'
 import { Route as FinanceBillingRouteImport } from './routes/finance/billing'
 import { Route as FinancePnlRouteImport } from './routes/finance/pnl'
 import { Route as InventoryIndexRouteImport } from './routes/inventory/index'
+import { Route as InventoryIdRouteImport } from './routes/inventory/$id'
 import { Route as InventoryDashboardRouteImport } from './routes/inventory/dashboard'
 import { Route as InventorySuppliersRouteImport } from './routes/inventory/suppliers'
 import { Route as ManagementIndexRouteImport } from './routes/management/index'
@@ -179,6 +180,11 @@ const InventoryIndexRoute = InventoryIndexRouteImport.update({
   path: '/',
   getParentRoute: () => InventoryRouteRoute,
 } as any)
+const InventoryIdRoute = InventoryIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => InventoryRouteRoute,
+} as any)
 const InventoryDashboardRoute = InventoryDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -272,6 +278,7 @@ export interface FileRoutesByFullPath {
   '/customer/repairs': typeof CustomerRepairsRoute
   '/finance/billing': typeof FinanceBillingRoute
   '/finance/pnl': typeof FinancePnlRoute
+  '/inventory/$id': typeof InventoryIdRoute
   '/inventory/dashboard': typeof InventoryDashboardRoute
   '/inventory/suppliers': typeof InventorySuppliersRoute
   '/management/dashboard': typeof ManagementDashboardRoute
@@ -305,6 +312,7 @@ export interface FileRoutesByTo {
   '/customer/repairs': typeof CustomerRepairsRoute
   '/finance/billing': typeof FinanceBillingRoute
   '/finance/pnl': typeof FinancePnlRoute
+  '/inventory/$id': typeof InventoryIdRoute
   '/inventory/dashboard': typeof InventoryDashboardRoute
   '/inventory/suppliers': typeof InventorySuppliersRoute
   '/management/dashboard': typeof ManagementDashboardRoute
@@ -348,6 +356,7 @@ export interface FileRoutesById {
   '/customer/repairs': typeof CustomerRepairsRoute
   '/finance/billing': typeof FinanceBillingRoute
   '/finance/pnl': typeof FinancePnlRoute
+  '/inventory/$id': typeof InventoryIdRoute
   '/inventory/dashboard': typeof InventoryDashboardRoute
   '/inventory/suppliers': typeof InventorySuppliersRoute
   '/management/dashboard': typeof ManagementDashboardRoute
@@ -392,6 +401,7 @@ export interface FileRouteTypes {
     | '/customer/repairs'
     | '/finance/billing'
     | '/finance/pnl'
+    | '/inventory/$id'
     | '/inventory/dashboard'
     | '/inventory/suppliers'
     | '/management/dashboard'
@@ -425,6 +435,7 @@ export interface FileRouteTypes {
     | '/customer/repairs'
     | '/finance/billing'
     | '/finance/pnl'
+    | '/inventory/$id'
     | '/inventory/dashboard'
     | '/inventory/suppliers'
     | '/management/dashboard'
@@ -467,6 +478,7 @@ export interface FileRouteTypes {
     | '/customer/repairs'
     | '/finance/billing'
     | '/finance/pnl'
+    | '/inventory/$id'
     | '/inventory/dashboard'
     | '/inventory/suppliers'
     | '/management/dashboard'
@@ -687,6 +699,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InventoryIndexRouteImport
       parentRoute: typeof InventoryRouteRoute
     }
+    '/inventory/$id': {
+      id: '/inventory/$id'
+      path: '/$id'
+      fullPath: '/inventory/$id'
+      preLoaderRoute: typeof InventoryIdRouteImport
+      parentRoute: typeof InventoryRouteRoute
+    }
     '/inventory/dashboard': {
       id: '/inventory/dashboard'
       path: '/dashboard'
@@ -837,12 +856,14 @@ const FinanceRouteRouteWithChildren = FinanceRouteRoute._addFileChildren(
 )
 
 interface InventoryRouteRouteChildren {
+  InventoryIdRoute: typeof InventoryIdRoute
   InventoryDashboardRoute: typeof InventoryDashboardRoute
   InventorySuppliersRoute: typeof InventorySuppliersRoute
   InventoryIndexRoute: typeof InventoryIndexRoute
 }
 
 const InventoryRouteRouteChildren: InventoryRouteRouteChildren = {
+  InventoryIdRoute: InventoryIdRoute,
   InventoryDashboardRoute: InventoryDashboardRoute,
   InventorySuppliersRoute: InventorySuppliersRoute,
   InventoryIndexRoute: InventoryIndexRoute,
