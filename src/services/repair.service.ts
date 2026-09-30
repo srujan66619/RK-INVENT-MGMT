@@ -14,6 +14,10 @@ export class RepairService {
     return await repairRepository.create(data);
   }
 
+  async createRepairWithParts(data: any, parts: { item_id: string; quantity: number }[], technician_id: string) {
+    return await repairRepository.createWithParts(data, parts, technician_id);
+  }
+
   async updateRepair(id: string, data: any) {
     return await repairRepository.update(id, data);
   }

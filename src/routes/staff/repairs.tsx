@@ -191,6 +191,7 @@ type FormState = {
   appointment_time: string;
   auto_send_wa: boolean;
   customer_mobile: string;
+  parts_used: { item_id: string; item_name: string; sku: string | null; quantity: number; available: number }[];
 };
 
 const EMPTY_FORM: FormState = {
@@ -210,6 +211,7 @@ const EMPTY_FORM: FormState = {
   appointment_time: "",
   auto_send_wa: true,
   customer_mobile: "",
+  parts_used: [],
 };
 
 function RepairsPage() {
@@ -222,6 +224,7 @@ function RepairsPage() {
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [custSearch, setCustSearch] = useState("");
   const [newCustOpen, setNewCustOpen] = useState(false);
+  const [addPartOpen, setAddPartOpen] = useState(false);
   const [translating, setTranslating] = useState(false);
   const translate = useServerFn(translateToEnglish);
   const wa = useWaSender();
@@ -291,6 +294,7 @@ function RepairsPage() {
       customer_mobile: r.customer_id
         ? (custMap.get(r.customer_id)?.phone ?? custMap.get(r.customer_id)?.whatsapp ?? "")
         : "",
+      parts_used: [],
     });
     const c = r.customer_id ? custMap.get(r.customer_id) : null;
     setCustSearch(c?.name ?? "");
@@ -338,7 +342,8 @@ function RepairsPage() {
         const data = await updateRepairFn({ data: { id: editing.id, data: payload } });
         return { row: { ...editing, ...data } as unknown as Repair, isNew: false };
       }
-      const data = await createRepairFn({ data: payload });
+      const newPayload = { ...payload, parts_used: form.parts_used.map(p => ({ item_id: p.item_id, quantity: p.quantity })) };
+      const data = await createRepairFn({ data: newPayload });
       return { row: { ...payload, ...data } as unknown as Repair, isNew: true };
     },
     onSuccess: async ({ row, isNew }) => {
@@ -760,6 +765,52 @@ function RepairsPage() {
 
               {!editing && (
                 <div className="rounded-xl border border-border bg-secondary p-4 space-y-4 shadow-inner">
+                  <div className="flex items-center justify-between">
+                    <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                      Parts / Inventory Used
+                    </div>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setAddPartOpen(true)}
+                      className="h-8 shadow-sm transition-transform hover:scale-105 active:scale-95"
+                    >
+                      <Plus className="mr-1.5 h-3.5 w-3.5" /> Add Inventory Item
+                    </Button>
+                  </div>
+                  {form.parts_used.length > 0 ? (
+                    <div className="space-y-2">
+                      {form.parts_used.map((p, idx) => (
+                        <div key={idx} className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border/50 bg-background/50 p-3 text-sm">
+                          <div>
+                            <div className="font-semibold">{p.item_name}</div>
+                            <div className="text-xs text-muted-foreground">
+                              {p.sku ? `SKU: ${p.sku}` : "No SKU"} · Qty: {p.quantity} · Available after: {p.available - p.quantity}
+                            </div>
+                          </div>
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="ghost"
+                            className="h-8 text-muted-foreground hover:bg-red-500/20 hover:text-red-400"
+                            onClick={() => {
+                              setForm(f => ({ ...f, parts_used: f.parts_used.filter((_, i) => i !== idx) }));
+                            }}
+                          >
+                            <Trash2 className="mr-1.5 h-3.5 w-3.5" /> Remove
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-sm text-muted-foreground italic">No parts selected.</div>
+                  )}
+                </div>
+              )}
+
+              {!editing && (
+                <div className="rounded-xl border border-border bg-secondary p-4 space-y-4 shadow-inner">
                   <div className="text-xs font-bold uppercase tracking-wider text-emerald-400">
                     Advance payment (optional)
                   </div>
@@ -840,6 +891,24 @@ function RepairsPage() {
             setForm((f) => ({ ...f, customer_id: c.id }));
             setCustSearch(c.name);
             setNewCustOpen(false);
+          }}
+        />
+      )}
+
+      {addPartOpen && (
+        <AddPartToNewRepairDialog
+          onClose={() => setAddPartOpen(false)}
+          onAdd={(part) => {
+            setForm(f => {
+              const existingIdx = f.parts_used.findIndex(p => p.item_id === part.item_id);
+              if (existingIdx !== -1) {
+                const updated = [...f.parts_used];
+                updated[existingIdx].quantity += part.quantity;
+                return { ...f, parts_used: updated };
+              }
+              return { ...f, parts_used: [...f.parts_used, part] };
+            });
+            setAddPartOpen(false);
           }}
         />
       )}
@@ -1700,14 +1769,209 @@ function WaLogPanel({ repairId }: { repairId: string }) {
                 </span>
                 <span className="ml-auto text-muted-foreground">{fmtDateTime(l.created_at)}</span>
               </div>
-              <div className="mt-2 whitespace-pre-wrap text-muted-foreground line-clamp-3">
-                {l.message}
-              </div>
-              {l.error && <div className="mt-1 text-red-300">Error: {l.error}</div>}
+              <div className="mt-1.5 pl-[72px] text-muted-foreground">{l.message}</div>
             </div>
           ))}
         </div>
       )}
     </div>
+  );
+}
+
+function AddPartToNewRepairDialog({
+  onClose,
+  onAdd,
+}: {
+  onClose: () => void;
+  onAdd: (part: { item_id: string; item_name: string; sku: string | null; quantity: number; available: number }) => void;
+}) {
+  const [search, setSearch] = useState("");
+  const [selectedItemId, setSelectedItemId] = useState<string>("");
+  const [quantity, setQuantity] = useState<number>(1);
+
+  const { data: inventory = [], isLoading } = useQuery({
+    queryKey: ["inventory"],
+    queryFn: async () => {
+      const { getInventoryItemsFn } = await import("@/lib/api/inventory");
+      return await getInventoryItemsFn();
+    },
+  });
+
+  const filteredItems = useMemo(() => {
+    const q = search.toLowerCase();
+    if (!q) return inventory.slice(0, 50);
+    return inventory
+      .filter(
+        (i: any) =>
+          i.name.toLowerCase().includes(q) ||
+          (i.sku && i.sku.toLowerCase().includes(q)) ||
+          (i.category && i.category.toLowerCase().includes(q))
+      )
+      .slice(0, 50);
+  }, [inventory, search]);
+
+  const selectedItem = useMemo(() => {
+    return inventory.find((i: any) => i.id === selectedItemId);
+  }, [inventory, selectedItemId]);
+
+  function handleAdd() {
+    if (!selectedItem) return;
+    if (quantity < 1 || !Number.isInteger(quantity) || quantity > selectedItem.stock_level) return;
+    
+    onAdd({
+      item_id: selectedItem.id,
+      item_name: selectedItem.name,
+      sku: selectedItem.sku,
+      quantity,
+      available: selectedItem.stock_level
+    });
+  }
+
+  return (
+    <Dialog open onOpenChange={(v) => !v && onClose()}>
+      <DialogContent className="glass-strong max-w-md border-border">
+        <DialogHeader>
+          <DialogTitle>Add Inventory Item</DialogTitle>
+        </DialogHeader>
+
+        <div className="space-y-4 py-2 text-sm">
+          {!selectedItem ? (
+            <div className="space-y-3">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  placeholder="Search inventory by name, SKU..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="pl-9 h-10 bg-muted border-border focus:border-primary/50"
+                  autoFocus
+                />
+              </div>
+
+              <div className="max-h-60 overflow-y-auto custom-scrollbar rounded-md border border-border/50 bg-secondary/30">
+                {isLoading ? (
+                  <div className="p-4 text-center text-muted-foreground text-xs">Loading inventory...</div>
+                ) : filteredItems.length === 0 ? (
+                  <div className="p-4 text-center text-muted-foreground text-xs">No items found.</div>
+                ) : (
+                  <div className="divide-y divide-border/50">
+                    {filteredItems.map((item: any) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        className="w-full flex flex-col items-start gap-1 p-3 text-left hover:bg-primary/10 transition-colors"
+                        onClick={() => {
+                          setSelectedItemId(item.id);
+                          setQuantity(1);
+                        }}
+                      >
+                        <span className="font-semibold text-foreground line-clamp-1">{item.name}</span>
+                        <div className="flex w-full items-center justify-between text-xs text-muted-foreground">
+                          <span>{item.sku ? `SKU: ${item.sku}` : 'No SKU'}</span>
+                          <span className={item.stock_level > 0 ? "text-emerald-400" : "text-red-400"}>
+                            {item.stock_level > 0 ? `Stock: ${item.stock_level}` : "OUT OF STOCK"}
+                          </span>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="rounded-lg border border-border/50 bg-secondary/50 p-4 relative">
+                <Button 
+                  size="icon" 
+                  variant="ghost" 
+                  className="absolute top-2 right-2 h-6 w-6 text-muted-foreground hover:bg-black/20"
+                  onClick={() => setSelectedItemId("")}
+                >
+                  <X className="h-3.5 w-3.5" />
+                </Button>
+                <div className="font-semibold text-base text-foreground pr-8">{selectedItem.name}</div>
+                <div className="mt-2 grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+                  <div>SKU: {selectedItem.sku || "—"}</div>
+                  <div>Cost: {inr(selectedItem.cost_price)}</div>
+                </div>
+                <div className="mt-3 pt-3 border-t border-border/50">
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="font-medium text-foreground">Available Stock:</span>
+                    <span className={selectedItem.stock_level > 0 ? "font-bold text-emerald-400" : "font-bold text-red-400"}>
+                      {selectedItem.stock_level > 0 ? selectedItem.stock_level : "OUT OF STOCK"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <Label>Quantity</Label>
+                <div className="flex items-center gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    className="h-9 w-9 bg-muted border-border"
+                    onClick={() => setQuantity(q => Math.max(1, q - 1))}
+                    disabled={quantity <= 1}
+                  >
+                    -
+                  </Button>
+                  <Input
+                    type="number"
+                    min={1}
+                    max={selectedItem.stock_level}
+                    value={quantity}
+                    onChange={(e) => {
+                      const v = parseInt(e.target.value, 10);
+                      if (!isNaN(v)) {
+                        setQuantity(Math.max(1, Math.min(v, selectedItem.stock_level)));
+                      }
+                    }}
+                    className="h-9 w-20 text-center bg-muted border-border focus:border-primary/50"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    className="h-9 w-9 bg-muted border-border"
+                    onClick={() => setQuantity(q => Math.min(selectedItem.stock_level, q + 1))}
+                    disabled={quantity >= selectedItem.stock_level}
+                  >
+                    +
+                  </Button>
+                </div>
+                
+                {quantity > selectedItem.stock_level && selectedItem.stock_level > 0 && (
+                  <div className="text-xs text-red-400 mt-1">
+                    Insufficient stock. Available quantity: {selectedItem.stock_level}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
+        <DialogFooter className="border-t border-border pt-4">
+          <Button variant="outline" onClick={onClose}>
+            Cancel
+          </Button>
+          {selectedItem && (
+            <Button
+              onClick={handleAdd}
+              disabled={
+                selectedItem.stock_level <= 0 || 
+                quantity > selectedItem.stock_level ||
+                quantity < 1 ||
+                !Number.isInteger(quantity)
+              }
+              style={{ background: "var(--gradient-primary)", color: "oklch(0.12 0.02 250)" }}
+            >
+              Add Item
+            </Button>
+          )}
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

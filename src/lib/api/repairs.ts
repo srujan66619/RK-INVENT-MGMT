@@ -16,6 +16,10 @@ const repairSchema = z.object({
   estimated_cost: z.number().nullable().optional(),
   appointment_at: z.string().nullable().optional().transform(v => v ? new Date(v) : null),
   ticket_no: z.string().optional(),
+  parts_used: z.array(z.object({
+    item_id: z.string(),
+    quantity: z.number().int().min(1)
+  })).optional(),
 });
 
 
@@ -56,14 +60,21 @@ export const createRepairFn = createServerFn({ method: "POST" })
       }
     }
 
+    const { parts_used, ...restData } = data;
+
     const repairData: any = {
-      ...data,
+      ...restData,
       ticket_no,
       customer_id: assignedCustomerId,
       owner_id: session.user.id,
     };
 
-    const repair = await repairService.createRepair(repairData);
+    let repair;
+    if (parts_used && parts_used.length > 0) {
+      repair = await repairService.createRepairWithParts(repairData, parts_used, session.user.id);
+    } else {
+      repair = await repairService.createRepair(repairData);
+    }
 
     // Trigger WhatsApp notification for Repair Received
     if (repair.customer_id) {
