@@ -13,7 +13,8 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { inr } from "@/lib/format";
+import { inr, fmtDate } from "@/lib/format";
+import { meFn } from "@/lib/api/auth";
 import {
   getRepairPartsFn,
   consumeRepairPartFn,
@@ -47,15 +48,27 @@ export function RepairPartsPanel({ repairId }: { repairId: string }) {
     },
   });
 
+  const { data: profile } = useQuery({
+    queryKey: ["profile"],
+    queryFn: async () => {
+      const { user } = await meFn();
+      return user;
+    },
+  });
+
+  const canSeeCost = profile?.role === "admin" || profile?.role === "manager";
+  const canReverse = profile?.role === "admin" || profile?.role === "manager" || profile?.role === "staff" || profile?.role === "technician";
+
   const totalPartsCost = parts.reduce((sum: number, p: any) => sum + p.quantity * p.unit_cost, 0);
 
   return (
     <div className="glass rounded-xl p-4">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-3">
         <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-          <Package className="h-4 w-4" /> Parts Used
+          <Package className="h-4 w-4" /> Parts / Inventory Used
         </div>
         <Button
+          type="button"
           size="sm"
           variant="outline"
           className="h-8 shadow-sm transition-transform hover:scale-105 active:scale-95"
@@ -87,36 +100,49 @@ export function RepairPartsPanel({ repairId }: { repairId: string }) {
                 <div>
                   <div className="font-semibold text-foreground text-sm flex items-center gap-2">
                     {p.inventory_item?.name || "Unknown Item"}
+                  </div>
+                  <div className="mt-1 text-xs text-muted-foreground space-y-1">
+                    <div>SKU: {p.inventory_item?.sku || "—"}</div>
+                    <div>Quantity: {p.quantity}</div>
+                    {p.created_at && <div>Consumed: {fmtDate(p.created_at)}</div>}
+                    {canSeeCost && (
+                      <div className="flex gap-3">
+                        <span>Unit Cost: {inr(p.unit_cost)}</span>
+                        <span className="font-medium text-foreground">Total: {inr(p.quantity * p.unit_cost)}</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="mt-2">
                     <Link to={`/inventory/${p.item_id}`} className="text-xs text-primary hover:underline font-normal">
                       [View Item]
                     </Link>
                   </div>
-                  <div className="mt-1 text-xs text-muted-foreground flex items-center gap-3">
-                    <span>Qty: {p.quantity}</span>
-                    <span>Unit Cost: {inr(p.unit_cost)}</span>
-                    <span className="font-medium text-foreground">Total: {inr(p.quantity * p.unit_cost)}</span>
-                  </div>
                 </div>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="h-8 text-muted-foreground hover:bg-red-500/20 hover:text-red-400 shrink-0 self-end sm:self-auto"
-                  onClick={() => {
-                    if (confirm("Remove this part from the repair?\n\nThis will return the consumed quantity to inventory.")) {
-                      reversePart.mutate(p.id);
-                    }
-                  }}
-                  disabled={reversePart.isPending}
-                >
-                  <RotateCcw className="mr-1.5 h-3.5 w-3.5" /> Remove
-                </Button>
+                {canReverse && (
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    className="h-8 text-muted-foreground hover:bg-red-500/20 hover:text-red-400 shrink-0 self-end sm:self-auto"
+                    onClick={() => {
+                      if (confirm("Remove this part from the repair?\n\nThis will return the consumed quantity to inventory.")) {
+                        reversePart.mutate(p.id);
+                      }
+                    }}
+                    disabled={reversePart.isPending}
+                  >
+                    <RotateCcw className="mr-1.5 h-3.5 w-3.5" /> Reverse
+                  </Button>
+                )}
               </div>
             ))}
           </div>
-          <div className="flex justify-between items-center pt-3 border-t border-white/10">
-            <span className="text-sm font-medium text-muted-foreground">Parts Cost:</span>
-            <span className="text-sm font-bold text-foreground">{inr(totalPartsCost)}</span>
-          </div>
+          {canSeeCost && (
+            <div className="flex justify-between items-center pt-3 border-t border-white/10">
+              <span className="text-sm font-medium text-muted-foreground">Parts Cost:</span>
+              <span className="text-sm font-bold text-foreground">{inr(totalPartsCost)}</span>
+            </div>
+          )}
         </div>
       )}
 
@@ -255,6 +281,7 @@ function AddRepairPartDialog({
             <div className="space-y-4">
               <div className="rounded-lg border border-border/50 bg-secondary/50 p-4 relative">
                 <Button 
+                  type="button"
                   size="icon" 
                   variant="ghost" 
                   className="absolute top-2 right-2 h-6 w-6 text-muted-foreground hover:bg-black/20"
@@ -326,11 +353,12 @@ function AddRepairPartDialog({
         </div>
 
         <DialogFooter className="border-t border-border pt-4">
-          <Button variant="outline" onClick={onClose} disabled={consumePart.isPending}>
+          <Button type="button" variant="outline" onClick={onClose} disabled={consumePart.isPending}>
             Cancel
           </Button>
           {selectedItem && (
             <Button
+              type="button"
               onClick={() => consumePart.mutate()}
               disabled={
                 consumePart.isPending || 

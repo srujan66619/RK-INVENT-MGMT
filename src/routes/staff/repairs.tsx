@@ -867,6 +867,12 @@ function RepairsPage() {
                 />
               </div>
 
+              {editing && (
+                <div className="pt-2">
+                  <RepairPartsPanel repairId={editing.id} />
+                </div>
+              )}
+
               <DialogFooter className="pt-4 border-t border-border">
                 <Button
                   type="submit"
