@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate, Link, Navigate } from "@tanstack/react-router";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Loader2, Clock, XCircle, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { Logo } from "@/components/logo";
@@ -109,8 +109,9 @@ function AuthPage() {
         </Link>
 
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 16, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
           className="glass-strong rounded-2xl p-8 shadow-[var(--shadow-glow)]"
         >
           <h1 className="text-2xl font-bold">Repair Management System</h1>
@@ -156,12 +157,19 @@ function AuthPage() {
 
             <TabsContent value="signin">
               <form onSubmit={signIn} className="space-y-4 pt-4">
-                {authError && (
-                  <div className="flex items-center gap-2 rounded-xl border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
-                    <XCircle className="h-4 w-4 shrink-0" />
-                    <p>{authError}</p>
-                  </div>
-                )}
+                <AnimatePresence>
+                  {authError && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0, y: -10 }}
+                      animate={{ opacity: 1, height: "auto", y: 0 }}
+                      exit={{ opacity: 0, height: 0, scale: 0.95 }}
+                      className="flex items-center gap-2 rounded-xl border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive"
+                    >
+                      <XCircle className="h-4 w-4 shrink-0" />
+                      <p>{authError}</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
                   <Input
@@ -213,12 +221,19 @@ function AuthPage() {
 
             <TabsContent value="signup">
               <form onSubmit={signUp} className="space-y-4 pt-4">
-                {authError && (
-                  <div className="flex items-center gap-2 rounded-xl border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
-                    <XCircle className="h-4 w-4 shrink-0" />
-                    <p>{authError}</p>
-                  </div>
-                )}
+                <AnimatePresence>
+                  {authError && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0, y: -10 }}
+                      animate={{ opacity: 1, height: "auto", y: 0 }}
+                      exit={{ opacity: 0, height: 0, scale: 0.95 }}
+                      className="flex items-center gap-2 rounded-xl border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive"
+                    >
+                      <XCircle className="h-4 w-4 shrink-0" />
+                      <p>{authError}</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
                 <div className="space-y-2">
                   <Label htmlFor="name">Full name</Label>
                   <Input

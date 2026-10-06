@@ -73,7 +73,7 @@ function StatCard({
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay }}
-      className="group relative overflow-hidden rounded-2xl border border-border bg-card/80 backdrop-blur-xl p-5 shadow-lg transition-all hover:bg-secondary hover:border-white/20 hover:-translate-y-0.5 hover:shadow-xl"
+      className="group relative overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-subtle transition-all duration-300 hover:shadow-elevated hover:bg-accent/20 hover:-translate-y-1"
     >
       <div
         className="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full opacity-10 blur-2xl transition-opacity group-hover:opacity-20"
@@ -206,7 +206,7 @@ function Dashboard() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className="rounded-2xl border border-border bg-card/80 backdrop-blur-xl p-6 shadow-lg"
+          className="rounded-2xl border border-border bg-card p-6 shadow-subtle transition-shadow hover:shadow-elevated duration-300"
         >
           <h3 className="mb-6 text-sm font-semibold tracking-tight text-foreground">
             Repairs · Last 7 days
@@ -261,7 +261,7 @@ function Dashboard() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="rounded-2xl border border-border bg-card/80 backdrop-blur-xl p-6 shadow-lg"
+          className="rounded-2xl border border-border bg-card p-6 shadow-subtle transition-shadow hover:shadow-elevated duration-300"
         >
           <h3 className="mb-6 text-sm font-semibold tracking-tight text-foreground">
             Monthly Sales · Last 6 months

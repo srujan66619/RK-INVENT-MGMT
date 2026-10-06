@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { FileDown, FileSpreadsheet, BarChart3 } from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -380,46 +381,38 @@ function Toolbar({ onXlsx, onPdf }: { onXlsx: () => void; onPdf: () => void }) {
 
 function DataTable({ head, rows }: { head: string[]; rows: (string | number)[][] }) {
   return (
-    <div className="rounded-2xl border border-border bg-card/80 backdrop-blur-xl p-4 shadow-lg">
+    <div className="rounded-2xl border border-border bg-card shadow-subtle p-0 overflow-hidden">
       <div className="overflow-x-auto custom-scrollbar">
-        <table className="w-full text-sm whitespace-nowrap">
-          <thead className="bg-card/50 text-xs uppercase tracking-wider text-muted-foreground">
-            <tr>
+        <Table>
+          <TableHeader>
+            <TableRow>
               {head.map((h, idx) => (
-                <th
-                  key={h}
-                  className={`px-4 py-3 text-left ${idx === 0 ? "rounded-tl-lg" : ""} ${idx === head.length - 1 ? "rounded-tr-lg" : ""}`}
-                >
-                  {h}
-                </th>
+                <TableHead key={h} className={idx === 0 ? "pl-4" : ""}>{h}</TableHead>
               ))}
-            </tr>
-          </thead>
-          <tbody>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {rows.length === 0 && (
-              <tr>
-                <td colSpan={head.length} className="px-4 py-12 text-center text-muted-foreground">
+              <TableRow>
+                <TableCell colSpan={head.length} className="py-12 text-center text-muted-foreground">
                   No data in selected range.
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             )}
             {rows.map((r, i) => (
-              <tr
-                key={i}
-                className="border-b border-border/50 hover:bg-white/[0.02] transition-colors"
-              >
+              <TableRow key={i} className="group transition-colors hover:bg-muted/50">
                 {r.map((c, j) => (
-                  <td
+                  <TableCell
                     key={j}
-                    className={`px-4 py-3 ${j === 0 ? "font-medium text-foreground" : "text-muted-foreground"}`}
+                    className={j === 0 ? "font-medium text-foreground pl-4" : "text-muted-foreground"}
                   >
                     {c}
-                  </td>
+                  </TableCell>
                 ))}
-              </tr>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
     </div>
   );

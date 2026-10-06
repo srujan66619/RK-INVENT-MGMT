@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus, Search, Trash2, Edit, AlertTriangle, Boxes } from "lucide-react";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,6 +17,14 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { inr } from "@/lib/format";
 import {
   getInventoryItemsFn,
@@ -92,13 +101,13 @@ function InventoryPage() {
       }
     },
     onSuccess: () => {
-      toast.success("Saved");
+      toast.success("Saved", { description: "Inventory item updated successfully." });
       qc.invalidateQueries({ queryKey: ["inventory"] });
       setOpen(false);
       setEditing(null);
       setReason("");
     },
-    onError: (e: any) => toast.error(e.message),
+    onError: (e: any) => toast.error("Error", { description: e.message }),
   });
 
   const del = useMutation({
@@ -106,9 +115,10 @@ function InventoryPage() {
       await deleteInventoryItemFn({ data: id });
     },
     onSuccess: () => {
-      toast.success("Deleted");
+      toast.success("Deleted", { description: "Item removed from inventory." });
       qc.invalidateQueries({ queryKey: ["inventory"] });
     },
+    onError: (e: any) => toast.error("Error", { description: e.message }),
   });
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -153,7 +163,7 @@ function InventoryPage() {
               <Plus className="mr-2 h-4 w-4" /> Add custom item
             </Button>
           </DialogTrigger>
-          <DialogContent className="glass-strong max-h-[90vh] overflow-y-auto custom-scrollbar border-border shadow-2xl">
+          <DialogContent className="max-h-[90vh] overflow-y-auto custom-scrollbar shadow-floating border-border">
             <DialogHeader className="border-b border-border pb-4 mb-4">
               <DialogTitle className="text-xl tracking-tight">
                 {editing ? "Edit" : "Add new"} inventory item
@@ -285,64 +295,70 @@ function InventoryPage() {
       </header>
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <Stat icon={Boxes} label="Items" value={String(items.length)} color="#3b82f6" />
+        <Stat icon={Boxes} label="Items" value={String(items.length)} color="#3b82f6" delay={0} />
         <Stat
           icon={AlertTriangle}
           label="Low stock"
           value={String(lowStock.length)}
           tone="warn"
           color="#ef4444"
+          delay={0.1}
         />
-        <Stat icon={Boxes} label="Inventory value" value={inr(totalValue)} color="#10b981" />
+        <Stat icon={Boxes} label="Inventory value" value={inr(totalValue)} color="#10b981" delay={0.2} />
       </div>
 
-      <div className="rounded-2xl border border-border bg-card/80 backdrop-blur-xl p-4 shadow-lg">
-        <div className="relative mb-4">
+      <div className="rounded-2xl border border-border bg-card p-4 shadow-subtle hover:shadow-elevated transition-shadow duration-300">
+        <div className="relative mb-4 max-w-sm">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Search by name or SKU…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-9 h-10 bg-muted border-border"
+            className="pl-9 h-10 bg-muted/50 border-border"
           />
         </div>
-        <div className="overflow-x-auto custom-scrollbar">
-          <table className="w-full text-sm whitespace-nowrap">
-            <thead className="bg-card/50 text-xs uppercase tracking-wider text-muted-foreground">
-              <tr>
-                <th className="px-4 py-3 text-left rounded-tl-lg">Name</th>
-                <th className="px-4 py-3 text-left">SKU</th>
-                <th className="px-4 py-3 text-left">Category</th>
-                <th className="px-4 py-3 text-right">Qty</th>
-                <th className="px-4 py-3 text-right">Cost</th>
-                <th className="px-4 py-3 text-right">Price</th>
-                <th className="px-4 py-3 text-right rounded-tr-lg">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
+        <div className="overflow-x-auto custom-scrollbar pb-2">
+          <Table>
+            <TableHeader>
+              <TableRow className="border-border">
+                <TableHead>Name</TableHead>
+                <TableHead>SKU</TableHead>
+                <TableHead>Category</TableHead>
+                <TableHead className="text-right">Qty</TableHead>
+                <TableHead className="text-right">Cost</TableHead>
+                <TableHead className="text-right">Price</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {isLoading && (
-                <tr>
-                  <td colSpan={7} className="px-4 py-12 text-center text-muted-foreground">
-                    Loading…
-                  </td>
-                </tr>
+                <TableRow>
+                  <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-center">
+                      <div className="h-5 w-5 rounded-full border-2 border-primary border-r-transparent animate-spin" />
+                    </motion.div>
+                  </TableCell>
+                </TableRow>
               )}
               {!isLoading && filtered.length === 0 && (
-                <tr>
-                  <td colSpan={7} className="px-4 py-12 text-center text-muted-foreground">
-                    No items yet.
-                  </td>
-                </tr>
+                <TableRow>
+                  <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
+                    No items found.
+                  </TableCell>
+                </TableRow>
               )}
-              {filtered.map((i) => (
-                <tr
+              {filtered.map((i, index) => (
+                <motion.tr
                   key={i.id}
-                  className="group border-b border-border/50 hover:bg-white/[0.02] transition-colors"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.2, delay: Math.min(index * 0.05, 0.5) }} // Cap stagger at 10 items
+                  className="group border-b border-border/50 hover:bg-accent/30 transition-colors"
                 >
-                  <td className="px-4 py-3 font-medium text-foreground">{i.name}</td>
-                  <td className="px-4 py-3 text-muted-foreground">{i.sku ?? "—"}</td>
-                  <td className="px-4 py-3 text-muted-foreground">{i.category ?? "—"}</td>
-                  <td className="px-4 py-3 text-right">
+                  <TableCell className="font-medium text-foreground">{i.name}</TableCell>
+                  <TableCell className="text-muted-foreground">{i.sku ?? "—"}</TableCell>
+                  <TableCell className="text-muted-foreground">{i.category ?? "—"}</TableCell>
+                  <TableCell className="text-right">
                     <span
                       className={
                         i.quantity <= i.low_stock_threshold
@@ -360,12 +376,12 @@ function InventoryPage() {
                         Low
                       </Badge>
                     )}
-                  </td>
-                  <td className="px-4 py-3 text-right text-muted-foreground">{inr(i.cost_price)}</td>
-                  <td className="px-4 py-3 text-right font-medium text-foreground">
+                  </TableCell>
+                  <TableCell className="text-right text-muted-foreground">{inr(i.cost_price)}</TableCell>
+                  <TableCell className="text-right font-medium text-foreground">
                     {inr(i.selling_price)}
-                  </td>
-                  <td className="px-4 py-3 text-right">
+                  </TableCell>
+                  <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       <Button
                         size="icon"
@@ -392,11 +408,11 @@ function InventoryPage() {
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
-                  </td>
-                </tr>
+                  </TableCell>
+                </motion.tr>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </div>
     </div>
@@ -422,15 +438,22 @@ function Stat({
   value,
   tone,
   color = "#22d3ee",
+  delay = 0,
 }: {
   icon: any;
   label: string;
   value: string;
   tone?: "warn";
   color?: string;
+  delay?: number;
 }) {
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-border bg-card/80 backdrop-blur-xl p-5 shadow-lg transition-all hover:bg-secondary hover:border-white/20 hover:-translate-y-0.5 hover:shadow-xl">
+    <motion.div 
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, delay }}
+      className="group relative overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-subtle transition-all duration-300 hover:bg-accent/20 hover:shadow-elevated hover:-translate-y-1"
+    >
       <div
         className="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full opacity-10 blur-2xl transition-opacity group-hover:opacity-20"
         style={{ background: color }}
@@ -456,6 +479,6 @@ function Stat({
           <Icon className="h-4 w-4" />
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

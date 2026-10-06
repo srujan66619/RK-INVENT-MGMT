@@ -12,6 +12,8 @@ import {
   Eye,
 } from "lucide-react";
 import { toast } from "sonner";
+import { motion, AnimatePresence } from "framer-motion";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -472,68 +474,78 @@ function BillingPage() {
                   <span className="text-xs font-medium text-muted-foreground">Total</span>
                   <span />
                 </div>
-                {items.map((it, idx) => (
-                  <div key={idx} className="grid grid-cols-[1fr_70px_110px_110px_110px_40px] gap-2">
-                    <Input
-                      placeholder="Description"
-                      value={it.description}
-                      onChange={(e) =>
-                        setItems(
-                          items.map((x, i) =>
-                            i === idx ? { ...x, description: e.target.value } : x,
-                          ),
-                        )
-                      }
-                    />
-                    <Input
-                      type="number"
-                      min={0}
-                      value={it.quantity}
-                      onChange={(e) =>
-                        setItems(
-                          items.map((x, i) =>
-                            i === idx ? { ...x, quantity: Number(e.target.value) } : x,
-                          ),
-                        )
-                      }
-                    />
-                    <Input
-                      type="number"
-                      step="0.01"
-                      placeholder="Unit ₹"
-                      value={it.unit_price}
-                      onChange={(e) =>
-                        setItems(
-                          items.map((x, i) =>
-                            i === idx ? { ...x, unit_price: Number(e.target.value) } : x,
-                          ),
-                        )
-                      }
-                    />
-                    <Input
-                      placeholder="e.g. 3 months"
-                      value={it.warranty}
-                      onChange={(e) =>
-                        setItems(
-                          items.map((x, i) =>
-                            i === idx ? { ...x, warranty: e.target.value } : x,
-                          ),
-                        )
-                      }
-                    />
-                    <div className="grid h-9 place-items-center rounded-md border border-border bg-secondary text-sm">
-                      {inr(it.quantity * it.unit_price)}
-                    </div>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setItems(items.filter((_, i) => i !== idx))}
+                <AnimatePresence initial={false}>
+                  {items.map((it, idx) => (
+                    <motion.div
+                      key={idx}
+                      initial={{ opacity: 0, height: 0, y: -10 }}
+                      animate={{ opacity: 1, height: "auto", y: 0 }}
+                      exit={{ opacity: 0, height: 0, scale: 0.95 }}
+                      transition={{ duration: 0.2 }}
+                      className="grid grid-cols-[1fr_70px_110px_110px_110px_40px] gap-2"
                     >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
+                      <Input
+                        placeholder="Description"
+                        value={it.description}
+                        onChange={(e) =>
+                          setItems(
+                            items.map((x, i) =>
+                              i === idx ? { ...x, description: e.target.value } : x,
+                            ),
+                          )
+                        }
+                      />
+                      <Input
+                        type="number"
+                        min={0}
+                        value={it.quantity}
+                        onChange={(e) =>
+                          setItems(
+                            items.map((x, i) =>
+                              i === idx ? { ...x, quantity: Number(e.target.value) } : x,
+                            ),
+                          )
+                        }
+                      />
+                      <Input
+                        type="number"
+                        step="0.01"
+                        placeholder="Unit ₹"
+                        value={it.unit_price}
+                        onChange={(e) =>
+                          setItems(
+                            items.map((x, i) =>
+                              i === idx ? { ...x, unit_price: Number(e.target.value) } : x,
+                            ),
+                          )
+                        }
+                      />
+                      <Input
+                        placeholder="e.g. 3 months"
+                        value={it.warranty}
+                        onChange={(e) =>
+                          setItems(
+                            items.map((x, i) =>
+                              i === idx ? { ...x, warranty: e.target.value } : x,
+                            ),
+                          )
+                        }
+                      />
+                      <div className="grid h-9 place-items-center rounded-md border border-border bg-secondary text-sm">
+                        {inr(it.quantity * it.unit_price)}
+                      </div>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="text-muted-foreground hover:text-red-400 hover:bg-red-500/10"
+                        onClick={() => setItems(items.filter((_, i) => i !== idx))}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
                 <Button
                   type="button"
                   variant="outline"
@@ -669,34 +681,34 @@ function BillingPage() {
         <Stat icon={IndianRupee} label="Pending Payment" value={inr(unpaid)} type="warning" />
       </div>
 
-      <div className="rounded-2xl border border-border bg-card/95 backdrop-blur-md overflow-hidden shadow-xl">
+      <div className="rounded-2xl border border-border bg-card shadow-subtle overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm whitespace-nowrap">
-            <thead className="bg-card/50 text-[11px] uppercase tracking-widest text-muted-foreground">
-              <tr>
-                <th className="px-4 py-4 text-left font-semibold">Invoice</th>
-                <th className="px-4 py-4 text-left font-semibold">Customer</th>
-                <th className="px-4 py-4 text-left font-semibold">Date</th>
-                <th className="px-4 py-4 text-right font-semibold">Total</th>
-                <th className="px-4 py-4 text-left font-semibold">Status</th>
-                <th className="px-4 py-4 text-right font-semibold">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/5">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Invoice</TableHead>
+                <TableHead>Customer</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead className="text-right">Total</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {isLoading && (
-                <tr>
-                  <td colSpan={6} className="py-16 text-center text-muted-foreground">
+                <TableRow>
+                  <TableCell colSpan={6} className="py-16 text-center text-muted-foreground">
                     Loading invoices...
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               )}
               {!isLoading && invoices.length === 0 && (
-                <tr>
-                  <td colSpan={6} className="py-16 text-center text-muted-foreground">
+                <TableRow>
+                  <TableCell colSpan={6} className="py-16 text-center text-muted-foreground">
                     No invoices yet. Create your first invoice to start managing billing and GST
                     records.
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               )}
               {invoices.map((inv) => {
                 const c = customers.find((x) => x.id === inv.customer_id);
@@ -706,18 +718,18 @@ function BillingPage() {
                   unpaid: "bg-red-500/10 text-red-400 border-red-500/20",
                 };
                 return (
-                  <tr key={inv.id} className="group transition-colors hover:bg-white/[0.02]">
-                    <td className="px-4 py-3.5 font-mono text-xs font-semibold text-foreground">
+                  <TableRow key={inv.id} className="group">
+                    <TableCell className="font-mono text-xs font-semibold text-foreground">
                       {inv.invoice_no}
-                    </td>
-                    <td className="px-4 py-3.5 font-medium text-muted-foreground">
+                    </TableCell>
+                    <TableCell className="font-medium text-muted-foreground">
                       {c?.name ?? <span className="text-muted-foreground">Walk-in</span>}
-                    </td>
-                    <td className="px-4 py-3.5 text-muted-foreground">{fmtDate(inv.created_at)}</td>
-                    <td className="px-4 py-3.5 text-right font-semibold text-foreground">
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">{fmtDate(inv.created_at)}</TableCell>
+                    <TableCell className="text-right font-semibold text-foreground">
                       {inr(inv.total)}
-                    </td>
-                    <td className="px-4 py-3.5">
+                    </TableCell>
+                    <TableCell>
                       <Badge
                         variant="outline"
                         className={cn(
@@ -727,13 +739,13 @@ function BillingPage() {
                       >
                         {inv.payment_status}
                       </Badge>
-                    </td>
-                    <td className="px-4 py-3.5 text-right">
+                    </TableCell>
+                    <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
                         <Button
                           size="icon"
                           variant="ghost"
-                          className="h-8 w-8 hover:bg-cardccent hover:text-foreground"
+                          className="h-8 w-8 hover:bg-accent hover:text-foreground"
                           title="Preview PDF"
                           onClick={() => previewPdf(inv)}
                         >
@@ -742,7 +754,7 @@ function BillingPage() {
                         <Button
                           size="icon"
                           variant="ghost"
-                          className="h-8 w-8 hover:bg-cardccent hover:text-foreground"
+                          className="h-8 w-8 hover:bg-accent hover:text-foreground"
                           title="Download PDF"
                           onClick={() => downloadPdf(inv)}
                         >
@@ -751,7 +763,7 @@ function BillingPage() {
                         <Button
                           size="icon"
                           variant="ghost"
-                          className="h-8 w-8 hover:bg-[var(--neon)]/20 hover:text-[var(--neon)] text-[var(--neon)]"
+                          className="h-8 w-8 hover:bg-[var(--neon)]/20 hover:text-[var(--neon)] text-[var(--neon)] transition-colors"
                           title="Send PDF on WhatsApp"
                           onClick={() => shareWhatsApp(inv)}
                         >
@@ -761,7 +773,7 @@ function BillingPage() {
                           <Button
                             size="icon"
                             variant="ghost"
-                            className="h-8 w-8 hover:bg-cardmber-500/20 hover:text-amber-400 text-amber-300"
+                            className="h-8 w-8 hover:bg-amber-500/20 hover:text-amber-400 text-amber-300 transition-colors"
                             title="Payment reminder"
                             onClick={() => paymentReminder(inv)}
                           >
@@ -771,7 +783,7 @@ function BillingPage() {
                         <Button
                           size="icon"
                           variant="ghost"
-                          className="h-8 w-8 hover:bg-red-500/20 hover:text-red-400 text-red-400/80"
+                          className="h-8 w-8 hover:bg-red-500/20 hover:text-red-400 text-red-400/80 transition-colors"
                           title="Delete Invoice"
                           onClick={() => {
                             if (confirm(`Delete ${inv.invoice_no}?`)) del.mutate(inv.id);
@@ -780,12 +792,12 @@ function BillingPage() {
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 );
               })}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </div>
     </div>

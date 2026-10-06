@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { Link } from "@tanstack/react-router";
+import { motion, AnimatePresence } from "framer-motion";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Search, Plus, Trash2, Loader2, Package, X, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
@@ -92,50 +93,56 @@ export function RepairPartsPanel({ repairId }: { repairId: string }) {
       ) : (
         <div className="space-y-3">
           <div className="space-y-2">
-            {parts.map((p: any) => (
-              <div
-                key={p.id}
-                className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-lg border border-border/50 bg-secondary/50 p-3 transition-colors hover:bg-secondary"
-              >
-                <div>
-                  <div className="font-semibold text-foreground text-sm flex items-center gap-2">
-                    {p.inventory_item?.name || "Unknown Item"}
+            <AnimatePresence initial={false}>
+              {parts.map((p: any) => (
+                <motion.div
+                  key={p.id}
+                  initial={{ opacity: 0, height: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, height: "auto", scale: 1 }}
+                  exit={{ opacity: 0, height: 0, scale: 0.95 }}
+                  transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-lg border border-border bg-card p-3 shadow-subtle transition-all duration-200 hover:shadow-elevated hover:bg-accent/20"
+                >
+                  <div>
+                    <div className="font-semibold text-foreground text-sm flex items-center gap-2">
+                      {p.inventory_item?.name || "Unknown Item"}
+                    </div>
+                    <div className="mt-1 text-xs text-muted-foreground space-y-1">
+                      <div>SKU: {p.inventory_item?.sku || "—"}</div>
+                      <div>Quantity: {p.quantity}</div>
+                      {p.created_at && <div>Consumed: {fmtDate(p.created_at)}</div>}
+                      {canSeeCost && (
+                        <div className="flex gap-3">
+                          <span>Unit Cost: {inr(p.unit_cost)}</span>
+                          <span className="font-medium text-foreground">Total: {inr(p.quantity * p.unit_cost)}</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="mt-2">
+                      <Link to={`/inventory/${p.item_id}`} className="text-xs text-primary hover:underline font-normal">
+                        [View Item]
+                      </Link>
+                    </div>
                   </div>
-                  <div className="mt-1 text-xs text-muted-foreground space-y-1">
-                    <div>SKU: {p.inventory_item?.sku || "—"}</div>
-                    <div>Quantity: {p.quantity}</div>
-                    {p.created_at && <div>Consumed: {fmtDate(p.created_at)}</div>}
-                    {canSeeCost && (
-                      <div className="flex gap-3">
-                        <span>Unit Cost: {inr(p.unit_cost)}</span>
-                        <span className="font-medium text-foreground">Total: {inr(p.quantity * p.unit_cost)}</span>
-                      </div>
-                    )}
-                  </div>
-                  <div className="mt-2">
-                    <Link to={`/inventory/${p.item_id}`} className="text-xs text-primary hover:underline font-normal">
-                      [View Item]
-                    </Link>
-                  </div>
-                </div>
-                {canReverse && (
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="ghost"
-                    className="h-8 text-muted-foreground hover:bg-red-500/20 hover:text-red-400 shrink-0 self-end sm:self-auto"
-                    onClick={() => {
-                      if (confirm("Remove this part from the repair?\n\nThis will return the consumed quantity to inventory.")) {
-                        reversePart.mutate(p.id);
-                      }
-                    }}
-                    disabled={reversePart.isPending}
-                  >
-                    <RotateCcw className="mr-1.5 h-3.5 w-3.5" /> Reverse
-                  </Button>
-                )}
-              </div>
-            ))}
+                  {canReverse && (
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="ghost"
+                      className="h-8 text-muted-foreground hover:bg-red-500/10 hover:text-red-400 shrink-0 self-end sm:self-auto transition-colors"
+                      onClick={() => {
+                        if (confirm("Remove this part from the repair?\n\nThis will return the consumed quantity to inventory.")) {
+                          reversePart.mutate(p.id);
+                        }
+                      }}
+                      disabled={reversePart.isPending}
+                    >
+                      <RotateCcw className="mr-1.5 h-3.5 w-3.5" /> Reverse
+                    </Button>
+                  )}
+                </motion.div>
+              ))}
+            </AnimatePresence>
           </div>
           {canSeeCost && (
             <div className="flex justify-between items-center pt-3 border-t border-white/10">

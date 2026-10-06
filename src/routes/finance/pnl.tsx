@@ -541,57 +541,54 @@ function PnLPage() {
       </div>
 
       {/* Expenses table */}
-      <div className="rounded-2xl border border-border bg-card/80 backdrop-blur-xl p-0 shadow-lg overflow-hidden">
-        <div className="p-5 border-b border-border bg-white/[0.02]">
+      <div className="rounded-2xl border border-border bg-card shadow-subtle p-0 overflow-hidden mt-6">
+        <div className="p-5 border-b border-border bg-card/50">
           <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
             Operating Expenses — {month}
           </h3>
         </div>
-        <div className="overflow-x-auto custom-scrollbar p-1">
-          <table className="w-full text-sm whitespace-nowrap">
-            <thead className="bg-card/50 text-xs uppercase tracking-wider text-muted-foreground">
-              <tr>
-                <th className="px-4 py-3 text-left">Date</th>
-                <th className="px-4 py-3 text-left">Category</th>
-                <th className="px-4 py-3 text-left">Description</th>
-                <th className="px-4 py-3 text-right">Amount</th>
-                <th className="px-4 py-3"></th>
-              </tr>
-            </thead>
-            <tbody>
+        <div className="overflow-x-auto custom-scrollbar">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="pl-4">Date</TableHead>
+                <TableHead>Category</TableHead>
+                <TableHead>Description</TableHead>
+                <TableHead className="text-right">Amount</TableHead>
+                <TableHead className="pr-4"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {(expenses as any[]).length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="px-4 py-12 text-center text-muted-foreground">
+                <TableRow>
+                  <TableCell colSpan={5} className="py-12 text-center text-muted-foreground">
                     No expenses logged for this month.
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ) : (
                 (expenses as any[]).map((e) => (
-                  <tr
-                    key={e.id}
-                    className="group border-b border-border/50 hover:bg-white/[0.02] transition-colors"
-                  >
-                    <td className="px-4 py-3 text-muted-foreground">{fmtDate(e.expense_date)}</td>
-                    <td className="px-4 py-3 font-medium text-foreground">{e.category}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{e.description || "—"}</td>
-                    <td className="px-4 py-3 text-right font-medium text-foreground">
+                  <TableRow key={e.id} className="group">
+                    <TableCell className="pl-4 text-muted-foreground">{fmtDate(e.expense_date)}</TableCell>
+                    <TableCell className="font-medium text-foreground">{e.category}</TableCell>
+                    <TableCell className="text-muted-foreground">{e.description || "—"}</TableCell>
+                    <TableCell className="text-right font-medium text-foreground">
                       {inr(Number(e.amount))}
-                    </td>
-                    <td className="px-4 py-3 text-right">
+                    </TableCell>
+                    <TableCell className="text-right pr-4">
                       <Button
                         size="icon"
                         variant="ghost"
-                        className="h-8 w-8 text-muted-foreground hover:text-red-400 hover:bg-red-400/10 opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="h-8 w-8 text-muted-foreground hover:text-red-400 hover:bg-red-500/10 opacity-0 group-hover:opacity-100 transition-opacity"
                         onClick={() => delExpense.mutate(e.id)}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))
               )}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </div>
     </div>

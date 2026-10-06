@@ -1,5 +1,6 @@
 import { Link, useRouterState, Outlet } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Menu,
   MapPin,
@@ -48,7 +49,11 @@ function PublicHeader() {
             >
               {link.label}
               {path === link.to && (
-                <span className="absolute -bottom-[21px] left-0 right-0 h-0.5 bg-[#0284c7] rounded-t-full shadow-[0_0_10px_rgba(37,99,235,0.5)]" />
+                <motion.span
+                  layoutId="public-nav-underline"
+                  className="absolute -bottom-[21px] left-0 right-0 h-[3px] bg-[#0284c7] rounded-t-full shadow-[0_0_12px_rgba(37,99,235,0.6)]"
+                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                />
               )}
             </Link>
           ))}
