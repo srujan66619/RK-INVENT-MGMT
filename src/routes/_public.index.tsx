@@ -17,20 +17,20 @@ export const Route = createFileRoute("/_public/")({
 
 function PublicHome() {
   return (
-    <div className="w-full pb-20 bg-white min-h-screen text-blue-950 font-sans">
+    <div className="w-full pb-20 bg-[#ffffff] min-h-screen text-[#082f49] font-sans">
       {/* Hero Section */}
-      <section className="relative overflow-hidden pt-20 md:pt-32 pb-20 lg:pb-32">
+      <section className="relative overflow-hidden pt-20 md:pt-32 pb-20 lg:pb-32 bg-[#ffffff]">
         {/* Animated Background Elements */}
         <div className="absolute inset-0 z-0 overflow-hidden">
           <motion.div 
             animate={{ scale: [1, 1.1, 1], rotate: [0, 45, 0] }} 
             transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -top-[30%] -right-[10%] w-[70%] h-[70%] rounded-full bg-blue-50 blur-[100px]" 
+            className="absolute -top-[30%] -right-[10%] w-[70%] h-[70%] rounded-full bg-[#f0f9ff] blur-[100px]" 
           />
           <motion.div 
             animate={{ scale: [1, 1.2, 1], rotate: [0, -45, 0] }} 
             transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-blue-100/50 blur-[100px]" 
+            className="absolute top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-[#e0f2fe]/50 blur-[100px]" 
           />
         </div>
 
@@ -41,13 +41,13 @@ function PublicHome() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.8, type: "spring", bounce: 0.4 }}
             >
-              <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-blue-950 mb-4">
+              <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-[#082f49] mb-4">
                 Expert Hands.{" "}
-                <span className="text-blue-600">
+                <span className="text-[#0284c7]">
                   Trusted Repairs.
                 </span>
               </h1>
-              <p className="text-xl md:text-2xl text-blue-800 font-medium max-w-2xl mx-auto">
+              <p className="text-xl md:text-2xl text-[#075985] font-medium max-w-2xl mx-auto">
                 Only at RK Repair Labs
               </p>
             </motion.div>
@@ -57,7 +57,7 @@ function PublicHome() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              <p className="text-base md:text-lg text-blue-700/80 max-w-2xl mx-auto leading-relaxed">
+              <p className="text-base md:text-lg text-[#0369a1] max-w-2xl mx-auto leading-relaxed">
                 MacBook & iPhone specialists. Skilled professionals with deep knowledge of all major
                 brands and models. Chip-level fixes, screens, batteries, charging, and more.
               </p>
@@ -73,14 +73,14 @@ function PublicHome() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 href="tel:+919666984949"
-                className="w-full sm:w-auto flex items-center justify-center gap-2 bg-blue-600 text-white px-8 py-4 rounded-xl font-bold shadow-lg shadow-blue-600/30 transition-all hover:bg-blue-700"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#0284c7] text-[#ffffff] px-8 py-4 rounded-xl font-bold shadow-lg shadow-[#0284c7]/30 transition-all hover:bg-[#0369a1]"
               >
                 <Phone className="h-5 w-5" /> Call Now
               </motion.a>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
                 <Link
                   to="/track"
-                  className="w-full flex items-center justify-center gap-2 bg-white border-2 border-blue-200 text-blue-700 px-8 py-4 rounded-xl font-bold shadow-sm hover:border-blue-300 hover:bg-blue-50 transition-all"
+                  className="w-full flex items-center justify-center gap-2 bg-[#ffffff] border-2 border-[#bae6fd] text-[#0369a1] px-8 py-4 rounded-xl font-bold shadow-sm hover:border-[#7dd3fc] hover:bg-[#f0f9ff] transition-all"
                 >
                   Track Repair <ArrowRight className="h-5 w-5" />
                 </Link>
@@ -91,7 +91,7 @@ function PublicHome() {
       </section>
 
       {/* Why Choose Us */}
-      <section className="py-20 bg-blue-50/50">
+      <section className="py-20 bg-[#f0f9ff]">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <motion.div
@@ -99,8 +99,8 @@ function PublicHome() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
-              <h2 className="text-3xl md:text-4xl font-bold text-blue-950 mb-4">Why Choose Us</h2>
-              <div className="h-1.5 w-24 bg-blue-600 mx-auto rounded-full" />
+              <h2 className="text-3xl md:text-4xl font-bold text-[#082f49] mb-4">Why Choose Us</h2>
+              <div className="h-1.5 w-24 bg-[#0284c7] mx-auto rounded-full" />
             </motion.div>
           </div>
 
@@ -133,14 +133,14 @@ function PublicHome() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                whileHover={{ y: -5, boxShadow: "0 10px 30px -10px rgba(37, 99, 235, 0.2)" }}
-                className="bg-white border border-blue-100 rounded-2xl p-8 transition-all"
+                whileHover={{ y: -5, boxShadow: "0 10px 30px -10px rgba(2, 132, 199, 0.2)" }}
+                className="bg-[#ffffff] border border-[#e0f2fe] rounded-2xl p-8 transition-all"
               >
-                <div className="h-14 w-14 rounded-xl bg-blue-100 flex items-center justify-center mb-6 text-blue-600">
+                <div className="h-14 w-14 rounded-xl bg-[#e0f2fe] flex items-center justify-center mb-6 text-[#0284c7]">
                   <feature.icon className="h-7 w-7" />
                 </div>
-                <h3 className="text-xl font-bold text-blue-950 mb-3">{feature.title}</h3>
-                <p className="text-blue-700/70 text-sm leading-relaxed">{feature.desc}</p>
+                <h3 className="text-xl font-bold text-[#082f49] mb-3">{feature.title}</h3>
+                <p className="text-[#0369a1] text-sm leading-relaxed">{feature.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -148,7 +148,7 @@ function PublicHome() {
       </section>
 
       {/* Services Overview */}
-      <section className="py-24 bg-white">
+      <section className="py-24 bg-[#ffffff]">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <motion.div
@@ -156,8 +156,8 @@ function PublicHome() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
-              <h2 className="text-3xl md:text-4xl font-bold text-blue-950 mb-4">Our Expert Services</h2>
-              <div className="h-1.5 w-24 bg-blue-600 mx-auto rounded-full" />
+              <h2 className="text-3xl md:text-4xl font-bold text-[#082f49] mb-4">Our Expert Services</h2>
+              <div className="h-1.5 w-24 bg-[#0284c7] mx-auto rounded-full" />
             </motion.div>
           </div>
 
@@ -208,7 +208,7 @@ function PublicHome() {
           >
             <Link
               to="/services"
-              className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-bold text-lg transition-colors group"
+              className="inline-flex items-center gap-2 text-[#0284c7] hover:text-[#0369a1] font-bold text-lg transition-colors group"
             >
               View all services 
               <motion.span
@@ -223,10 +223,10 @@ function PublicHome() {
       </section>
 
       {/* Trusted Brands */}
-      <section className="py-16 bg-blue-600 overflow-hidden relative">
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_white_1px,_transparent_1px)] [background-size:24px_24px]"></div>
+      <section className="py-16 bg-[#0284c7] overflow-hidden relative">
+        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,#ffffff_1px,transparent_1px)] [background-size:24px_24px]"></div>
         <div className="container mx-auto px-6 mb-10 relative z-10">
-          <p className="text-center text-sm font-bold tracking-widest uppercase text-blue-100">
+          <p className="text-center text-sm font-bold tracking-widest uppercase text-[#e0f2fe]">
             Trusted by All Major Brands
           </p>
         </div>
@@ -272,21 +272,21 @@ function ServiceCard({ icon: Icon, title, items, delay }: any) {
       viewport={{ once: true }}
       transition={{ duration: 0.6, delay }}
       whileHover={{ scale: 1.02 }}
-      className="bg-white rounded-3xl p-8 border border-blue-100 shadow-xl shadow-blue-900/5 relative overflow-hidden group"
+      className="bg-[#ffffff] rounded-3xl p-8 border border-[#e0f2fe] shadow-xl shadow-[#082f49]/5 relative overflow-hidden group"
     >
       <div className="absolute -top-6 -right-6 p-6 opacity-5 group-hover:opacity-10 transition-opacity transform group-hover:scale-110 duration-500">
-        <Icon className="h-48 w-48 text-blue-600" />
+        <Icon className="h-48 w-48 text-[#0284c7]" />
       </div>
-      <h3 className="text-2xl font-bold text-blue-950 mb-6 relative z-10 flex items-center gap-3">
-        <span className="p-3 bg-blue-50 text-blue-600 rounded-lg">
+      <h3 className="text-2xl font-bold text-[#082f49] mb-6 relative z-10 flex items-center gap-3">
+        <span className="p-3 bg-[#f0f9ff] text-[#0284c7] rounded-lg">
           <Icon className="h-6 w-6" />
         </span>
         {title}
       </h3>
       <ul className="space-y-4 relative z-10">
         {items.map((item: string, i: number) => (
-          <li key={i} className="flex items-center gap-3 text-blue-800/80 font-medium">
-            <CheckCircle2 className="h-5 w-5 text-blue-600 shrink-0" />
+          <li key={i} className="flex items-center gap-3 text-[#075985] font-medium">
+            <CheckCircle2 className="h-5 w-5 text-[#0284c7] shrink-0" />
             <span>{item}</span>
           </li>
         ))}
