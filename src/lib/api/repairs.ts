@@ -4,13 +4,14 @@ import { z } from "zod";
 import { requireAuth } from "../auth.server";
 
 const repairSchema = z.object({
-  customer_id: z.string().nullable().optional(),
+  customer_id: z.string().min(1, "Customer is required"),
   device_type: z.string().nullable().optional(),
   device_brand: z.string().nullable().optional(),
   device_model: z.string().nullable().optional(),
   imei: z.string().nullable().optional(),
   issue: z.string().min(1),
   status: z.string(),
+  technician_name: z.string().min(1, "Technician is required"),
   technician_notes: z.string().nullable().optional(),
   estimated_completion: z.string().nullable().optional().transform(v => v ? new Date(v) : null),
   estimated_cost: z.number().nullable().optional(),

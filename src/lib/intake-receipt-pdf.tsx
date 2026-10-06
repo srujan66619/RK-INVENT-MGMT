@@ -133,7 +133,7 @@ export async function buildIntakeReceiptPdf({
   const marginX = 24;
 
   let currentY = 175;
-  await drawPdfHeader(doc, "REPAIR INTAKE", ticket_no, "TICKET NO.");
+  await drawPdfHeader(doc, "REPAIR INTAKE", jobID, "TICKET NO.");
 
   // Date and Time Row
   const dateW = (pw - marginX * 2 - 15) / 2;

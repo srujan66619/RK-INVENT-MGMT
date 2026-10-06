@@ -186,6 +186,7 @@ type FormState = {
   estimated_cost: number;
   advance_amount: number;
   payment_mode: string;
+  technician_name: string;
   technician_notes: string;
   appointment_date: string;
   appointment_time: string;
@@ -206,6 +207,7 @@ const EMPTY_FORM: FormState = {
   estimated_cost: 0,
   advance_amount: 0,
   payment_mode: "Cash",
+  technician_name: "",
   technician_notes: "",
   appointment_date: "",
   appointment_time: "",
@@ -285,6 +287,7 @@ function RepairsPage() {
       estimated_cost: Number(r.estimated_cost ?? 0),
       advance_amount: 0,
       payment_mode: "Cash",
+      technician_name: r.technician_name ?? "",
       technician_notes: r.technician_notes ?? "",
       appointment_date: r.appointment_at ? r.appointment_at.slice(0, 10) : "",
       appointment_time: r.appointment_at
@@ -316,6 +319,8 @@ function RepairsPage() {
 
   const save = useMutation({
     mutationFn: async () => {
+      if (!form.customer_id) throw new Error("Customer is required");
+      if (!form.technician_name.trim()) throw new Error("Technician name is required");
       if (!form.issue.trim()) throw new Error("Issue description is required");
       let appointment_at: string | null = null;
       if (form.appointment_date) {
@@ -333,6 +338,7 @@ function RepairsPage() {
         imei: form.imei || null,
         issue: form.issue,
         status: form.status as any,
+        technician_name: form.technician_name,
         technician_notes: form.technician_notes || null,
         estimated_completion: form.estimated_completion || null,
         estimated_cost: Number(form.estimated_cost || 0),
@@ -606,6 +612,18 @@ function RepairsPage() {
                     </div>
                   </div>
                 )}
+              </div>
+
+              {/* Technician input */}
+              <div className="space-y-1.5">
+                <Label className="text-muted-foreground">Technician *</Label>
+                <Input
+                  placeholder="Technician name"
+                  value={form.technician_name}
+                  onChange={(e) => setForm((f) => ({ ...f, technician_name: e.target.value }))}
+                  className="bg-muted border-border focus:border-primary/50"
+                  required
+                />
               </div>
 
               <div className="space-y-1.5">
@@ -988,7 +1006,7 @@ function RepairsPage() {
                       </button>
                     </td>
                     <td className="px-4 py-3 text-foreground">
-                      {c?.name ?? <span className="text-muted-foreground">—</span>}
+                      {c?.name ?? <span className="text-muted-foreground italic">Walk-in</span>}
                     </td>
                     <td
                       className="px-4 py-3 text-muted-foreground truncate max-w-[200px]"
@@ -1002,7 +1020,7 @@ function RepairsPage() {
                         r.device_type ||
                         "—"}
                     </td>
-                    <td className="px-4 py-3 text-muted-foreground">{r.technician_name ?? "—"}</td>
+                    <td className="px-4 py-3 text-muted-foreground">{r.technician_name || "Unassigned"}</td>
                     <td className="px-4 py-3">
                       <select
                         value={r.status}
@@ -1278,7 +1296,7 @@ function RepairDetailDialog({
     <Dialog open onOpenChange={(v) => !v && onClose()}>
       <DialogContent className="glass-strong max-h-[90vh] max-w-3xl overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center justify-between gap-3">
+          <DialogTitle className="flex items-center justify-between gap-3 pr-8">
             <span>Ticket {repair.ticket_no}</span>
             <Button size="sm" variant="outline" onClick={printReceipt}>
               <Printer className="mr-2 h-4 w-4" /> Print receipt
@@ -1289,7 +1307,7 @@ function RepairDetailDialog({
         <div className="grid gap-4 md:grid-cols-2">
           <div className="glass space-y-1 rounded-xl p-4 text-sm">
             <div className="text-xs uppercase tracking-wider text-muted-foreground">Customer</div>
-            <div className="font-semibold">{customer?.name ?? "—"}</div>
+            <div className="font-semibold">{customer?.name ?? "Walk-in"}</div>
             <div className="text-muted-foreground">{customer?.phone}</div>
             <div className="text-muted-foreground">{customer?.address}</div>
           </div>
@@ -1322,7 +1340,7 @@ function RepairDetailDialog({
               <TimelineItem label="Appointment scheduled" at={repair.appointment_at} accent implicitDone={!!repair.assigned_at || !!repair.completed_at || !!repair.delivered_at || repair.status === "delivered" || repair.status === "completed" || repair.status === "in_progress"} />
             )}
             <TimelineItem
-              label={`Assigned to ${repair.technician_name ?? "technician"}`}
+              label={`Assigned to ${repair.technician_name || "technician"}`}
               at={repair.assigned_at}
               implicitDone={!!repair.completed_at || !!repair.delivered_at || repair.status === "delivered" || repair.status === "completed"}
             />
@@ -1373,7 +1391,7 @@ function RepairDetailDialog({
                     {n.note}
                   </div>
                   <div className="mt-1 text-[11px] text-muted-foreground">
-                    {n.technician_name ?? "—"} · {fmtDateTime(n.created_at)}
+                    {n.technician_name || "Unknown"} · {fmtDateTime(n.created_at)}
                     {n.task_done && n.completed_at && ` · done ${fmtDateTime(n.completed_at)}`}
                   </div>
                 </div>
@@ -1431,7 +1449,7 @@ function TimelineItem({
         {label}
       </span>
       <span className="ml-auto text-xs text-muted-foreground">
-        {at ? fmtDateTime(at) : implicitDone ? "—" : "Pending"}
+        {at ? fmtDateTime(at) : implicitDone ? "Done" : "Pending"}
       </span>
     </li>
   );
