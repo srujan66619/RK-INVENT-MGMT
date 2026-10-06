@@ -177,14 +177,15 @@ function ResultView({ data }: { data: Extract<TrackResult, { found: true }> }) {
           <ol className="space-y-2">
             {STEPS.map((s, i) => {
               const done = currentIdx >= 0 && i <= currentIdx;
+              const isCurrent = i === currentIdx;
               return (
-                <li key={s} className="flex items-center gap-3 text-sm">
+                <li key={s} className={`flex items-center gap-3 text-sm ${isCurrent ? 'text-green-500 animate-pulse font-semibold' : ''}`}>
                   {done ? (
-                    <CheckCircle2 className="h-4 w-4 text-[var(--neon)]" />
+                    <CheckCircle2 className={`h-4 w-4 ${isCurrent ? 'text-green-500' : 'text-[var(--neon)]'}`} />
                   ) : (
                     <Circle className="h-4 w-4 text-muted-foreground" />
                   )}
-                  <span className={done ? "" : "text-muted-foreground"}>{STEP_LABEL[s]}</span>
+                  <span className={isCurrent ? "" : (done ? "" : "text-muted-foreground")}>{STEP_LABEL[s]}</span>
                 </li>
               );
             })}

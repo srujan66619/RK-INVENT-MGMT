@@ -67,7 +67,7 @@ function About() {
               className="space-y-6"
             >
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-                Over 11 Years of Excellence
+                Over 17 Years of Excellence
               </h2>
               <p className="text-muted-foreground leading-relaxed text-lg">
                 RK Repair Labs was founded with a single purpose: to provide professional,
@@ -107,7 +107,7 @@ function About() {
                   </div>
                   <div>
                     <div className="text-2xl md:text-3xl font-bold text-white drop-shadow-lg">
-                      11+
+                      17+
                     </div>
                     <div className="text-primary font-bold uppercase tracking-wider text-xs md:text-sm drop-shadow-md">
                       Years Experience

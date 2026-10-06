@@ -50,8 +50,11 @@ export const createRepairFn = createServerFn({ method: "POST" })
     const { userService } = await import("@/services/user.service");
     const { whatsappService } = await import("@/services/whatsapp.service");
 
-    const ticket_no = data.ticket_no || `TK-${Date.now().toString().slice(-6)}`;
-    
+    let ticket_no = data.ticket_no;
+    if (!ticket_no) {
+      const allRepairs = await repairService.getRepairs();
+      ticket_no = String(allRepairs.length + 1);
+    }    
     let assignedCustomerId = data.customer_id;
     if (user.role === "customer") {
       const customer = await customerService.getCustomerByProfileId(user.id);

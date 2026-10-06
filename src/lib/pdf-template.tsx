@@ -29,9 +29,9 @@ export async function drawPdfHeader(doc: jsPDF, title: string, identifierText?: 
   const { teal, orange, darkBg } = PDF_COLORS;
 
   // 1. Left background block
-  doc.setFillColor(darkBg[0], darkBg[1], darkBg[2]);
-  doc.rect(0, 0, 170, 170, "F");
-  doc.triangle(170, 0, 240, 0, 170, 170, "F");
+  // doc.setFillColor(darkBg[0], darkBg[1], darkBg[2]);
+  // doc.rect(0, 0, 170, 170, "F");
+  // doc.triangle(170, 0, 240, 0, 170, 170, "F");
 
   // 2. Logo
   doc.addImage(logoDataUrl, "PNG", 30, 20, 100, 100);

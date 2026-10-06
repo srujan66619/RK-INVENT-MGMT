@@ -1269,8 +1269,8 @@ function RepairDetailDialog({
         customer: customer ?? undefined,
         repair,
       });
-      window.open(doc.output("bloburl"), "_blank");
-      toast.success("Receipt opened for printing", { id: tId });
+      doc.save(`service intake ${repair.ticket_no}.pdf`);
+      toast.success("Receipt downloaded successfully", { id: tId });
     } catch (e: any) {
       console.error(e);
       toast.error(e.message || "Failed to generate receipt", { id: tId });
