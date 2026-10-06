@@ -375,7 +375,6 @@ function BillingPage() {
           <DialogTrigger asChild>
             <Button
               className="h-10 px-5 shadow-lg transition-transform hover:scale-105 active:scale-95"
-              style={{ background: "var(--gradient-primary)", color: "oklch(0.12 0.02 250)" }}
             >
               <Plus className="mr-2 h-4 w-4" /> New invoice
             </Button>
@@ -632,7 +631,6 @@ function BillingPage() {
               <Button
                 onClick={() => create.mutate()}
                 disabled={create.isPending}
-                style={{ background: "var(--gradient-primary)", color: "oklch(0.12 0.02 250)" }}
               >
                 Create invoice
               </Button>

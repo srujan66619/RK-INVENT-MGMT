@@ -124,7 +124,6 @@ function CustomersPage() {
           <DialogTrigger asChild>
             <Button
               className="h-10 px-5 shadow-lg transition-transform hover:scale-105 active:scale-95"
-              style={{ background: "var(--gradient-primary)", color: "oklch(0.12 0.02 250)" }}
             >
               <Plus className="mr-2 h-4 w-4" /> Add customer
             </Button>
@@ -159,7 +158,6 @@ function CustomersPage() {
                   type="submit"
                   disabled={save.isPending}
                   className="shadow-lg transition-transform hover:scale-105 active:scale-95"
-                  style={{ background: "var(--gradient-primary)", color: "oklch(0.12 0.02 250)" }}
                 >
                   {editing ? "Save changes" : "Create"}
                 </Button>

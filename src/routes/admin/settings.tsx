@@ -199,7 +199,6 @@ function SettingsPage() {
                 type="submit"
                 disabled={saveShop.isPending}
                 className="mt-4 shadow-lg transition-transform hover:scale-105 active:scale-95"
-                style={{ background: "var(--gradient-primary)", color: "oklch(0.12 0.02 250)" }}
               >
                 {saveShop.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                 Save Settings

@@ -171,7 +171,6 @@ export function WaSenderProvider({ children }: { children: ReactNode }) {
             <Button
               onClick={openNow}
               disabled={!req?.phone || sendMutation.isPending}
-              style={{ background: "var(--gradient-primary)", color: "oklch(0.12 0.02 250)" }}
             >
               <WhatsAppIcon className="mr-2 h-4 w-4" /> 
               {sendMutation.isPending ? "Sending..." : "Send via API"}

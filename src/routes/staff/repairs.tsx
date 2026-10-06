@@ -522,7 +522,6 @@ function RepairsPage() {
           <DialogTrigger asChild>
             <Button
               className="h-10 px-5 shadow-lg transition-transform hover:scale-105 active:scale-95"
-              style={{ background: "var(--gradient-primary)", color: "oklch(0.12 0.02 250)" }}
             >
               <Plus className="mr-2 h-4 w-4" /> New ticket
             </Button>
@@ -878,7 +877,6 @@ function RepairsPage() {
                   type="submit"
                   disabled={save.isPending}
                   className="shadow-lg transition-transform hover:scale-105 active:scale-95"
-                  style={{ background: "var(--gradient-primary)", color: "oklch(0.12 0.02 250)" }}
                 >
                   {save.isPending ? "Saving…" : editing ? "Save changes" : "Create ticket"}
                 </Button>
@@ -1193,7 +1191,6 @@ function QuickCustomerDialog({
           <Button
             onClick={submit}
             disabled={saving}
-            style={{ background: "var(--gradient-primary)", color: "oklch(0.12 0.02 250)" }}
           >
             {saving ? "Adding…" : "Add customer"}
           </Button>
@@ -1657,7 +1654,6 @@ function AppointmentPanel({
             size="sm"
             onClick={saveNew}
             disabled={update.isPending}
-            style={{ background: "var(--gradient-primary)", color: "oklch(0.12 0.02 250)" }}
           >
             Save
           </Button>
@@ -1971,7 +1967,6 @@ function AddPartToNewRepairDialog({
                 quantity < 1 ||
                 !Number.isInteger(quantity)
               }
-              style={{ background: "var(--gradient-primary)", color: "oklch(0.12 0.02 250)" }}
             >
               Add Item
             </Button>

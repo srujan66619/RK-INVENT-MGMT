@@ -374,7 +374,6 @@ function AddRepairPartDialog({
                 quantity < 1 ||
                 !Number.isInteger(quantity)
               }
-              style={{ background: "var(--gradient-primary)", color: "oklch(0.12 0.02 250)" }}
             >
               {consumePart.isPending ? "Adding..." : "Use Part"}
             </Button>

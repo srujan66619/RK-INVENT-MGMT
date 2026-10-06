@@ -123,7 +123,6 @@ function TrackPage() {
           <Button
             type="submit"
             disabled={lookup.isPending}
-            style={{ background: "var(--gradient-primary)", color: "oklch(0.12 0.02 250)" }}
           >
             {lookup.isPending ? "Searching…" : "Track Repair"}
           </Button>
@@ -347,7 +346,6 @@ function AppointmentCard({ repair }: { repair: Extract<TrackResult, { found: tru
           <a href={googleCalendarUrl(ev)} target="_blank" rel="noreferrer">
             <Button
               size="sm"
-              style={{ background: "var(--gradient-primary)", color: "oklch(0.12 0.02 250)" }}
             >
               <CalendarPlus className="mr-2 h-4 w-4" /> Google Calendar
             </Button>

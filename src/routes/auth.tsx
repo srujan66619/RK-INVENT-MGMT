@@ -207,7 +207,6 @@ function AuthPage() {
                   type="submit"
                   disabled={busy}
                   className="w-full"
-                  style={{ background: "var(--gradient-primary)", color: "oklch(0.12 0.02 250)" }}
                 >
                   {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Sign in
                 </Button>
@@ -301,7 +300,6 @@ function AuthPage() {
                   type="submit"
                   disabled={busy}
                   className="w-full"
-                  style={{ background: "var(--gradient-primary)", color: "oklch(0.12 0.02 250)" }}
                 >
                   {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Create account
                 </Button>

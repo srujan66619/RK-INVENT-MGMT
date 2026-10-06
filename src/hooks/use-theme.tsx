@@ -1,11 +1,9 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 
-type Theme = "light" | "dark" | "cherry" | "ocean";
+type Theme = "light" | "dark";
 export const THEMES: { id: Theme; label: string; icon: any }[] = [
   { id: "light", label: "Light", icon: null },
-  { id: "dark", label: "Dark (Neon)", icon: null },
-  { id: "cherry", label: "Cherry", icon: null },
-  { id: "ocean", label: "Ocean", icon: null },
+  { id: "dark", label: "Dark", icon: null },
 ];
 
 type Ctx = { theme: Theme; toggle: () => void; setTheme: (t: Theme) => void };
@@ -16,7 +14,7 @@ const STORAGE_KEY = "rk-theme";
 function applyTheme(t: Theme) {
   if (typeof document === "undefined") return;
   const root = document.documentElement;
-  root.classList.remove("light", "dark", "cherry", "ocean");
+  root.classList.remove("light", "dark");
   root.classList.add(t);
   root.style.colorScheme = t === "light" ? "light" : "dark";
 }
