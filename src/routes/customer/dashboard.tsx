@@ -61,7 +61,7 @@ function CustomerDashboard() {
           <div className="text-lg font-medium text-white mb-2">Need a new repair?</div>
           <Link
             to="/customer/book"
-            className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary disabled:pointer-events-none disabled:opacity-50 bg-primary text-black shadow hover:bg-primary/90 h-9 px-4 py-2"
+            className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2"
           >
             <Calendar className="mr-2 h-4 w-4" /> Book Appointment
           </Link>
@@ -85,7 +85,7 @@ function CustomerDashboard() {
                 <div className="flex items-center gap-4">
                   <div className={cn(
                     "rounded-full p-2",
-                    repair.status === "in_progress" ? "bg-cardmber-500/20 text-amber-400" :
+                    repair.status === "in_progress" ? "bg-amber-500/20 text-amber-400" :
                     repair.status === "completed" ? "bg-emerald-500/20 text-emerald-400" :
                     "bg-blue-500/20 text-blue-400"
                   )}>

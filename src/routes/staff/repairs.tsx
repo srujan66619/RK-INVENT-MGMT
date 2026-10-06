@@ -81,14 +81,14 @@ const STATUSES = [
 ] as const;
 
 const STATUS_COLOR: Record<string, string> = {
-  received: "bg-blue-400 text-black border-blue-500 font-semibold",
-  diagnosis: "bg-purple-400 text-black border-purple-500 font-semibold",
-  waiting_parts: "bg-cardmber-400 text-black border-amber-500 font-semibold",
-  in_progress: "bg-primary text-black border-primary font-semibold",
-  completed: "bg-emerald-400 text-black border-emerald-500 font-semibold",
-  ready_delivery: "bg-teal-400 text-black border-teal-500 font-semibold",
-  delivered: "bg-green-400 text-black border-green-500 font-semibold",
-  cancelled: "bg-red-400 text-black border-red-500 font-semibold",
+  received: "bg-blue-500/15 text-blue-700 dark:text-blue-400 border-blue-500/30 font-semibold",
+  diagnosis: "bg-purple-500/15 text-purple-700 dark:text-purple-400 border-purple-500/30 font-semibold",
+  waiting_parts: "bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/30 font-semibold",
+  in_progress: "bg-primary/15 text-primary border-primary/30 font-semibold",
+  completed: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/30 font-semibold",
+  ready_delivery: "bg-teal-500/15 text-teal-700 dark:text-teal-400 border-teal-500/30 font-semibold",
+  delivered: "bg-green-500/15 text-green-700 dark:text-green-400 border-green-500/30 font-semibold",
+  cancelled: "bg-red-500/15 text-red-700 dark:text-red-400 border-red-500/30 font-semibold",
 };
 
 type Repair = {
