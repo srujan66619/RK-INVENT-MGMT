@@ -19,6 +19,9 @@ export const loginFn = createServerFn({ method: "POST" })
   .validator((data) => loginSchema.parse(data))
   .handler(async ({ data }) => {
     const supabase = getSupabaseServerClient();
+    if (!supabase) {
+      return { error: "Supabase authentication is not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables." };
+    }
     
     const { data: authData, error } = await supabase.auth.signInWithPassword({
       email: data.email,
@@ -68,6 +71,9 @@ export const registerFn = createServerFn({ method: "POST" })
   .validator((data) => registerSchema.parse(data))
   .handler(async ({ data }) => {
     const supabase = getSupabaseServerClient();
+    if (!supabase) {
+      throw new Error("Supabase authentication is not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables.");
+    }
     
     const { userService } = await import("@/services/user.service");
     const profileCount = await userService.countProfiles();
@@ -111,7 +117,9 @@ export const registerFn = createServerFn({ method: "POST" })
 
 export const logoutFn = createServerFn({ method: "POST" }).handler(async () => {
   const supabase = getSupabaseServerClient();
-  await supabase.auth.signOut();
+  if (supabase) {
+    await supabase.auth.signOut();
+  }
   return { success: true };
 });
 

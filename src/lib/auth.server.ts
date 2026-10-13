@@ -1,11 +1,28 @@
 import { getCookie, setCookie, deleteCookie } from "@tanstack/react-start/server";
 import { createServerClient } from "@supabase/ssr";
 
-const supabaseUrl = process.env.VITE_SUPABASE_URL || "";
-const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY || "";
+const getSupabaseCredentials = () => {
+  const url =
+    process.env.VITE_SUPABASE_URL ||
+    process.env.SUPABASE_URL ||
+    process.env.NEXT_PUBLIC_SUPABASE_URL ||
+    "";
+  const key =
+    process.env.VITE_SUPABASE_ANON_KEY ||
+    process.env.SUPABASE_ANON_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+    "";
+  return { url, key };
+};
 
 export function getSupabaseServerClient() {
-  return createServerClient(supabaseUrl, supabaseAnonKey, {
+  const { url, key } = getSupabaseCredentials();
+  if (!url || !key) {
+    console.warn("Supabase credentials missing: VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY not configured.");
+    return null;
+  }
+
+  return createServerClient(url, key, {
     cookies: {
       get(name: string) {
         return getCookie(name);
@@ -28,6 +45,8 @@ export function getSupabaseServerClient() {
 
 export async function getSession() {
   const supabase = getSupabaseServerClient();
+  if (!supabase) return null;
+
   // Validate the user token securely via the Supabase Auth server
   const { data: { user }, error: userError } = await supabase.auth.getUser();
   if (userError || !user) return null;
