@@ -30,6 +30,9 @@ export default defineConfig(async ({ command, mode }) => {
       plugins.push(
         nitro({
           defaultPreset: process.env.VERCEL ? "vercel" : "node-server",
+          externals: {
+            inline: ["tslib"],
+          },
         })
       );
     } catch (e) {
@@ -85,7 +88,7 @@ export default defineConfig(async ({ command, mode }) => {
         "@neondatabase/serverless",
       ],
       // Prevent drizzle-orm from being inlined into SSR bundle (causes issues)
-      noExternal: [],
+      noExternal: ["tslib"],
     },
     server: {
       host: "::",
