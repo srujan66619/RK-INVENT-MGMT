@@ -21,6 +21,7 @@ export const repairs = pgTable("repairs", {
     .references(() => profiles.id)
     .notNull(),
   technician_id: uuid("technician_id").references(() => profiles.id),
+  technician_name: varchar("technician_name", { length: 255 }),
   created_at: timestamp("created_at").defaultNow().notNull(),
 });
 

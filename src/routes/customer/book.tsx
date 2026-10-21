@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Wrench, CheckCircle2 } from "lucide-react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/customer/book")({
   component: BookRepair,
@@ -38,6 +39,9 @@ function BookRepair() {
       setTicketNo(res.ticket_no || "");
       setSuccess(true);
       queryClient.invalidateQueries({ queryKey: ["repairs"] });
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "Failed to book repair. Please try again.");
     },
   });
 

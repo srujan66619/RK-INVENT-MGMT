@@ -319,26 +319,65 @@ function RepairsPage() {
 
   const save = useMutation({
     mutationFn: async () => {
-      if (!form.customer_id) throw new Error("Customer is required");
-      if (!form.technician_name.trim()) throw new Error("Technician name is required");
       if (!form.issue.trim()) throw new Error("Issue description is required");
+
+      let customerId = form.customer_id || null;
+      // Auto-create customer if staff entered a customer name in search box but didn't select an existing record
+      if (!customerId && custSearch.trim() && custSearch.trim().toLowerCase() !== "walk-in") {
+        try {
+          const { createCustomerFn } = await import("@/lib/api/customers");
+          const createdCust = await createCustomerFn({
+            data: {
+              name: custSearch.trim(),
+              phone: form.customer_mobile.trim() || null,
+              whatsapp: form.customer_mobile.trim() || null,
+            },
+          });
+          customerId = createdCust.id;
+          qc.invalidateQueries({ queryKey: ["customers-min"] });
+        } catch (e: any) {
+          console.warn("Could not auto-create customer, proceeding as walk-in:", e);
+        }
+      }
+
+      // Update phone on existing customer if provided and currently empty
+      if (customerId && form.customer_mobile.trim()) {
+        const existing = custMap.get(customerId);
+        if (existing && !existing.phone) {
+          try {
+            const { updateCustomerFn } = await import("@/lib/api/customers");
+            await updateCustomerFn({
+              data: {
+                id: customerId,
+                data: {
+                  phone: form.customer_mobile.trim(),
+                  whatsapp: existing.whatsapp || form.customer_mobile.trim(),
+                },
+              },
+            });
+            qc.invalidateQueries({ queryKey: ["customers-min"] });
+          } catch (e) {
+            console.warn("Could not update customer phone:", e);
+          }
+        }
+      }
+
       let appointment_at: string | null = null;
       if (form.appointment_date) {
         const t = form.appointment_time || "10:00";
         const d = new Date(`${form.appointment_date}T${t}:00`);
         if (!isNaN(d.getTime())) appointment_at = d.toISOString();
       }
-      // Note: Mobile updates should ideally go through a separate customer API endpoint
-      // To save time, we let this pass for now or omit it if not strictly required
+
       const payload = {
-        customer_id: form.customer_id || null,
+        customer_id: customerId,
         device_type: form.device_type || null,
         device_brand: form.device_brand || null,
         device_model: form.device_model || null,
         imei: form.imei || null,
-        issue: form.issue,
+        issue: form.issue.trim(),
         status: form.status as any,
-        technician_name: form.technician_name,
+        technician_name: form.technician_name.trim() || "Unassigned",
         technician_notes: form.technician_notes || null,
         estimated_completion: form.estimated_completion || null,
         estimated_cost: Number(form.estimated_cost || 0),
@@ -527,6 +566,7 @@ function RepairsPage() {
         >
           <DialogTrigger asChild>
             <Button
+              onClick={() => setOpen(true)}
               className="h-10 px-5 shadow-lg transition-transform hover:scale-105 active:scale-95"
             >
               <Plus className="mr-2 h-4 w-4" /> New ticket
@@ -563,7 +603,7 @@ function RepairsPage() {
                       type="button"
                       variant="outline"
                       size="icon"
-                      className="shrink-0 border-border bg-secondary hover:bg-cardccent hover:text-primary"
+                      className="shrink-0 border-border bg-secondary hover:bg-accent hover:text-primary"
                       onClick={() => setNewCustOpen(true)}
                       title="Add new customer"
                     >
@@ -616,13 +656,12 @@ function RepairsPage() {
 
               {/* Technician input */}
               <div className="space-y-1.5">
-                <Label className="text-muted-foreground">Technician *</Label>
+                <Label className="text-muted-foreground">Technician</Label>
                 <Input
-                  placeholder="Technician name"
+                  placeholder="Technician name (or leave unassigned)"
                   value={form.technician_name}
                   onChange={(e) => setForm((f) => ({ ...f, technician_name: e.target.value }))}
                   className="bg-muted border-border focus:border-primary/50"
-                  required
                 />
               </div>
 

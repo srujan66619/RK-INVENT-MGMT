@@ -91,30 +91,6 @@ export const InvoiceTemplate = forwardRef<HTMLDivElement, InvoiceTemplateProps>(
           ...pdfSafeStyle,
         }}
       >
-        {/* ============ HEADER BACKGROUND ============ */}
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "160px",
-            zIndex: 0,
-            pointerEvents: "none",
-            overflow: "hidden",
-          }}
-        >
-          {/* The black slanted shape from the top left */}
-          <svg
-            width="100%"
-            height="100%"
-            viewBox="0 0 800 160"
-            preserveAspectRatio="none"
-            style={{ position: "absolute", top: 0, left: 0 }}
-          >
-            <path d="M0,0 L280,0 L180,160 L0,160 Z" fill="#111827" />
-          </svg>
-        </div>
 
         {/* ============ HEADER ============ */}
         <div

@@ -4,14 +4,14 @@ import { z } from "zod";
 import { requireAuth } from "../auth.server";
 
 const repairSchema = z.object({
-  customer_id: z.string().min(1, "Customer is required"),
+  customer_id: z.string().nullable().optional(),
   device_type: z.string().nullable().optional(),
   device_brand: z.string().nullable().optional(),
   device_model: z.string().nullable().optional(),
   imei: z.string().nullable().optional(),
-  issue: z.string().min(1),
-  status: z.string(),
-  technician_name: z.string().min(1, "Technician is required"),
+  issue: z.string().min(1, "Issue description is required"),
+  status: z.string().default("received"),
+  technician_name: z.string().nullable().optional(),
   technician_notes: z.string().nullable().optional(),
   estimated_completion: z.string().nullable().optional().transform(v => v ? new Date(v) : null),
   estimated_cost: z.number().nullable().optional(),
@@ -53,12 +53,23 @@ export const createRepairFn = createServerFn({ method: "POST" })
 
     let ticket_no = data.ticket_no;
     if (!ticket_no) {
-      const allRepairs = await repairService.getRepairs();
-      ticket_no = String(allRepairs.length + 1);
+      ticket_no = `TK-${Math.floor(100000 + Math.random() * 900000)}`;
     }    
-    let assignedCustomerId = data.customer_id;
+    let assignedCustomerId = (data.customer_id && data.customer_id.trim()) ? data.customer_id.trim() : null;
     if (user.role === "customer") {
-      const customer = await customerService.getCustomerByProfileId(user.id);
+      let customer = await customerService.getCustomerByProfileId(user.id);
+      if (!customer) {
+        try {
+          customer = await customerService.createCustomer({
+            name: user.full_name || user.email.split("@")[0] || "Customer",
+            email: user.email,
+            owner_id: user.id,
+            profile_id: user.id,
+          });
+        } catch (err) {
+          console.error("Failed to auto-create customer for user profile", err);
+        }
+      }
       if (customer) {
         assignedCustomerId = customer.id;
       }
