@@ -8,8 +8,10 @@ import {
   Wrench,
   Microscope,
   ShieldCheck,
-  ArrowRight
+  ArrowRight,
+  Search,
 } from "lucide-react";
+import { CustomerPriceLookup } from "@/components/customer-price-lookup";
 
 export const Route = createFileRoute("/_public/")({
   component: PublicHome,
@@ -77,6 +79,14 @@ function PublicHome() {
               >
                 <Phone className="h-5 w-5" /> Call Now
               </motion.a>
+              <motion.a
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                href="#part-prices"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#f0f9ff] border-2 border-[#bae6fd] text-[#0284c7] px-8 py-4 rounded-xl font-bold shadow-sm hover:border-[#0284c7] hover:bg-[#e0f2fe] transition-all"
+              >
+                <Search className="h-5 w-5" /> Check Part Prices
+              </motion.a>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
                 <Link
                   to="/track"
@@ -89,6 +99,9 @@ function PublicHome() {
           </div>
         </div>
       </section>
+
+      {/* Customer Part Price Lookup Section */}
+      <CustomerPriceLookup />
 
       {/* Why Choose Us */}
       <section className="py-20 bg-[#f0f9ff]">

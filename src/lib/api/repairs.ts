@@ -14,7 +14,7 @@ const repairSchema = z.object({
   technician_name: z.string().nullable().optional(),
   technician_notes: z.string().nullable().optional(),
   estimated_completion: z.string().nullable().optional().transform(v => v ? new Date(v) : null),
-  estimated_cost: z.number().nullable().optional(),
+  estimated_cost: z.number().min(0, "Estimated cost cannot be negative").nullable().optional(),
   appointment_at: z.string().nullable().optional().transform(v => v ? new Date(v) : null),
   ticket_no: z.string().optional(),
   parts_used: z.array(z.object({
@@ -108,19 +108,69 @@ export const createRepairFn = createServerFn({ method: "POST" })
   });
 
 export const updateRepairFn = createServerFn({ method: "POST" })
-  .validator((data) => z.object({ id: z.string(), data: repairSchema.partial() }).parse(data))
+  .validator((data) =>
+    z
+      .object({
+        id: z.string(),
+        data: repairSchema.partial(),
+        estimate_change_reason: z.string().optional(),
+      })
+      .parse(data),
+  )
   .handler(async ({ data }) => {
-    await requireAuth();
+    const { session, user } = await requireAuth();
     const { repairService } = await import("@/services/repair.service");
     const { customerService } = await import("@/services/customer.service");
     const { userService } = await import("@/services/user.service");
     const { whatsappService } = await import("@/services/whatsapp.service");
     
-    // Convert date strings to Date objects if present
-    const updateData: any = { ...data.data };
-    
     const oldRepair = await repairService.getRepairById(data.id);
-    await repairService.updateRepair(data.id, updateData);
+    if (!oldRepair) throw new Error("Repair ticket not found");
+
+    // Server-side Permissions & Audit Trail for Estimated Cost
+    let auditNote: { note: string; technician_name?: string; task_done?: boolean } | undefined = undefined;
+
+    if (data.data.estimated_cost !== undefined && data.data.estimated_cost !== null) {
+      const newEst = Number(data.data.estimated_cost);
+      if (isNaN(newEst) || newEst < 0) {
+        throw new Error("Estimated cost must be a valid non-negative number.");
+      }
+
+      const oldEst = Number(oldRepair.estimated_cost ?? 0);
+      if (Math.abs(newEst - oldEst) > 0.001) {
+        // Enforce role permission: Admin/Owner and Manager can update estimated cost
+        const allowedRoles = ["admin", "manager", "owner"];
+        if (!allowedRoles.includes(user.role)) {
+          throw new Error("Unauthorized: Only Admin/Owner or Manager is authorized to modify estimated repair costs.");
+        }
+
+        // Prepare estimate change audit record
+        const { inr } = await import("@/lib/format");
+        const authorName = user.full_name || user.email || "Staff";
+        const reasonText = data.estimate_change_reason?.trim()
+          ? ` — Reason: ${data.estimate_change_reason.trim()}`
+          : "";
+        
+        auditNote = {
+          note: `[Estimate Revised] Changed from ${inr(oldEst)} to ${inr(newEst)} by ${authorName}${reasonText}`,
+          technician_name: authorName,
+          task_done: false,
+        };
+      }
+    }
+
+    // STRICT COST SEPARATION:
+    // Updating estimated cost must NEVER automatically alter final_cost, invoices,
+    // payments, or inventory part historical costs.
+    const updateData: any = { ...data.data };
+    delete updateData.final_cost; // Prevent accidental overwriting of finalized charge
+    
+    // Commit repair update and audit entry atomically in a single database transaction
+    if (auditNote) {
+      await repairService.updateRepairWithAudit(data.id, updateData, auditNote);
+    } else {
+      await repairService.updateRepair(data.id, updateData);
+    }
     const repair = await repairService.getRepairById(data.id);
     
     // Trigger auto status reminder if status changed
@@ -138,8 +188,9 @@ export const updateRepairFn = createServerFn({ method: "POST" })
       }
     }
 
-    return { id: data.id, ticket_no: repair?.ticket_no };
+    return { id: data.id, ticket_no: repair?.ticket_no, estimated_cost: repair?.estimated_cost };
   });
+
 
 export const deleteRepairFn = createServerFn({ method: "POST" })
   .validator((id: string) => z.string().parse(id))

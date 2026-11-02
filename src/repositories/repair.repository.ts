@@ -84,6 +84,21 @@ export class RepairRepository {
     return result[0];
   }
 
+  async updateWithAudit(id: string, data: any, auditNote?: { note: string; technician_name?: string; task_done?: boolean }) {
+    return await db.transaction(async (tx) => {
+      const result = await tx.update(repairs).set(data).where(eq(repairs.id, id)).returning();
+      if (auditNote) {
+        await tx.insert(repairNotes).values({
+          repair_id: id,
+          note: auditNote.note,
+          technician_name: auditNote.technician_name || "Staff",
+          task_done: auditNote.task_done ?? false,
+        });
+      }
+      return result[0];
+    });
+  }
+
   async delete(id: string) {
     // Also delete associated notes and appointments first to avoid FK constraints
     await db.delete(repairNotes).where(eq(repairNotes.repair_id, id));

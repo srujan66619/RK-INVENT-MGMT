@@ -255,3 +255,68 @@ export const deletePurchaseOrderFn = createServerFn({ method: "POST" })
     await purchaseorderService.deletePurchaseOrder(data);
     return { success: true };
   });
+
+// === PUBLIC CUSTOMER PRICE LOOKUP ===
+export const getPublicPriceLookupFn = createServerFn({ method: "GET" })
+  .validator((data?: { search?: string; category?: string }) => {
+    return z
+      .object({
+        search: z.string().optional(),
+        category: z.string().optional(),
+      })
+      .optional()
+      .parse(data);
+  })
+  .handler(async ({ data }) => {
+    const { inventoryRepository } = await import("@/repositories/inventory.repository");
+    const allItems = await inventoryRepository.getAll();
+
+    // Extract unique existing categories
+    const categoriesSet = new Set<string>();
+    for (const item of allItems) {
+      if (item.category && item.category.trim()) {
+        categoriesSet.add(item.category.trim());
+      }
+    }
+    const categories = Array.from(categoriesSet).sort();
+
+    const search = data?.search?.trim().toLowerCase() || "";
+    const category = data?.category?.trim().toLowerCase() || "";
+
+    const filtered = allItems.filter((item) => {
+      if (category && category !== "all") {
+        if (!item.category || item.category.toLowerCase() !== category) {
+          return false;
+        }
+      }
+      if (search) {
+        const nameMatch = item.name?.toLowerCase().includes(search);
+        const skuMatch = item.sku?.toLowerCase().includes(search);
+        const catMatch = item.category?.toLowerCase().includes(search);
+        if (!nameMatch && !skuMatch && !catMatch) {
+          return false;
+        }
+      }
+      return true;
+    });
+
+    // Strictly map to customer-safe fields.
+    // NEVER expose cost_price, supplier info, internal IDs, owner_id, or internal margins.
+    const items = filtered.map((item) => {
+      const price = item.selling_price != null && Number(item.selling_price) > 0 ? Number(item.selling_price) : 0;
+      const stockAvailable = Number(item.stock_level ?? 0) > 0 || Number(item.quantity ?? 0) > 0;
+      return {
+        name: item.name,
+        sku: item.sku || null,
+        category: item.category || "General",
+        selling_price: price,
+        in_stock: stockAvailable,
+      };
+    });
+
+    return {
+      items,
+      categories,
+    };
+  });
+

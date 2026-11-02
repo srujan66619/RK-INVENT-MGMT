@@ -22,6 +22,10 @@ export class RepairService {
     return await repairRepository.update(id, data);
   }
 
+  async updateRepairWithAudit(id: string, data: any, auditNote?: { note: string; technician_name?: string; task_done?: boolean }) {
+    return await repairRepository.updateWithAudit(id, data, auditNote);
+  }
+
   async deleteRepair(id: string) {
     return await repairRepository.delete(id);
   }
